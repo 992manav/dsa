@@ -1,9 +1,9 @@
-import java.util.HashMap;
-import java.util.Map;
-
 class Solution {
     public boolean isIsomorphic(String s, String t) {
-        Map<Character, Character> map = new HashMap<>();
+
+        char[] arr = new char[256]; // use 256 to cover all ASCII characters
+        char[] brr = new char[256];
+
         if (s.length() != t.length()) {
             return false;
         }
@@ -12,25 +12,17 @@ class Solution {
             char c = s.charAt(i); // character from s
             char d = t.charAt(i); // character from t
 
-            if (!map.containsKey(c)) {
-                if (map.containsValue(d)) {
+            int idx_c = c; // char to int (ASCII)
+            int idx_d = d;
+
+            if (arr[idx_c] == 0) { // check if unassigned
+                if (brr[idx_d] != 0) {
                     return false;
                 }
-                map.put(c, d);
+                arr[idx_c] = d;
+                brr[idx_d] = c;
             } else {
-                if (map.containsValue(d)) {
-                    Character ch = null;
-                    for (Character key : map.keySet()) {
-                        if (map.get(key) == d) {
-                            ch = key;
-                            break;
-                        }
-                    }
-
-                    if (ch == null || ch != c) {
-                        return false;
-                    }
-                } else {
+                if (arr[idx_c] != d) {
                     return false;
                 }
             }
