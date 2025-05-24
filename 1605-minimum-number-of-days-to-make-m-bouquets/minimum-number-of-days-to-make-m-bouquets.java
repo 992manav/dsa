@@ -1,22 +1,28 @@
 class Solution {
 
-    boolean check(int[] arr,int mid,int m,int k){
-        int count=0;
-        int flag=0;
+    boolean check(int[] arr, int mid, int m, int k) {
+        int count = 0;  // Count of consecutive bloomable flowers
+        int days = 0;   // Count of bouquets made
 
-        for(int i=0;i<arr.length;i++){
-            if(arr[i]<=mid){
-               flag++;
-               if(flag==k){
-                    count++;
-                    flag=0;
-               }
-            }else{
-                flag=0;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] <= mid) {
+                count++;
+                if (count == k) {
+                    days++;
+                    count = 0;
+                    if (days == m) break; // Early exit if we already have enough bouquets
+                }
+            } else {
+                count = 0;
+                // \U0001f525 Early break: If remaining flowers < required, break early
+                if (arr.length - i < (m - days) * k)
+                    break;
             }
         }
-        return count >= m;
+
+        return days >= m;
     }
+
 
     int binary_search(int[] arr,int m,int k){
         int low = Integer.MAX_VALUE;
