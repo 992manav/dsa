@@ -1,22 +1,32 @@
 class Solution {
     public boolean isIsomorphic(String s, String t) {
-        if (s.length() != t.length()) return false;
 
-        int[] sMap = new int[256];
-        int[] tMap = new int[256];
+        char[] arr = new char[256]; // use 256 to cover all ASCII characters
+        char[] brr = new char[256];
 
-        for (int i = 0; i < s.length(); i++) {
-            char sc = s.charAt(i);
-            char tc = t.charAt(i);
-
-            if (sMap[sc] != tMap[tc]) {
-                return false;
-            }
-
-            sMap[sc] = i + 1;
-            tMap[tc] = i + 1;
+        if (s.length() != t.length()) {
+            return false;
         }
 
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i); // character from s
+            char d = t.charAt(i); // character from t
+
+            int idx_c = c; // char to int (ASCII)
+            int idx_d = d;
+
+            if (arr[idx_c] == 0) { // check if unassigned
+                if (brr[idx_d] != 0) {
+                    return false;
+                }
+                arr[idx_c] = d;
+                brr[idx_d] = c;
+            } else {
+                if (arr[idx_c] != d) {
+                    return false;
+                }
+            }
+        }
         return true;
     }
 }
