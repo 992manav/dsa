@@ -10,40 +10,33 @@ class Solution {
             }
             sum=sum+ele;
         }
-        int[] a=new int[2];
-        a[0]=max;
-        a[1]=sum;
-        return a;
+        // int[] a=new int[2];
+        // a[0]=max;
+        // a[1]=sum;
+        // return a;
+
+        return new int[]{max, sum};
     }
 
 
-    boolean check(int[] arr,int weight,int days){
+    boolean check(int[] arr, int weight, int days) {
+    int sum = 0;
+    int day = 1; // start with day 1
 
-        int sum=0;
-        int day=0;
-        int pointer=0;
-        for(int i=0;i<arr.length;i++){
-
-            sum=sum+arr[i];
-
-            if(sum>weight){
-                pointer=i-1;
-                day++;
-                sum=arr[i];
-            }
-        }
-
-        if(pointer!=arr.length){
+    for (int num : arr) {
+        if (sum + num > weight) {
             day++;
+            sum = 0;
         }
+        sum += num;
 
-        if(day<=days){
-            return true;
-        }else{
+        if (day > days) {
             return false;
         }
-
     }
+
+    return true;
+}
 
 
     int binary_search(int[] w,int days){
