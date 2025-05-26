@@ -40,16 +40,16 @@ class Solution {
             
             int digit = s.charAt(i) - '0';
             long add = (long)digit * c;
-            
+             num += add;
             // Check for overflow before adding
-            if (sign == 1 && num + add > Integer.MAX_VALUE) return Integer.MAX_VALUE;
-            if (sign == -1 && -(num + add) < Integer.MIN_VALUE) return Integer.MIN_VALUE;
+            if (sign == 1 && num > Integer.MAX_VALUE) return Integer.MAX_VALUE;
+            if (sign == -1 && -(num) < Integer.MIN_VALUE) return Integer.MIN_VALUE;
             
             // Prevent overflow in c for next iteration
             if (c > (long)Integer.MAX_VALUE / 10) {
                 // If we reach here, we've successfully processed current digit
                 // but c would overflow for next iteration
-                num += add;
+                
                 // Check if there are more digits to process
                 boolean hasMoreDigits = (i - 1 >= startIdx);
                 if (hasMoreDigits) {
@@ -59,7 +59,7 @@ class Solution {
                 }
             }
             
-            num += add;
+           
             c *= 10;
         }
         
