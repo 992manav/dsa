@@ -16,10 +16,11 @@ class Solution {
             }
         }
 
-        if (sb.toString().equals(t)) {
-            return true;
-        } else {
-            return false;
-        }
+        // if (sb.toString().equals(t)) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+        return false;
     }
 }
