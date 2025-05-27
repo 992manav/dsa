@@ -29,6 +29,7 @@ class Solution {
                 int ans = calc(map);
                 sum += ans;
             }
+            map.put(s.charAt(i), map.get(s.charAt(i)) - 1);
         }
 
         return sum;
