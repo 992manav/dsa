@@ -17,10 +17,10 @@ class Solution {
 
     public int beautySum(String s) {
         int sum = 0;
-
+         Map<Character, Integer> map = new HashMap<>();
         for (int i = 0; i < s.length(); i++) {
-            Map<Character, Integer> map = new HashMap<>(); // Reinitialize for each i
-
+            // Reinitialize for each i
+            map.clear();
             for (int j = i; j < s.length(); j++) {
                 char k = s.charAt(j);
                 map.put(k, map.getOrDefault(k, 0) + 1);
