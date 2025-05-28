@@ -1,15 +1,14 @@
-import java.util.HashMap;
-import java.util.Map;
-
 class Solution {
 
-    int calc(Map<Character, Integer> map) {
+    int calc(int[] arr) {
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
 
-        for (int value : map.values()) {
-            if (value < min) min = value;
-            if (value > max) max = value;
+        for (int value : arr) {
+            if (value > 0) { // Only consider non-zero frequencies
+                if (value < min) min = value;
+                if (value > max) max = value;
+            }
         }
 
         return max - min;
@@ -17,18 +16,16 @@ class Solution {
 
     public int beautySum(String s) {
         int sum = 0;
-         Map<Character, Integer> map = new HashMap<>();
-        for (int i = 0; i < s.length(); i++) {
-            // Reinitialize for each i
-            map.clear();
-            for (int j = i; j < s.length(); j++) {
-                char k = s.charAt(j);
-                map.put(k, map.getOrDefault(k, 0) + 1);
 
-                if (map.size() > 1) { // Only calculate beauty if there's variation
-                    int ans = calc(map);
-                    sum += ans;
-                }
+        for (int i = 0; i < s.length(); i++) {
+            int[] arr = new int[26]; // Frequency array
+
+            for (int j = i; j < s.length(); j++) {
+                int k = s.charAt(j) - 'a';
+                arr[k]++;
+
+                int ans = calc(arr);
+                sum += ans;
             }
         }
 
