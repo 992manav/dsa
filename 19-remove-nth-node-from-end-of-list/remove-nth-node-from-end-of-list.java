@@ -10,13 +10,17 @@
  */
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        if (head == null) return head;
-        if (head.next == null) return null;
 
-        ListNode slow = head, fast = head, prev = null;
+        if(head==null){
+            return head;
+        }else if(head.next==null){
+            return null;
+        }
+
+        ListNode slow = head;
+        ListNode fast = head;
+        ListNode prev = null;
         int count = 0;
-
-        // Find midpoint using fast/slow
         while (fast != null && fast.next != null) {
             prev = slow;
             slow = slow.next;
@@ -24,25 +28,36 @@ class Solution {
             count++;
         }
 
-        int totalLength = (fast == null) ? count * 2 : count * 2 + 1;
-        int indexToRemove = totalLength - n;
+        int mid = count;
+        // System.out.println(mid);
+        if (fast == null) { // even
+            count = count * 2;
+        } else { // odd
+            count = count * 2 + 1;
+        }
 
-        int t = (indexToRemove >= count) ? indexToRemove - count : indexToRemove;
+        // System.out.println(count);
+        int index = count - n;
+        // System.out.println(index);
 
-        // Reset slow and prev if removal is before midpoint
-        if (indexToRemove < count) {
+        int t;
+      
+        if (index >= mid) {
+            t = index - mid;
+        } else {
+            t = index;
             slow = head;
             prev = null;
         }
-
+    //   System.out.println(t);
         while (slow != null) {
-            if (t == 0) {
-                if (prev == null) {
-                    head = head.next;
-                } else {
-                    prev.next = slow.next;
+            if (t <= 0) {
+                if(prev==null){
+                    head=head.next;
+                }else{
+                     prev.next = slow.next;
                 }
-                break;
+                return head;
             }
             t--;
             prev = slow;
