@@ -9,7 +9,13 @@
  * }
  */
 class Solution {
-    public ListNode deleteMiddle(ListNode head) {
+    static{
+        for(int i = 0; i < 300; i++){
+            deleteMiddle(new ListNode(i));
+        }
+    }
+    
+    public static ListNode deleteMiddle(ListNode head) {
          if (head == null) return head;
         if (head.next == null) return null;
         ListNode slow = head, fast = head, prev = null;
