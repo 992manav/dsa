@@ -10,37 +10,31 @@
  */
 class Solution {
     public int[] nodesBetweenCriticalPoints(ListNode head) {
-        ListNode temp = head;
-        int min = Integer.MAX_VALUE;
-        int first_index = -1;
-        int just_previous = -1;
-        int index = 1;
+        int index = 1, first = -1, last = -1, minDist = Integer.MAX_VALUE;
+        ListNode prev = head, curr = head.next;
 
-        ListNode prev = head;
-        temp = head.next; // start from the second node
-        ListNode next = (temp != null) ? temp.next : null;
+        while (curr != null && curr.next != null) {
+            if ((curr.val > prev.val && curr.val > curr.next.val) ||
+                (curr.val < prev.val && curr.val < curr.next.val)) {
 
-        while (temp != null && next != null) {
-            if ((temp.val > prev.val && temp.val > next.val) || (temp.val < prev.val && temp.val < next.val)) {
-                if (just_previous != -1) {
-                    min = Math.min(min, index - just_previous);
+                if (first == -1) {
+                    first = index;
                 } else {
-                    first_index = index;
+                    minDist = Math.min(minDist, index - last);
                 }
-                just_previous = index;
+
+                last = index;
             }
 
-            prev = temp;
-            temp = temp.next;
-            next = (temp != null) ? temp.next : null;
+            prev = curr;
+            curr = curr.next;
             index++;
         }
 
-        if (just_previous == first_index || first_index == -1) {
+        if (first == -1 || first == last) {
             return new int[]{-1, -1};
         }
 
-        int max = just_previous - first_index;
-        return new int[]{min, max};
+        return new int[]{minDist, last - first};
     }
 }
