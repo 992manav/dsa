@@ -20,7 +20,7 @@ class Solution {
         Node new_head = null;
 
         Map<Integer, Node> map = new HashMap<>();       // index -> new node
-        Map<Node, Integer> map2 = new HashMap<>();       // old node -> index
+      
         int index = 0;
 
         while (temp != null) {
@@ -38,7 +38,7 @@ class Solution {
             }
 
             map.put(index, naya_node);
-            map2.put(temp, index); // moved before temp = temp.next;
+            temp.val=index;
 
             temp = temp.next;
             index++;
@@ -49,8 +49,7 @@ class Solution {
 
         while (temp != null && temp2 != null) {
             if (temp.random != null) {
-                int index2 = map2.get(temp.random); // FIX: get from map2 using temp.random
-                Node n = map.get(index2);           // FIX: get from map using index2
+                Node n = map.get(temp.random.val); 
                 temp2.random = n;
             }
 
