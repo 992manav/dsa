@@ -2,13 +2,17 @@ class Solution {
     List<List<Integer>> final_list = new ArrayList<>();
 
     void backtrack(int[] nums, int index, List<Integer> current) {
-        final_list.add(new ArrayList<>(current)); // ✅ Add a copy of the current subset
-
-        for (int i = index; i < nums.length; i++) {
-            current.add(nums[i]);          // Choose
-            backtrack(nums, i + 1, current); // Explore
-            current.remove(current.size() - 1); // Un-choose (backtrack)
+        // ✅ Add a copy of the current subset
+        if (index >= nums.length) {
+            final_list.add(new ArrayList<>(current)); 
+            return; // Important to stop further execution when base case hits
         }
+
+        current.add(nums[index]); // Choose
+        backtrack(nums, index + 1, current); // Explore
+        current.remove(current.size() - 1); // Un-choose (backtrack)
+
+        backtrack(nums, index + 1, current); // Skip current element
     }
 
     public List<List<Integer>> subsets(int[] nums) {
