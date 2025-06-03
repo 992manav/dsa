@@ -16,23 +16,19 @@ class Solution {
 
         if (l == 0 && r == 0) {
             lst.add(s.toString());
-            return; // to avoid further recursion after reaching the end
+            return;
         }
 
-        if (equal < 0) {
-            if (r > 0) {
-                fun(new StringBuilder(s), ")", l, r, equal);
-            }
+        if (equal < 0 && r > 0) {
+            fun(new StringBuilder(s), ")", l, r, equal);
         }
-
         if (l > 0) {
             fun(new StringBuilder(s), "(", l, r, equal);
         }
     }
     
     public List<String> generateParenthesis(int n) {
-        StringBuilder s = new StringBuilder();
-        fun(s, "(", n, n, 0);
+        fun(new StringBuilder(), "(", n, n, 0);
         return lst;
     }
 }
