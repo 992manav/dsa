@@ -20,10 +20,10 @@ class Solution {
         // Include current number and recurse
         
         if (nums[starting_index] + sum <= target) {
-        lst.add(nums[starting_index]);
-        fun(lst, sum + nums[starting_index], nums, starting_index);         // Choose again
-        fun(lst, sum + nums[starting_index], nums, starting_index + 1);     // Choose and move forward
-        lst.remove(lst.size() - 1); // Backtrack
+            lst.add(nums[starting_index]);
+            fun(lst, sum + nums[starting_index], nums, starting_index);         // Choose again
+            // fun(lst, sum + nums[starting_index], nums, starting_index + 1);     // Choose and move forward
+            lst.remove(lst.size() - 1); // Backtrack
         }
 
         // Exclude current number and move forward
