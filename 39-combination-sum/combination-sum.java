@@ -31,7 +31,7 @@ class Solution {
         this.target = tar;
 
         // Optional: sort to enable faster pruning or cleaner output
-        Arrays.sort(num);
+        // Arrays.sort(num);
 
         fun(new ArrayList<>(), 0, num, 0);
         return new ArrayList<>(final_list);
