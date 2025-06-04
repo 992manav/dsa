@@ -3,7 +3,7 @@ import java.util.*;
 class Solution {
 
     int target;
-    Set<List<Integer>> final_list = new HashSet<>();
+    List <List<Integer>> final_list = new ArrayList<>();
 
     public void fun(List<Integer> lst, int sum, int[] nums, int starting_index) {
 
@@ -37,6 +37,6 @@ class Solution {
         // Arrays.sort(num);
 
         fun(new ArrayList<>(), 0, num, 0);
-        return new ArrayList<>(final_list);
+        return final_list;
     }
 }
