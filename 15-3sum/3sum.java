@@ -27,11 +27,7 @@ class Solution {
 
                 if (sum == target) {
 
-                    List<Integer> lst = new ArrayList<>();
-                    lst.add(nums[i]);
-                    lst.add(nums[j]);
-                    lst.add(nums[k]);
-                    final_list.add(lst);
+                    final_list.add(Arrays.asList(nums[i], nums[j], nums[k]));
 
                     while (j < nums.length - 1 && nums[j + 1] == nums[j]) {
                         j++;
