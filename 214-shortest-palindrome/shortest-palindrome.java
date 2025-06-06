@@ -3,7 +3,7 @@ class Solution {
         int n = s.length();
         if (n == 0) return s;
 
-        long base = 131; // a random base
+        long base = 27; // a random base
         long mod = 1000000007; // a large prime
         long hash_forward = 0;
         long hash_backward = 0;
