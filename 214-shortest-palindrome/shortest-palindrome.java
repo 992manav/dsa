@@ -1,32 +1,33 @@
 class Solution {
     public String shortestPalindrome(String s) {
-        int n = s.length();
-        if (n == 0) return s;
-
-        long base = 27; // a random base
-        long mod = 1000000007; // a large prime
-        long hash_forward = 0;
-        long hash_backward = 0;
-        long power = 1;
-        int longestPalindromePrefix = 0;
-
-        for (int i = 0; i < n; i++) {
-            int ch = s.charAt(i) - 'a' ;
-
-            hash_forward = (hash_forward * base + ch) % mod;
-            hash_backward = (hash_backward + power * ch) % mod;
-
-            if (hash_forward == hash_backward) {
-                longestPalindromePrefix = i + 1;
-            }
-
-            power = (power * base) % mod;
+        if (s == null || s.length() <= 1) {
+            return s;
         }
-
-        // The part after the palindromic prefix
-        String suffix = s.substring(longestPalindromePrefix);
-        StringBuilder rev = new StringBuilder(suffix).reverse();
-
-        return rev.append(s).toString();
+        
+        // Find the longest palindromic prefix
+        int end = s.length() - 1;
+        int start = 0;
+        
+        // Move end pointer backwards, start pointer forwards when chars match
+        while (end >= 0) {
+            if (s.charAt(start) == s.charAt(end)) {
+                start++;
+            }
+            end--;
+        }
+        
+        // If start reached the end, the whole string is already a palindrome
+        if (start == s.length()) {
+            return s;
+        }
+        
+        // Get the non-palindromic suffix
+        String suffix = s.substring(start);
+        
+        // Recursively solve for the palindromic part
+        String palindromicPart = shortestPalindrome(s.substring(0, start));
+        
+        // Build result: reversed suffix + palindromic part + original suffix
+        return new StringBuilder(suffix).reverse().toString() + palindromicPart + suffix;
     }
 }
