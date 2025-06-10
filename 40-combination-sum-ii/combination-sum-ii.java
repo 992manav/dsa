@@ -27,6 +27,6 @@ class Solution {
         this.target = tar;
         Arrays.sort(candidates); 
         fun(new ArrayList<>(), 0, candidates, 0);
-        return new ArrayList<>(final_list);
+        return final_list;
     }
 }
