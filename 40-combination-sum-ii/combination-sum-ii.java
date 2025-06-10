@@ -1,11 +1,10 @@
 import java.util.*;
 class Solution {
     int target;
-    Set<List<Integer>> final_list = new HashSet<>();
+    List<List<Integer>> final_list = new ArrayList<>();
     public void fun(List<Integer> lst, int sum, int[] nums, int starting_index) {
         if (sum == target) {
             List<Integer> copy = new ArrayList<>(lst);
-            // Collections.sort(copy);
             final_list.add(copy);
             return;
         }
