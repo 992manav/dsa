@@ -10,8 +10,8 @@ class Solution {
         if (index == board.length) {
             // ✅ All queens placed, convert board to list of strings
             List<String> temp = new ArrayList<>();
-            for (int i = 0; i < board.length; i++) {
-                temp.add(new String(board[i]));
+            for (char[] row : board) {
+                temp.add(String.valueOf(row));
             }
             finalResult.add(temp);
             return;
@@ -30,6 +30,8 @@ class Solution {
 
             board[x][y] = '.';
             columns.add(column_index, y);
+
+             // ⬅️ No need to try further after successful placement
         }
 
         // Try next column choice
