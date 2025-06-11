@@ -4,38 +4,35 @@ class Solution {
 
     List<List<String>> finalResult = new ArrayList<>();
 
-    void fun(char[][] board, List<Integer> columns, int index, int column_index) {
+    void fun(char[][] board, boolean[] usedColumns, int index, int column_index) {
         int x = index;
 
         if (index == board.length) {
-            // ✅ All queens placed, convert board to list of strings
             List<String> temp = new ArrayList<>();
-            for (char[] row : board) {
-                temp.add(String.valueOf(row));
+            for (int i = 0; i < board.length; i++) {
+                temp.add(new String(board[i]));
             }
             finalResult.add(temp);
             return;
         }
 
-        if (columns.isEmpty() || column_index == columns.size()) {
+        if (column_index == board.length) {
             return;
         }
 
-        int y = columns.get(column_index);
-        if (check(board, x, y)) {
+        int y = column_index;
+        if (!usedColumns[y] && check(board, x, y)) {
             board[x][y] = 'Q';
-            columns.remove(column_index);
+            usedColumns[y] = true;
 
-            fun(board, columns, index + 1, 0);
+            fun(board, usedColumns, index + 1, 0);
 
             board[x][y] = '.';
-            columns.add(column_index, y);
-
-             // ⬅️ No need to try further after successful placement
+            usedColumns[y] = false;
         }
 
         // Try next column choice
-        fun(board, columns, index, column_index + 1);
+        fun(board, usedColumns, index, column_index + 1);
     }
 
     boolean check(char[][] board, int row, int col) {
@@ -56,14 +53,13 @@ class Solution {
 
     public List<List<String>> solveNQueens(int n) {
         char[][] board = new char[n][n];
-        List<Integer> columns = new ArrayList<>();
+        boolean[] usedColumns = new boolean[n];
 
         for (int i = 0; i < n; i++) {
             Arrays.fill(board[i], '.');
-            columns.add(i);
         }
 
-        fun(board, columns, 0, 0);
+        fun(board, usedColumns, 0, 0);
 
         return finalResult;
     }
