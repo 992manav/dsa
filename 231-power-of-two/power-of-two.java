@@ -4,11 +4,15 @@ class Solution {
         if (n <= 0) return false;
 
        
-        while (n % 2 == 0) {
+        while (n % 2 == 0 || n==1) {
+            if(n==1){
+                return true;
+            }
             n = n / 2;
+          
         }
 
         
-        return n == 1;
+        return false;
     }
 }
