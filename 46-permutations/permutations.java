@@ -12,9 +12,9 @@ class Solution {
             final_list.add(temp);
             return;
         }
-
+        fun(nums, index + 1);
         int swapping_index = nums.length - 1;
-        while (swapping_index >= index) {
+        while (swapping_index > index) {
             swap(nums, index, swapping_index);
             fun(nums, index + 1);
             swap(nums, index, swapping_index);
