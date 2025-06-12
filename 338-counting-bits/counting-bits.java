@@ -1,10 +1,17 @@
 class Solution {
 
+    // int fun(int n, int sum) {
+    //     if (n == 0) {
+    //         return sum ;
+    //     }
+    //     return fun(n / 2, sum + n % 2);
+    // }
+
     int fun(int n, int sum) {
         if (n == 0) {
-            return sum ;
+                 return sum ;
         }
-        return fun(n / 2, sum + n % 2);
+        return fun(n & (n-1), sum +1);
     }
 
     public int[] countBits(int n) {
