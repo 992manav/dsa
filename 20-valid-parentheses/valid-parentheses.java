@@ -5,44 +5,20 @@ class Solution {
         Stack<Character> s = new Stack<>();
 
         for (char c : str.toCharArray()) {
-
-            if (!s.isEmpty() && s.peek() == '(') {
-                if (c == ')') {
-                    s.pop();
-                    continue;
-                }
-                if (c == '(') {
-                    s.push(c);
-                    continue;
-                }
-            }
-
-            if (!s.isEmpty() && s.peek() == '{') {
-                if (c == '}') {
-                    s.pop();
-                    continue;
-                }
-                if (c == '{') {
-                    s.push(c);
-                    continue;
-                }
-            }
-
-            if (!s.isEmpty() && s.peek() == '[') {
-                if (c == ']') {
-                    s.pop();
-                    continue;
-                }
-                if (c == '[') {
-                    s.push(c);
-                    continue;
-                }
-            }
-
             if (c == '(' || c == '{' || c == '[') {
                 s.push(c);
             } else {
-                return false;
+                if (s.isEmpty()) return false;
+
+                char top = s.peek();
+
+                if ((c == ')' && top == '(') ||
+                    (c == '}' && top == '{') ||
+                    (c == ']' && top == '[')) {
+                    s.pop();
+                } else {
+                    return false;
+                }
             }
         }
 
