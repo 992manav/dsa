@@ -5,20 +5,21 @@ class Solution {
         Stack<Character> s = new Stack<>();
 
         for (char c : str.toCharArray()) {
-            if (c == '(' || c == '{' || c == '[') {
-                s.push(c);
-            } else {
-                if (s.isEmpty()) return false;
-
-                char top = s.peek();
-
-                if ((c == ')' && top == '(') ||
-                    (c == '}' && top == '{') ||
-                    (c == ']' && top == '[')) {
-                    s.pop();
-                } else {
-                    return false;
-                }
+            switch (c) {
+                case '(': case '{': case '[':
+                    s.push(c);
+                    break;
+                case ')':
+                    if (s.isEmpty() || s.pop() != '(') return false;
+                    break;
+                case '}':
+                    if (s.isEmpty() || s.pop() != '{') return false;
+                    break;
+                case ']':
+                    if (s.isEmpty() || s.pop() != '[') return false;
+                    break;
+                default:
+                    return false; // optional, in case of invalid chars
             }
         }
 
