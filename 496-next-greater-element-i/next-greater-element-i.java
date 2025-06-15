@@ -7,7 +7,7 @@ class Solution {
         Stack<Integer> st = new Stack<>();
 
         for (int i = nums2.length - 1; i >= 0; i--) {
-            // Pop elements smaller than or equal to current
+          
             while (!st.isEmpty() && st.peek() <= nums2[i]) {
                 st.pop();
             }
@@ -21,11 +21,11 @@ class Solution {
             st.push(nums2[i]);
         }
 
-        int[] result = new int[nums1.length];
+       
         for (int i = 0; i < nums1.length; i++) {
-            result[i] = map.get(nums1[i]);
+            nums1[i] = map.get(nums1[i]);
         }
 
-        return result;
+        return nums1;
     }
 }
