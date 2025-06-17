@@ -1,7 +1,9 @@
 class Solution {
     public String removeKdigits(String num, int k) {
 
-        if (num.length() == 1) {
+        int n = num.length();
+
+        if (n == 1) {
             return k == 0 ? num : "0";
         }
 
@@ -10,40 +12,49 @@ class Solution {
         while (k > 0) {
             boolean flag = false;
 
-            for (int i = 0; i < num.length(); i++) {
+            for (int i = 0; i < n; i++) {
                 if (k == 0) {
                     sb.append(num.substring(i));
                     break;
                 }
 
-                if (i < num.length() - 1 && num.charAt(i) > num.charAt(i + 1)) {
+                char current = num.charAt(i);
+                char next = (i < n - 1) ? num.charAt(i + 1) : current;
+
+                if (i < n - 1 && current > next) {
                     flag = true;
                     k--;
-                    // Remove previous larger digits if necessary
-                    while (sb.length() > 0 && sb.charAt(sb.length() - 1) > num.charAt(i + 1) && k > 0) {
+
+                    while (sb.length() > 0 && sb.charAt(sb.length() - 1) > next && k > 0) {
                         sb.deleteCharAt(sb.length() - 1);
                         k--;
                     }
-                    // Skip appending num.charAt(i)
+                    // Skip appending current
                 } else {
-                    sb.append(num.charAt(i));
+                    sb.append(current);
                 }
             }
 
             // Remove leading zeroes
-            while (sb.length() > 0 && sb.charAt(0) == '0') {
-                sb.deleteCharAt(0);
+            int start = 0;
+            while (start < sb.length() && sb.charAt(start) == '0') {
+                start++;
+            }
+
+            if (start > 0) {
+                sb.delete(0, start);
             }
 
             if (!flag) break;
 
             if (k > 0) {
                 num = sb.toString();
-                sb.setLength(0); // Faster than creating new object
+                n = num.length(); // update n after new num
+                sb.setLength(0);
             }
         }
 
-        // If any k still left, remove from end
+        // Final cleanup if k > 0
         while (k > 0 && sb.length() > 0) {
             sb.deleteCharAt(sb.length() - 1);
             k--;
