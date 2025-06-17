@@ -2,17 +2,12 @@ class Solution {
     public String removeKdigits(String num, int k) {
 
         if (num.length() == 1) {
-            if (k == 0) {
-                return num;
-            } else {
-                return "0";
-            }
+            return k == 0 ? num : "0";
         }
 
         StringBuilder sb = new StringBuilder();
 
         while (k > 0) {
-
             boolean flag = false;
 
             for (int i = 0; i < num.length(); i++) {
@@ -24,29 +19,31 @@ class Solution {
                 if (i < num.length() - 1 && num.charAt(i) > num.charAt(i + 1)) {
                     flag = true;
                     k--;
-                    while (sb.length() > 0 && sb.charAt(sb.length() - 1) > num.charAt(i+1) && k > 0) {
+                    // Remove previous larger digits if necessary
+                    while (sb.length() > 0 && sb.charAt(sb.length() - 1) > num.charAt(i + 1) && k > 0) {
                         sb.deleteCharAt(sb.length() - 1);
                         k--;
                     }
+                    // Skip appending num.charAt(i)
                 } else {
                     sb.append(num.charAt(i));
                 }
             }
 
+            // Remove leading zeroes
             while (sb.length() > 0 && sb.charAt(0) == '0') {
                 sb.deleteCharAt(0);
             }
 
-            if (flag == false) {
-                break;
-            }
+            if (!flag) break;
 
             if (k > 0) {
                 num = sb.toString();
-                sb = new StringBuilder();
+                sb.setLength(0); // Faster than creating new object
             }
         }
 
+        // If any k still left, remove from end
         while (k > 0 && sb.length() > 0) {
             sb.deleteCharAt(sb.length() - 1);
             k--;
