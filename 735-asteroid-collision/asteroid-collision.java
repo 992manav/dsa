@@ -2,7 +2,7 @@ import java.util.Stack;
 
 class Solution {
     public int[] asteroidCollision(int[] arr) {
-        Stack<Integer> st = new Stack<>();
+       Deque<Integer> st = new ArrayDeque<>();
         for (int i = 0; i < arr.length; i++) {
                 int asteroid = arr[i];
                 if (asteroid > 0) {
