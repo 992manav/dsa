@@ -7,7 +7,7 @@ class Solution {
         }
 
         int count = 0;
-        sb.setLength(0); // Clear the StringBuilder for reuse
+      
 
         for (int i = 0; i < s.length(); i++) {
             count++;
