@@ -1,13 +1,13 @@
 class Solution {
 
-    String fun(StringBuilder s, int n) {
+    String fun(StringBuilder s, StringBuilder sb, int n) {
 
         if (n == 0) {
             return s.toString(); 
         }
 
-        StringBuilder sb = new StringBuilder();
         int count = 0;
+        sb.setLength(0); // Clear the StringBuilder for reuse
 
         for (int i = 0; i < s.length(); i++) {
             count++;
@@ -19,11 +19,12 @@ class Solution {
             }
         }
 
-        return fun(sb, n - 1);
+        return fun(sb, new StringBuilder(), n - 1);
+
     }
 
     public String countAndSay(int n) {
         StringBuilder sb = new StringBuilder("1");
-        return fun(sb, n - 1);
+        return fun(sb, new StringBuilder(), n - 1);
     }
 }
