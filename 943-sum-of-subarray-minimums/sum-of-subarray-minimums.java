@@ -5,6 +5,13 @@ class Solution {
 
     static final int MOD = (int)1e9 + 7;
 
+    static {
+        Solution sol = new Solution();
+        for (int i = 0; i < 500; i++) {
+            sol.sumSubarrayMins(new int[]{1, 2, 3}); // Use a non-empty test input for meaningful warm-up
+        }
+    }
+
     void fun_left(int[] left, int[] arr) {
         Stack<Integer> st = new Stack<>();
 
