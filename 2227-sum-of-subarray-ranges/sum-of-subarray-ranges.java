@@ -2,9 +2,9 @@ import java.util.Stack;
 
 class Solution {
 
-    // Removed MOD constant since we want the full answer.
+    
     void fun_left(int[] left_min, int[] left_max, int[] arr) {
-        Stack<Integer> st = new Stack<>();
+        Deque<Integer> st = new ArrayDeque<>();
 
         // For minimum contributions
         for (int i = 0; i < arr.length; i++) {
@@ -28,7 +28,7 @@ class Solution {
     }
 
     void fun_right(int[] right_min, int[] right_max, int[] arr) {
-        Stack<Integer> st = new Stack<>();
+        Deque<Integer> st = new ArrayDeque<>();
 
         // For minimum contributions
         for (int i = arr.length - 1; i >= 0; i--) {
