@@ -9,57 +9,26 @@ class Solution {
         Stack<Integer> st = new Stack<>();
 
         for (int i = 0; i < arr.length; i++) {
-
-            if (st.isEmpty()) {
-                left[i] = 0;
-                st.push(i);
-            } else {
-
-                while (!st.isEmpty() && arr[st.peek()] > arr[i]) {
-                    st.pop();
-                }
-
-                if (st.isEmpty()) {
-                    left[i] = 0;
-                    st.push(i);
-                } else {
-                    left[i] = st.peek() + 1;
-                    st.push(i);
-                }
-
+            while (!st.isEmpty() && arr[st.peek()] > arr[i]) {
+                st.pop();
             }
 
+            left[i] = st.isEmpty() ? 0 : st.peek() + 1;
+            st.push(i);
         }
-
     }
 
     void fun_right(int[] right, int[] arr) {
-
         Stack<Integer> st = new Stack<>();
 
         for (int i = arr.length - 1; i >= 0; i--) {
-
-            if (st.isEmpty()) {
-                right[i] = arr.length - 1;
-                st.push(i);
-            } else {
-
-                while (!st.isEmpty() && arr[st.peek()] >= arr[i]) {
-                    st.pop();
-                }
-
-                if (st.isEmpty()) {
-                    right[i] = arr.length - 1; 
-                    st.push(i);
-                } else {
-                    right[i] = st.peek() - 1;
-                    st.push(i);
-                }
-
+            while (!st.isEmpty() && arr[st.peek()] >= arr[i]) {
+                st.pop();
             }
 
+            right[i] = st.isEmpty() ? arr.length - 1 : st.peek() - 1;
+            st.push(i);
         }
-
     }
 
     public int sumSubarrayMins(int[] arr) {
