@@ -7,31 +7,23 @@ class Solution {
 
         while (j < nums.length) {
             if (nums[j] == type1) {
-                type1_index = j;
-                j++;
-            } else {
+                type1_index = j++;
+            } else if (type2 == type1 || nums[j] == type2) {
                 if (type2 == type1) {
                     type2 = nums[j];
-                    type2_index = j;
-                    j++;
-                } else if (nums[j] == type2) {
-                    type2_index = j;
-                    j++;
-                } else {
-                    maxlen = Math.max(maxlen, j - i);
-                    if(type1_index<type2_index){
-                         i = type1_index + 1;
-                          type1 = type2;
-                        type1_index = type2_index;
-                    }
-                    else{
-                         i = type2_index + 1;
-                    }
-                  
-                    type2 = nums[j];
-                    type2_index = j;
-                    j++;
                 }
+                type2_index = j++;
+            } else {
+                maxlen = Math.max(maxlen, j - i);
+                if (type1_index < type2_index) {
+                    i = type1_index + 1;
+                    type1 = type2;
+                    type1_index = type2_index;
+                } else {
+                    i = type2_index + 1;
+                }
+                type2 = nums[j];
+                type2_index = j++;
             }
         }
 
