@@ -17,35 +17,36 @@ import java.util.*;
 
 class Solution {
 
-    int level(TreeNode root) {
-        if (root == null) {
-            return -1;
-        }
-        return 1 + Math.max(level(root.left), level(root.right)); // Fixed method name from height -> level
-    }
-
-    void find_nth_node(TreeNode root, int level, List<Integer> lst) {
-        if (root == null) return; // handle null
-        if (level == 1) {
-            lst.add(root.val);
-            return; // no need to go further
-        }
-
-        find_nth_node(root.left, level - 1, lst);
-        find_nth_node(root.right, level - 1, lst);
-    }
+    Queue<TreeNode> q = new LinkedList<>();
+    Queue<TreeNode> q2 = new LinkedList<>();
 
     public List<List<Integer>> levelOrder(TreeNode root) {
+
         List<List<Integer>> final_lst = new ArrayList<>();
 
-        int height = level(root) + 1; // fixed wrong method call syntax
+        if (root == null) return final_lst;
 
-        for (int i = 1; i <= height; i++) { // changed i < height to i <= height to include last level
-            List<Integer> lst = new ArrayList<>();
-            find_nth_node(root, i, lst); // fixed method arguments
-            final_lst.add(lst); // added correct list
+        q.add(root);
+
+        while (!q.isEmpty()) {
+            List<Integer> level = new ArrayList<>();
+
+            while (!q.isEmpty()) {
+                TreeNode node = q.remove();
+                level.add(node.val);
+
+                if (node.left != null) q2.add(node.left);
+                if (node.right != null) q2.add(node.right);
+            }
+
+            final_lst.add(level);
+
+            // swap queues
+            Queue<TreeNode> temp = q;
+            q = q2;
+            q2 = temp;
         }
 
-        return final_lst; // added return statement
+        return final_lst;
     }
 }
