@@ -34,7 +34,7 @@ class Solution {
         }
 
         final_lst.add(level);
-        bfs(q2, new LinkedList<>()); // recurse to next level
+        bfs(q2, q);
     }
 
     public List<List<Integer>> levelOrder(TreeNode root) {
