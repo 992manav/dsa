@@ -18,22 +18,28 @@
  *     }
  * }
  */
+import java.util.*;
+
 class Solution {
 
-    List<Integer> lst = new ArrayList<>();
+    public List<Integer> preorderTraversal(TreeNode root) {
 
-    void preorder(TreeNode root) {
-        if (root == null) {
-            return;
+        List<Integer> lst = new ArrayList<>();
+
+        Stack<TreeNode> st = new Stack<>();
+
+        if (root == null) return lst; // To avoid NullPointerException
+
+        st.push(root);
+
+        while (!st.isEmpty()) {
+            TreeNode node = st.pop();
+            lst.add(node.val); 
+
+            if (node.right != null) st.push(node.right); 
+            if (node.left != null) st.push(node.left);
         }
 
-        lst.add(root.val);      // root
-        preorder(root.left);    // left
-        preorder(root.right);   // right
-    }
-
-    public List<Integer> preorderTraversal(TreeNode root) {
-        preorder(root);  
         return lst;
     }
 }
