@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
@@ -13,22 +15,16 @@
  *     }
  * }
  */
-import java.util.*;
 
 class Solution {
 
     Queue<TreeNode> q = new LinkedList<>();
-    Queue<TreeNode> q2 = new LinkedList<>();
+    List<List<Integer>> final_lst = new ArrayList<>();
 
-    public List<List<Integer>> levelOrder(TreeNode root) {
-
-        List<List<Integer>> final_lst = new ArrayList<>();
-
-        if (root == null) return final_lst;
-
-        q.add(root);
+    void bfs(Queue<TreeNode> q) {
 
         while (!q.isEmpty()) {
+            Queue<TreeNode> q2 = new LinkedList<>();
             List<Integer> level = new ArrayList<>();
 
             while (!q.isEmpty()) {
@@ -41,12 +37,14 @@ class Solution {
 
             final_lst.add(level);
 
-            // swap queues
-            Queue<TreeNode> temp = q;
-            q = q2;
-            q2 = temp;
+            bfs(q2);
         }
+    }
 
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        if (root == null) return final_lst;
+        q.add(root);
+        bfs(q);
         return final_lst;
     }
 }
