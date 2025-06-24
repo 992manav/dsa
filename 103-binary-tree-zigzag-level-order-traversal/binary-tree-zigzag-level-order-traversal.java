@@ -13,7 +13,7 @@ class Solution {
         while (!q.isEmpty()) {
             int len = q.size();
             flag = !flag;  // Flip the flag
-            List<Integer> lst = new ArrayList<>();
+            List<Integer> lst = new LinkedList<>();
 
             for (int i = 0; i < len; i++) {
                 TreeNode node = q.remove();
