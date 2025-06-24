@@ -17,22 +17,34 @@ import java.util.*;
 
 class Solution {
 
-    List<Integer> lst = new ArrayList<>();  // Fixed typo
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer> lst = new ArrayList<>();
 
-    void inorder(TreeNode root) {
+        Stack<TreeNode> st = new Stack<>();
 
-        if (root == null) {
-            return;
+        if (root == null) return lst; 
+
+        st.push(root);
+        //left root right
+
+        while (!st.isEmpty()) {
+            TreeNode node = st.peek();
+
+            if (node.left != null) {
+                st.push(node.left);
+                node.left=null;
+                continue;
+            }
+
+            lst.add(st.pop().val);
+
+            if (node.right != null) {
+                st.push(node.right);
+            }
+
+            
         }
 
-       
-        inorder(root.left);
-        lst.add(root.val);  
-        inorder(root.right);
-    }
-
-    public List<Integer> inorderTraversal(TreeNode root) {
-        inorder(root);
         return lst;
     }
 }
