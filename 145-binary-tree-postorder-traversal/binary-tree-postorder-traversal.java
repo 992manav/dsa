@@ -6,30 +6,29 @@ class Solution {
 
         if (root == null) return lst;
 
-        Stack<TreeNode> st = new Stack<>();
+        Stack<TreeNode> st1 = new Stack<>();
+        Stack<TreeNode> st2 = new Stack<>();
 
-        st.push(root);
-
-        while (!st.isEmpty()) {
-            TreeNode node = st.peek();
+        st1.push(root);
+        // left right node -> ulata Node right left
+        while (!st1.isEmpty()) {
+            TreeNode node = st1.pop();
+            st2.push(node);
 
             if (node.left != null) {
-                st.push(node.left);
-                node.left = null;
-                continue;
+                st1.push(node.left);
             }
 
-            // jeno left nathi
-
+            
             if (node.right != null) {
-                st.push(node.right);
-                node.right = null;
-                continue;
+                st1.push(node.right);
             }
 
-            // jeno right nathi
 
-            lst.add(st.pop().val);
+        }
+
+        while (!st2.isEmpty()) {
+            lst.add(st2.pop().val);
         }
 
         return lst;
