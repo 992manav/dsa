@@ -84,13 +84,18 @@ class Solution {
         List<List<Integer>> final_lst = new ArrayList<>();
 
         for (Integer key1 : map.keySet()) {
-            TreeMap<Integer, List<Integer>> newMap = map.get(key1); // fixed: key1 instead of key
-            List<Integer> lst=new ArrayList<>();
-            for (Integer key2 : newMap.keySet()) {
-                lst.addAll(newMap.get(key2)); // fixed: result -> final_lst
-            }
-            final_lst.add(lst);
+                TreeMap<Integer, List<Integer>> newMap = map.get(key1);
+                List<Integer> lst = new ArrayList<>();
+
+                for (Integer key2 : newMap.keySet()) {
+                        List<Integer> temp = new ArrayList<>(newMap.get(key2));
+                        Collections.sort(temp);
+                        lst.addAll(temp);
+                }
+
+                final_lst.add(lst);
         }
+
 
         return final_lst;
     }
