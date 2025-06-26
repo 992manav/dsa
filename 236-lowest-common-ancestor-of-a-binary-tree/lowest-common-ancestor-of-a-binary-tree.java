@@ -9,46 +9,64 @@
  */
 class Solution {
 
-    List<TreeNode> lst1 = new ArrayList<>();
-    List<TreeNode> lst2 = new ArrayList<>();
-    
-    boolean found = false; // shared flag
+    List<TreeNode> lst1 = new ArrayList<>(); 
+    List<TreeNode> lst2 = new ArrayList<>(); 
 
-    TreeNode target; // shared target node
+    boolean flag = false;
+    boolean flag2 = false;  // FIXED: typo "boolen" to "boolean"
+    TreeNode p, q; 
 
-    // This function finds path to target and stores it in lst1 or lst2 based on use
-    void path(TreeNode root, List<TreeNode> lst) {
-        if (root == null || found) return;
-
-        lst.add(root);
-
-        if (root == target) {
-            found = true;
+    void path(TreeNode root) {
+        if (root == null) {
             return;
         }
 
-        path(root.left, lst);
-        path(root.right, lst);
+        if (!flag) {
+            lst1.add(root);
+            
+            if (root == q) {
+                flag = true;
+                flag2 = true;
+                lst2 = new ArrayList<>(lst1); 
+            }
 
-        if (!found) {
-            lst.remove(lst.size() - 1); // backtrack if not found
+            if (root == p) {
+                flag = true;   
+                lst2 = new ArrayList<>(lst1);
+            }
+
+        } else {
+            lst2.add(root);
+
+            if (flag2) {  // q was found first
+                if (root == p) return;
+            } else {      // p was found first
+                if (root == q) return;
+            }
+        }
+
+        path(root.left);
+        path(root.right);
+
+        if (!flag) {
+            lst1.remove(lst1.size() - 1);
+        } else {
+            // Only remove if p or q not found yet after flag
+            if ((flag2 && lst2.get(lst2.size() - 1) != p) || (!flag2 && lst2.get(lst2.size() - 1) != q)) {
+                lst2.remove(lst2.size() - 1);
+            }
         }
     }
 
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        // Find path to p
-        this.found = false;
-        this.target = p;
-        path(root, lst1);
+        this.p = p;
+        this.q = q;
 
-        // Find path to q
-        this.found = false;
-        this.target = q;
-        path(root, lst2);
+        path(root);
 
-        // Compare both paths
-        TreeNode lca = null;
         int i = 0;
+        TreeNode lca = null;
+
         while (i < lst1.size() && i < lst2.size()) {
             if (lst1.get(i) == lst2.get(i)) {
                 lca = lst1.get(i);
