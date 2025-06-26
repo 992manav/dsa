@@ -25,7 +25,7 @@ class Solution {
 
             while (len > 0) {
                 if (len == 1) {
-                    Pair p = dq.poll(); // safer than remove
+                    Pair p = dq.poll();
                     if (p.party != 'r') return false;
 
                     if (p.node.left != null)
@@ -33,41 +33,30 @@ class Solution {
                     if (p.node.right != null)
                         dq.addLast(new Pair(p.node.right, 1, 'R'));
 
-                    len--;
-                    continue;
+                    break; // no need to decrement and continue
                 }
 
                 Pair first = dq.pollFirst();
                 Pair last = dq.pollLast();
                 len -= 2;
 
-                // Check symmetry conditions
                 if (first.party != 'L' || last.party != 'R' ||
-                        first.dir == last.dir || first.node.val != last.node.val) {
-                    // Uncomment if debugging
-                    /*
-                    System.out.println(first.node.val);
-                    System.out.println(last.node.val);
-                    System.out.println(first.dir);
-                    System.out.println(last.dir);
-                    System.out.println(first.party);
-                    System.out.println(last.party);
-                    */
+                    first.dir == last.dir || first.node.val != last.node.val) {
                     return false;
                 }
 
-                // Compare left of first vs right of last
                 if ((first.node.left == null) != (last.node.right == null)) return false;
-                if (first.node.left != null) q.add(new Pair(first.node.left, -1, 'L'));
+                if (first.node.left != null) q.addLast(new Pair(first.node.left, -1, 'L'));
                 if (last.node.right != null) st.push(new Pair(last.node.right, 1, 'R'));
 
-                // Compare right of first vs left of last
                 if ((first.node.right == null) != (last.node.left == null)) return false;
-                if (first.node.right != null) q.add(new Pair(first.node.right, 1, 'L'));
+                if (first.node.right != null) q.addLast(new Pair(first.node.right, 1, 'L'));
                 if (last.node.left != null) st.push(new Pair(last.node.left, -1, 'R'));
             }
 
-            while (!q.isEmpty()) dq.addLast(q.poll());
+            dq.addAll(q);
+            q.clear();
+
             while (!st.isEmpty()) dq.addLast(st.pop());
         }
 
