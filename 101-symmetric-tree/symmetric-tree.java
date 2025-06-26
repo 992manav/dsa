@@ -33,30 +33,27 @@ class Solution {
                     if (p.node.right != null)
                         dq.addLast(new Pair(p.node.right, 1, 'R'));
 
-                    break; // no need to decrement and continue
+                    len--;
+                    continue;
                 }
 
                 Pair first = dq.pollFirst();
                 Pair last = dq.pollLast();
                 len -= 2;
 
-                if (first.party != 'L' || last.party != 'R' ||
-                    first.dir == last.dir || first.node.val != last.node.val) {
+                if (first.party != 'L' || last.party != 'R' || first.node.val != last.node.val)
                     return false;
-                }
 
                 if ((first.node.left == null) != (last.node.right == null)) return false;
-                if (first.node.left != null) q.addLast(new Pair(first.node.left, -1, 'L'));
+                if (first.node.left != null) q.add(new Pair(first.node.left, -1, 'L'));
                 if (last.node.right != null) st.push(new Pair(last.node.right, 1, 'R'));
 
                 if ((first.node.right == null) != (last.node.left == null)) return false;
-                if (first.node.right != null) q.addLast(new Pair(first.node.right, 1, 'L'));
+                if (first.node.right != null) q.add(new Pair(first.node.right, 1, 'L'));
                 if (last.node.left != null) st.push(new Pair(last.node.left, -1, 'R'));
             }
 
-            dq.addAll(q);
-            q.clear();
-
+            while (!q.isEmpty()) dq.addLast(q.poll());
             while (!st.isEmpty()) dq.addLast(st.pop());
         }
 
