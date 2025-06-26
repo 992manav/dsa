@@ -1,48 +1,53 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class FoundException extends RuntimeException {}  // Custom exception for early exit
+
 class Solution {
 
-    List<TreeNode> lst1 = new ArrayList<>(); 
-    List<TreeNode> lst2 = new ArrayList<>(); 
+    List<TreeNode> lst1 = new ArrayList<>();
+    List<TreeNode> lst2 = new ArrayList<>();
+    TreeNode p, q;
 
-    boolean flag = false;
-    boolean flag2 = false; 
-    TreeNode p, q; 
+    void path(TreeNode root, TreeNode target, List<TreeNode> pathList) {
+        if (root == null) return;
 
-    void path(TreeNode root) {
-        if (root == null || (flag && (!flag2 && lst2.get(lst2.size() - 1) == q) || (flag2 && lst2.get(lst2.size() - 1) == p))) {
-            return;
+        pathList.add(root);
+
+        if (root == target) {
+            throw new FoundException();  // Early exit when target found
         }
 
-        if (!flag) {
-            lst1.add(root);
-            if (root == p || root == q) {
-                flag = true;
-                flag2 = (root == q);
-                lst2 = new ArrayList<>(lst1);
-            }
-        } else {
-            lst2.add(root);
-        }
+        path(root.left, target, pathList);
+        path(root.right, target, pathList);
 
-        path(root.left);
-        path(root.right);
-
-        if (!flag) {
-            lst1.remove(lst1.size() - 1);
-        } else {
-            if ((flag2 && lst2.get(lst2.size() - 1) != p) || (!flag2 && lst2.get(lst2.size() - 1) != q)) {
-                lst2.remove(lst2.size() - 1);
-            }
-        }
+        pathList.remove(pathList.size() - 1); // backtrack
     }
 
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         this.p = p;
         this.q = q;
 
-        path(root);
+        try {
+            path(root, p, lst1);
+        } catch (FoundException e) {
+            // path to p found and stored in lst1
+        }
 
-        int i = 0;
+        try {
+            path(root, q, lst2);
+        } catch (FoundException e) {
+            // path to q found and stored in lst2
+        }
+
         TreeNode lca = null;
+        int i = 0;
 
         while (i < lst1.size() && i < lst2.size()) {
             if (lst1.get(i) == lst2.get(i)) {
