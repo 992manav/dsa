@@ -1,48 +1,26 @@
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode(int x) { val = x; }
- * }
- */
 class Solution {
 
     List<TreeNode> lst1 = new ArrayList<>(); 
     List<TreeNode> lst2 = new ArrayList<>(); 
 
     boolean flag = false;
-    boolean flag2 = false;  // FIXED: typo "boolen" to "boolean"
+    boolean flag2 = false; 
     TreeNode p, q; 
 
     void path(TreeNode root) {
-        if (root == null) {
+        if (root == null || (flag && (!flag2 && lst2.get(lst2.size() - 1) == q) || (flag2 && lst2.get(lst2.size() - 1) == p))) {
             return;
         }
 
         if (!flag) {
             lst1.add(root);
-            
-            if (root == q) {
+            if (root == p || root == q) {
                 flag = true;
-                flag2 = true;
-                lst2 = new ArrayList<>(lst1); 
-            }
-
-            if (root == p) {
-                flag = true;   
+                flag2 = (root == q);
                 lst2 = new ArrayList<>(lst1);
             }
-
         } else {
             lst2.add(root);
-
-            if (flag2) {  // q was found first
-                if (root == p) return;
-            } else {      // p was found first
-                if (root == q) return;
-            }
         }
 
         path(root.left);
@@ -51,7 +29,6 @@ class Solution {
         if (!flag) {
             lst1.remove(lst1.size() - 1);
         } else {
-            // Only remove if p or q not found yet after flag
             if ((flag2 && lst2.get(lst2.size() - 1) != p) || (!flag2 && lst2.get(lst2.size() - 1) != q)) {
                 lst2.remove(lst2.size() - 1);
             }
