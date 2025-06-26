@@ -17,15 +17,15 @@ class Solution {
         Deque<Pair> dq = new ArrayDeque<>();
         dq.add(new Pair(root, 0, 'r'));
 
-        Stack<Pair> st = new Stack<>();
-        Queue<Pair> q = new LinkedList<>();
+        Deque<Pair> st = new ArrayDeque<>();
+        Deque<Pair> q = new ArrayDeque<>();
 
         while (!dq.isEmpty()) {
             int len = dq.size();
 
             while (len > 0) {
                 if (len == 1) {
-                    Pair p = dq.remove();
+                    Pair p = dq.poll(); // safer than remove
                     if (p.party != 'r') return false;
 
                     if (p.node.left != null)
@@ -37,53 +37,38 @@ class Solution {
                     continue;
                 }
 
-                Pair first = dq.removeFirst();
-                Pair last = dq.removeLast();
+                Pair first = dq.pollFirst();
+                Pair last = dq.pollLast();
                 len -= 2;
 
-                // Check symmetry
+                // Check symmetry conditions
                 if (first.party != 'L' || last.party != 'R' ||
                         first.dir == last.dir || first.node.val != last.node.val) {
+                    // Uncomment if debugging
+                    /*
                     System.out.println(first.node.val);
                     System.out.println(last.node.val);
                     System.out.println(first.dir);
                     System.out.println(last.dir);
                     System.out.println(first.party);
                     System.out.println(last.party);
+                    */
                     return false;
                 }
 
-                // Left child of first, right child of last
-                if ((first.node.left == null) != (last.node.right == null)) {
-                    return false;
-                }
-                if (first.node.left != null) {
-                    q.add(new Pair(first.node.left, -1, 'L'));
-                }
-                if (last.node.right != null) {
-                    st.push(new Pair(last.node.right, 1, 'R'));
-                }
+                // Compare left of first vs right of last
+                if ((first.node.left == null) != (last.node.right == null)) return false;
+                if (first.node.left != null) q.add(new Pair(first.node.left, -1, 'L'));
+                if (last.node.right != null) st.push(new Pair(last.node.right, 1, 'R'));
 
-                // Right child of first, left child of last
-                if ((first.node.right == null) != (last.node.left == null)) {
-                    return false;
-                }
-                if (first.node.right != null) {
-                    q.add(new Pair(first.node.right, 1, 'L'));
-                }
-                if (last.node.left != null) {
-                    st.push(new Pair(last.node.left, -1, 'R'));
-                }
+                // Compare right of first vs left of last
+                if ((first.node.right == null) != (last.node.left == null)) return false;
+                if (first.node.right != null) q.add(new Pair(first.node.right, 1, 'L'));
+                if (last.node.left != null) st.push(new Pair(last.node.left, -1, 'R'));
             }
 
-            // ✅ Fixed this line
-            while (!q.isEmpty()) {
-                dq.addLast(q.remove());
-            }
-
-            while (!st.isEmpty()) {
-                dq.addLast(st.pop());
-            }
+            while (!q.isEmpty()) dq.addLast(q.poll());
+            while (!st.isEmpty()) dq.addLast(st.pop());
         }
 
         return true;
