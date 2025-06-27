@@ -1,43 +1,39 @@
 class Solution {
-    class Pair {
-        TreeNode node;
-        int index;
 
-        Pair(TreeNode n, int idx) {
-            node = n;
-            index = idx;
+    void travel(TreeNode root, long index, int level, List<Long> leftMost, List<Long> rightMost) {
+        if (root == null) return;
+
+        // Leftmost check
+        if (leftMost.size() <= level) {
+            leftMost.add(index);
         }
+
+        // Rightmost check
+        if (rightMost.size() <= level) {
+            rightMost.add(index);
+        } else {
+            if (rightMost.get(level) < index) {
+                rightMost.set(level, index);
+            }
+        }
+
+        travel(root.left, 2L * index, level + 1, leftMost, rightMost);
+        travel(root.right, 2L * index + 1, level + 1, leftMost, rightMost);
     }
 
     public int widthOfBinaryTree(TreeNode root) {
         if (root == null) return 0;
 
-        Queue<Pair> q = new LinkedList<>();
-        q.offer(new Pair(root, 0));
-        int maxWidth = 0;
+        List<Long> leftMost = new ArrayList<>();
+        List<Long> rightMost = new ArrayList<>();
 
-        while (!q.isEmpty()) {
-            int size = q.size();
-            int first = 0, last = 0;
+        travel(root, 1L, 0, leftMost, rightMost);
 
-            for (int i = 0; i < size; i++) {
-                Pair current = q.poll();
-                int idx=current.index;
-
-                if (i == 0) first = idx;
-                if (i == size - 1) last = idx;
-
-                if (current.node.left != null) {
-                    q.offer(new Pair(current.node.left, 2 * idx));
-                }
-                if (current.node.right != null) {
-                    q.offer(new Pair(current.node.right, 2 * idx + 1));
-                }
-            }
-
-            maxWidth = Math.max(maxWidth, last - first + 1);
+        long maxWidth = 0;
+        for (int i = 0; i < leftMost.size(); i++) {
+            maxWidth = Math.max(maxWidth, rightMost.get(i) - leftMost.get(i) + 1);
         }
 
-        return maxWidth;
+        return (int) maxWidth;
     }
 }
