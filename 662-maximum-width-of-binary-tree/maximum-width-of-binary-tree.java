@@ -18,12 +18,11 @@ class Solution {
 
         while (!q.isEmpty()) {
             int size = q.size();
-            int minIndex = q.peek().index; // normalize index to prevent overflow
             int first = 0, last = 0;
 
             for (int i = 0; i < size; i++) {
                 Pair current = q.poll();
-                int idx = current.index - minIndex;
+                int idx=current.index;
 
                 if (i == 0) first = idx;
                 if (i == size - 1) last = idx;
