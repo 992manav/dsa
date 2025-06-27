@@ -2,24 +2,26 @@ import java.util.*;
 
 class Solution {
     public void setZeroes(int[][] matrix) {
+        int m = matrix.length;
+        int n = matrix[0].length;
 
         Set<Integer> sti = new HashSet<>();
         Set<Integer> stj = new HashSet<>();
 
-        Map<Integer, Integer> map = new HashMap<>();
-        Map<Integer, Integer> map2 = new HashMap<>();
+        int[] rowFirstZero = new int[m]; // stores first zero column index per row
+        int[] colFirstZero = new int[n]; // stores first zero row index per column
 
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
+        Arrays.fill(rowFirstZero, n); // initialize with out-of-bound default
+        Arrays.fill(colFirstZero, m);
+
+        // Step 1: Identify zero locations
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
                 if (matrix[i][j] == 0) {
                     sti.add(i);
                     stj.add(j);
-                    if (!map.containsKey(i)) {
-                        map.put(i, j); // changed `add` to `put`
-                    }
-                    if (!map2.containsKey(j)) {
-                        map2.put(j, i); // changed `add` to `put`
-                    }
+                    rowFirstZero[i] = Math.min(rowFirstZero[i], j);
+                    colFirstZero[j] = Math.min(colFirstZero[j], i);
                 } else {
                     if (sti.contains(i) || stj.contains(j)) {
                         matrix[i][j] = 0;
@@ -28,14 +30,16 @@ class Solution {
             }
         }
 
+        // Step 2: Set zeros in affected rows
         for (int row : sti) {
-            for (int j = 0; j < map.get(row); j++) {
+            for (int j = 0; j < rowFirstZero[row]; j++) {
                 matrix[row][j] = 0;
             }
         }
 
+        // Step 3: Set zeros in affected columns
         for (int col : stj) {
-            for (int i = 0; i < map2.get(col); i++) {
+            for (int i = 0; i < colFirstZero[col]; i++) {
                 matrix[i][col] = 0;
             }
         }
