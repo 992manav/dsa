@@ -2,20 +2,17 @@ class Solution {
     public int jump(int[] nums) {
         int nextPos = nums.length - 1;
 
+        int[] a = new int[nums.length];
+        a[nums.length - 1] = 0; // fixed typo: 'legnth'
+
         for (int i = nums.length - 2; i >= 0; i--) { 
-            if (i + nums[i] >= nextPos) {
+             if (i + nums[i] >= nextPos) {
                 nextPos = i;
             }
 
             if (i == 0 && i + nums[i] < nextPos) {
                 return -1; // changed 'false' to -1 since method returns int
             }
-        } 
-
-        int[] a = new int[nums.length];
-        a[nums.length - 1] = 0; // fixed typo: 'legnth'
-
-        for (int i = nums.length - 2; i >= 0; i--) { 
             int kitnamax = nums[i];
 
             int min = Integer.MAX_VALUE; // fixed: 'Intger' → 'Integer'
