@@ -1,89 +1,53 @@
-/**
- * Definition for a binary tree node.
- * public class TreeNode {
- *     int val;
- *     TreeNode left;
- *     TreeNode right;
- *     TreeNode() {}
- *     TreeNode(int val) { this.val = val; }
- *     TreeNode(int val, TreeNode left, TreeNode right) {
- *         this.val = val;
- *         this.left = left;
- *         this.right = right;
- *     }
- * }
- */
-import java.util.*;
-
 class Solution {
 
-    Map<TreeNode, TreeNode> map = new HashMap<>();
-    TreeNode target;
-    int start;
+    int below_max = 0;
+    int depth_target = 0;
+    int target_val; // store target value
+    int max_path_sum = 0;
 
-    // DFS: Build parent map and locate target node
-    void dfs(TreeNode parent, TreeNode child) {
-        if (child == null) return;
-
-        if (child.val == start) {
-            target = child;
+    int height(TreeNode root, int level) {
+        if (root == null) {
+            return 0;
         }
 
-        map.put(child, parent);
+        int left = height(root.left, level + 1);
+        int right = height(root.right, level + 1);
 
-        dfs(child, child.left);
-        dfs(child, child.right);
-    }
-
-    // BFS: Spread infection and count time
-    int bfs(TreeNode root, Queue<TreeNode> q) {
-        q.add(root);
-        Set<TreeNode> visited = new HashSet<>();
-        visited.add(root);
-
-        int time = 0;
-
-        while (!q.isEmpty()) {
-            int len = q.size();
-
-            for (int i = 0; i < len; i++) {
-                TreeNode node = q.remove();
-
-                if (map.get(node) != null && !visited.contains(map.get(node))) {
-                    q.add(map.get(node));
-                    visited.add(map.get(node));
-                }
-
-                if (node.left != null && !visited.contains(node.left)) {
-                    q.add(node.left);
-                    visited.add(node.left);
-                }
-
-                if (node.right != null && !visited.contains(node.right)) {
-                    q.add(node.right);
-                    visited.add(node.right);
-                }
-            }
-
-            if (!q.isEmpty()) {
-                time++;
-            }
+        if (root.val == target_val) {
+            below_max = Math.max(left, right);
+            depth_target = level;
+            return -1; // marker for found target node
         }
 
-        return time;
+        // Only calculate max_path_sum if we haven’t hit the target yet
+        max_path_sum = Math.max(max_path_sum, Math.max(left, right) + depth_target - level);
+
+        System.out.println("max_path_sum: " + max_path_sum);
+        System.out.println("left: " + left + ", right: " + right + ", level: " + level);
+
+        if (left == -1 || right == -1) {
+            return -1;
+        }
+
+        return Math.max(left, right) + 1;
     }
 
     public int amountOfTime(TreeNode root, int start) {
-        // Edge Case 1: Tree is empty
+        // Edge case 1: empty tree
         if (root == null) return 0;
 
-        // Edge Case 2: Only one node
-        if (root.left == null && root.right == null) return 0;
+        // Edge case 2: only one node in the tree (root is the target)
+        if (root.val == start && root.left == null && root.right == null) return 0;
 
-        this.start = start;
-        dfs(null, root);
+        target_val = start;
+        height(root, 0); // We don't need the return value, logic is done inside
 
-        Queue<TreeNode> q = new LinkedList<>();
-        return bfs(target, q);
+        System.out.println("Final max_path_sum: " + max_path_sum);
+
+        if (max_path_sum == 0) {
+            return Math.max(below_max, depth_target);
+        }
+
+        return Math.max(below_max, max_path_sum);
     }
 }
