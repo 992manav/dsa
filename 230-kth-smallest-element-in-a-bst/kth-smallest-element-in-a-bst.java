@@ -1,30 +1,27 @@
 class Solution {
-
-    boolean found = false;
     int k;
+    int result = -1;
+    boolean found = false;
 
-    int inorder(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
+    void inorder(TreeNode root) {
+        if (root == null) return;
 
-        int left = inorder(root.left);
-        if (found) return left;
+        inorder(root.left);
+        if (found) return;
 
         k--;
         if (k == 0) {
             found = true;
-            return root.val;
+            result = root.val;
+            return;
         }
 
-        int right = inorder(root.right);
-        if (found) return right;
-
-        return 0; // default return if not found
+        inorder(root.right);
     }
 
     public int kthSmallest(TreeNode root, int k) {
-        this.k = k; // assign k to instance variable
-        return inorder(root);
+        this.k = k;
+        inorder(root);
+        return result;
     }
 }
