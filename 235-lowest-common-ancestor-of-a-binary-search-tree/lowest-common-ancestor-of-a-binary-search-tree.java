@@ -1,7 +1,5 @@
 class Solution {
-
     TreeNode lcaNode;
-
     boolean findLCA(TreeNode node, int minBound, int maxBound, int small, int large) {
         if (node == null) return false;
 
@@ -19,13 +17,8 @@ class Solution {
                     return true;
                 }
             } else return true;
-        } else { // val < small
-            if (!findLCA(node.right, val, maxBound, small, large)) {
-                if (large >= minBound && large < val) {
-                    lcaNode = node;
-                    return true;
-                }
-            } else return true;
+        } else { 
+                findLCA(node.right, val, maxBound, small, large);
         }
 
         return false;
