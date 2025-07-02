@@ -23,23 +23,34 @@ import java.util.*;
 class Solution {
 
     public List<Integer> preorderTraversal(TreeNode root) {
+        TreeNode node = root;
 
         List<Integer> lst = new ArrayList<>();
+        while (node != null) {
+            
+            
+            TreeNode temp = node.left;
+           
+            if (temp != null) {
+                while (temp.right != null && temp.right != node) {
+                    temp = temp.right;
+                }
 
-        Stack<TreeNode> st = new Stack<>();
-
-        if (root == null) return lst; // To avoid NullPointerException
-
-        st.push(root);
-
-        while (!st.isEmpty()) {
-            TreeNode node = st.pop();
-            lst.add(node.val); 
-
-            if (node.right != null) st.push(node.right); 
-            if (node.left != null) st.push(node.left);
+                if (temp.right == null) {
+                    lst.add(node.val);
+                    temp.right = node;
+                    node = node.left;
+                } else {
+                    temp.right = null;
+                    node = node.right;
+                }
+            } else {
+                lst.add(node.val);
+                node = node.right;
+            }
         }
 
         return lst;
+
     }
 }
