@@ -18,7 +18,9 @@ class Solution {
                 }
             } else return true;
         } else { 
-                findLCA(node.right, val, maxBound, small, large);
+            if(findLCA(node.right, val, maxBound, small, large)){
+                return true;
+            }
         }
 
         return false;
