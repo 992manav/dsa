@@ -9,26 +9,20 @@ class Solution {
 
         if (rootVal == target) {
             if (target2 > left && target2 < right) {
-                result = root;
-                return true;
+                return (result = root) != null;
             }
         } else if (rootVal > target) {
-            boolean leftResult = check(root.left, left, rootVal, target, target2);
-
-            if (!leftResult) {
+            if (!check(root.left, left, rootVal, target, target2)) {
                 if (target2 >= rootVal && target2 < right) {
-                    result = root;
-                    return true;
+                    return (result = root) != null;
                 }
-            }
+            } else return true;
         } else {
-            boolean rightResult = check(root.right, rootVal, right, target, target2);
-            if (!rightResult) {
+            if (!check(root.right, rootVal, right, target, target2)) {
                 if (target2 >= left && target2 < rootVal) {
-                    result = root;
-                    return true;
+                    return (result = root) != null;
                 }
-            }
+            } else return true;
         }
 
         return false;
