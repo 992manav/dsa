@@ -1,46 +1,45 @@
 class Solution {
 
-    TreeNode result;
+    TreeNode lcaNode;
 
-    boolean check(TreeNode root, int left, int right, int target, int target2) {
-        if (root == null) return false;
+    boolean findLCA(TreeNode node, int minBound, int maxBound, int small, int large) {
+        if (node == null) return false;
 
-        int rootVal = root.val;
+        int val = node.val;
 
-        if (rootVal == target) {
-            if (target2 > left && target2 < right) {
-                result = root;
+        if (val == small) {
+            if (large > minBound && large < maxBound) {
+                lcaNode = node;
                 return true;
             }
-        } else if (rootVal > target) {
-            if (!check(root.left, left, rootVal, target, target2)) {
-                if (target2 >= rootVal && target2 < right) {
-                    result = root;
+        } else if (val > small) {
+            if (!findLCA(node.left, minBound, val, small, large)) {
+                if (large >= val && large < maxBound) {
+                    lcaNode = node;
                     return true;
                 }
-            } else {
-                return true;
-            }
-        } else {
-            if (!check(root.right, rootVal, right, target, target2)) {
-                if (target2 >= left && target2 < rootVal) {
-                    result = root;
+            } else return true;
+        } else { // val < small
+            if (!findLCA(node.right, val, maxBound, small, large)) {
+                if (large >= minBound && large < val) {
+                    lcaNode = node;
                     return true;
                 }
-            } else {
-                return true;
-            }
+            } else return true;
         }
 
         return false;
     }
 
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        int pVal = p.val;
-        int qVal = q.val;
+        int val1 = p.val;
+        int val2 = q.val;
 
-        check(root, Integer.MIN_VALUE, Integer.MAX_VALUE, Math.min(pVal, qVal), Math.max(pVal, qVal));
+        int small = Math.min(val1, val2);
+        int large = Math.max(val1, val2);
 
-        return result;
+        findLCA(root, Integer.MIN_VALUE, Integer.MAX_VALUE, small, large);
+
+        return lcaNode;
     }
 }
