@@ -13,34 +13,25 @@
  *     }
  * }
  */
-import java.util.Arrays;
-
 class Solution {
 
-    int search(int target, int[] a) {
-        for (int i = 0; i < a.length; i++) {
-            if (a[i] == target) {
-                return i;
-            }
+    int index = 0;  
+
+    private TreeNode buildTree(int[] preorder, int upperBound) {
+        if (index == preorder.length || preorder[index] > upperBound) {
+            return null;
         }
-        return -1;
-    }
 
-    TreeNode buildTree(int[] pre, int[] in, int left_bound, int right_bound, int index) {
-        if (left_bound > right_bound || index >= pre.length) return null;
+        int val = preorder[index++];
+        TreeNode root = new TreeNode(val);
 
-        TreeNode root = new TreeNode(pre[index]);
-        int inorder_index = search(root.val, in);
-
-        root.left = buildTree(pre, in, left_bound, inorder_index - 1, index + 1);
-        root.right = buildTree(pre, in, inorder_index + 1, right_bound, index + (inorder_index - left_bound) + 1);
+        root.left = buildTree(preorder, val);         // Left subtree: values < val
+        root.right = buildTree(preorder, upperBound); // Right subtree: values > val but < upperBound
 
         return root;
     }
 
     public TreeNode bstFromPreorder(int[] preorder) {
-        int[] inorder = Arrays.copyOf(preorder, preorder.length);
-        Arrays.sort(inorder);
-        return buildTree(preorder, inorder, 0, inorder.length - 1, 0);
+        return buildTree(preorder, Integer.MAX_VALUE);
     }
 }
