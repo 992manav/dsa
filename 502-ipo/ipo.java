@@ -1,9 +1,6 @@
 class Solution {
     public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
 
-        // jtlu w 6 ena thi sodho ke capital array ma je je w thi nano 6
-        // eno profit ni value jeni maximum hoy ene 
-
         TreeMap<Integer, List<Integer>> map = new TreeMap<>();
 
         for (int i = 0; i < profits.length; i++) {
@@ -11,27 +8,32 @@ class Solution {
         }
 
         while (k > 0) {
-
             boolean found = false;
-            for (Integer key : map.descendingKeySet()) {
-               
-                List<Integer> lst = map.get(key);
-                for (int i = 0; i < lst.size(); i++) {
-                    if (lst.get(i) <= w) {
-                        w += key;
-                        lst.remove(i);
+
+            // Iterate over profits in descending order
+            for (var entry : map.descendingMap().entrySet()) {
+                int profit = entry.getKey();
+                List<Integer> lst = entry.getValue();
+
+                // Use iterator for safe in-place removal
+                Iterator<Integer> itr = lst.iterator();
+                while (itr.hasNext()) {
+                    int cap = itr.next();
+                    if (cap <= w) {
+                        w += profit;
+                        itr.remove(); // safe remove while iterating
                         found = true;
                         break;
                     }
                 }
+
                 if (found) {
-                     k--;
+                    k--;
                     break;
                 }
             }
-            if(!found){
-                break;
-            }
+
+            if (!found) break;
         }
 
         return w;
