@@ -22,12 +22,13 @@ class Solution {
                 c2 = b.charAt(j);
             }
 
-            if (c1 == '0' && c2 == '0') {
+            if ((c1 ^ c2) == 0) {
                 sb.append((char)(carry + '0'));
-                carry = 0;
-            } else if (c1 == '1' && c2 == '1') {
-                sb.append((char)(carry + '0'));
-                carry = 1;
+                if (c1 == '0') {
+                    carry = 0;
+                } else {
+                    carry = 1;
+                }
             } else {
                 if (carry == 1) {
                     sb.append('0');
