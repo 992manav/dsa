@@ -3,34 +3,33 @@ import java.util.Arrays;
 class Solution {
     public void merge(int[] nums1, int m, int[] nums2, int n) {
 
-        for (int i = n - 1; i >= 0; i--) {
-            nums1[m + i] = nums2[i];
-        }
+        int[] a = new int[m + n];
 
-        int gap = (m + n) / 2;
-        int i, j;
+        int i = 0;
+        int j = 0;
+        int index = 0;
 
-        while (gap > 0) { 
-
-            i = 0;
-            j = i + gap;
-
-            while (j < m + n) {
-
-                if (nums1[i] > nums1[j]) {
-                    int temp = nums1[i];
-                    nums1[i] = nums1[j];
-                    nums1[j] = temp;
-                }
-
+        while (i < m && j < n) {
+            if (nums1[i] < nums2[j]) {
+                a[index] = nums1[i];
                 i++;
+            } else {
+                a[index] = nums2[j];
                 j++;
             }
+            index++; 
+        }
 
-            if (gap == 1)
-                gap = 0;
-            else
-                gap = (gap + 1) / 2; 
+      
+        while (i < m) {
+            a[index++] = nums1[i++];
+        }
+        while (j < n) {
+            a[index++] = nums2[j++];
+        }
+
+        for (int k = 0; k < a.length; k++) { 
+            nums1[k] = a[k];
         }
     }
 }
