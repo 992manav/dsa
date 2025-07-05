@@ -1,21 +1,19 @@
 public class Solution {
     public int[] arrayRankTransform(int[] arr) {
+        int n = arr.length;
+        int[] sorted = arr.clone();
 
-        Set<Integer> set = new HashSet<>();
-        for (int num : arr) {
-            set.add(num);
-        }
-
-        List<Integer> sorted = new ArrayList<>(set);
-        Collections.sort(sorted); // O(k log k)
+        Arrays.sort(sorted); // O(n log n)
 
         HashMap<Integer, Integer> map = new HashMap<>();
         int rank = 1;
         for (int num : sorted) {
-            map.put(num, rank++);
+            if (!map.containsKey(num)) {
+                map.put(num, rank++);
+            }
         }
 
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < n; i++) {
             arr[i] = map.get(arr[i]);
         }
 
