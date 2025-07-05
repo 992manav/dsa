@@ -1,22 +1,28 @@
-import java.util.*;
-
 class Solution {
 
-    static class Project {
+    class Project implements Comparable<Project> {
         int profit, capital;
+
         Project(int profit, int capital) {
             this.profit = profit;
             this.capital = capital;
+        }
+
+        @Override
+        public int compareTo(Project other) {
+            if (this.profit != other.profit) {
+                return other.profit - this.profit;     // Descending profit
+            } else {
+                return this.capital - other.capital;   // Ascending capital
+            }
         }
     }
 
     public int findMaximizedCapital(int k, int w, int[] profits, int[] capital) {
         int n = profits.length;
 
-        // Max-heap based on profit
-        PriorityQueue<Project> pq = new PriorityQueue<>((a, b) -> b.profit - a.profit);
+        PriorityQueue<Project> pq = new PriorityQueue<>();
 
-        // Add all projects into the priority queue
         for (int i = 0; i < n; i++) {
             pq.offer(new Project(profits[i], capital[i]));
         }
@@ -25,23 +31,21 @@ class Solution {
             boolean found = false;
             List<Project> temp = new ArrayList<>();
 
-            // Try to find the most profitable affordable project
             while (!pq.isEmpty()) {
                 Project curr = pq.poll();
                 if (curr.capital <= w) {
                     w += curr.profit;
-                    found = true;
                     k--;
+                    found = true;
                     break;
                 } else {
-                    temp.add(curr); // Not affordable yet
+                    temp.add(curr); // Can't afford yet, keep aside
                 }
             }
 
-            // Put back unchosen projects
-            pq.addAll(temp);
+            pq.addAll(temp); // Put skipped projects back
 
-            if (!found) break; // no affordable project found
+            if (!found) break; // No project affordable → stop
         }
 
         return w;
