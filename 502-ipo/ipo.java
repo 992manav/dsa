@@ -1,3 +1,5 @@
+import java.util.*;
+
 class Solution {
 
     class Project implements Comparable<Project> {
@@ -27,25 +29,28 @@ class Solution {
             pq.offer(new Project(profits[i], capital[i]));
         }
 
+        List<Project> lst = new ArrayList<>();
+
+        // Move all projects from priority queue to list (sorted by profit)
+        while (!pq.isEmpty()) {
+            Project p = pq.poll();
+            lst.add(p);
+        }
+
         while (k > 0) {
             boolean found = false;
-            List<Project> temp = new ArrayList<>();
 
-            while (!pq.isEmpty()) {
-                Project curr = pq.poll();
-                if (curr.capital <= w) {
-                    w += curr.profit;
-                    k--;
+            for (int i = 0; i < lst.size(); i++) {
+                if (lst.get(i).capital <= w) {
+                    w += lst.get(i).profit;
+                    lst.remove(i);  // Use the project once
                     found = true;
+                    k--;
                     break;
-                } else {
-                    temp.add(curr); // Can't afford yet, keep aside
                 }
             }
 
-            pq.addAll(temp); // Put skipped projects back
-
-            if (!found) break; // No project affordable → stop
+            if (!found) break; // No project can be done
         }
 
         return w;
