@@ -31,26 +31,28 @@ class Solution {
 
         List<Project> lst = new ArrayList<>();
 
-        // Move all projects from priority queue to list (sorted by profit)
+        // Pull from heap to list sorted by profit
         while (!pq.isEmpty()) {
-            Project p = pq.poll();
-            lst.add(p);
+            lst.add(pq.poll());
         }
 
         while (k > 0) {
             boolean found = false;
 
-            for (int i = 0; i < lst.size(); i++) {
-                if (lst.get(i).capital <= w) {
-                    w += lst.get(i).profit;
-                    lst.remove(i);  // Use the project once
-                    found = true;
+            Iterator<Project> it = lst.iterator();
+
+            while (it.hasNext()) {
+                Project p = it.next();
+                if (p.capital <= w) {
+                    w += p.profit;
+                    it.remove();  // Safe and fast removal
                     k--;
+                    found = true;
                     break;
                 }
             }
 
-            if (!found) break; // No project can be done
+            if (!found) break;
         }
 
         return w;
