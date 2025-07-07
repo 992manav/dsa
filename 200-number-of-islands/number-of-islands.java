@@ -11,9 +11,11 @@ class Pair {
 class Solution {
 
     void bfs(char[][] grid, Queue<Pair> q, int row, int col) {
-        q.clear(); // make sure the queue is empty
         q.offer(new Pair(row, col));
-        grid[row][col] = '0'; // mark as visited immediately
+        grid[row][col] = '0'; // mark as visited
+
+        int n = grid.length;
+        int m = grid[0].length;
 
         while (!q.isEmpty()) {
             Pair p = q.poll();
@@ -27,7 +29,7 @@ class Solution {
             }
 
             // down
-            if (r + 1 < grid.length && grid[r + 1][c] == '1') {
+            if (r + 1 < n && grid[r + 1][c] == '1') {
                 grid[r + 1][c] = '0';
                 q.offer(new Pair(r + 1, c));
             }
@@ -39,7 +41,7 @@ class Solution {
             }
 
             // right
-            if (c + 1 < grid[0].length && grid[r][c + 1] == '1') {
+            if (c + 1 < m && grid[r][c + 1] == '1') {
                 grid[r][c + 1] = '0';
                 q.offer(new Pair(r, c + 1));
             }
@@ -49,9 +51,11 @@ class Solution {
     public int numIslands(char[][] grid) {
         Queue<Pair> q = new LinkedList<>();
         int count = 0;
+        int n = grid.length;
+        int m = grid[0].length;
 
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[i].length; j++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
                 if (grid[i][j] == '1') {
                     count++;
                     bfs(grid, q, i, j);
