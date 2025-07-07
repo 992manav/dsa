@@ -11,23 +11,37 @@ class Pair {
 class Solution {
 
     void bfs(char[][] grid, Queue<Pair> q, int row, int col) {
+        q.clear(); // make sure the queue is empty
         q.offer(new Pair(row, col));
-        grid[row][col] = '0'; 
-
-        int[] dx = {-1, 1, 0, 0};
-        int[] dy = {0, 0, -1, 1};
+        grid[row][col] = '0'; // mark as visited immediately
 
         while (!q.isEmpty()) {
             Pair p = q.poll();
+            int r = p.row;
+            int c = p.col;
 
-            for (int i = 0; i < 4; i++) {
-                int newRow = p.row + dx[i];
-                int newCol = p.col + dy[i];
+            // up
+            if (r - 1 >= 0 && grid[r - 1][c] == '1') {
+                grid[r - 1][c] = '0';
+                q.offer(new Pair(r - 1, c));
+            }
 
-                if (newRow >= 0 && newRow < grid.length && newCol >= 0 && newCol < grid[0].length && grid[newRow][newCol] == '1') {
-                    grid[newRow][newCol] = '0'; 
-                    q.add(new Pair(newRow, newCol));
-                }
+            // down
+            if (r + 1 < grid.length && grid[r + 1][c] == '1') {
+                grid[r + 1][c] = '0';
+                q.offer(new Pair(r + 1, c));
+            }
+
+            // left
+            if (c - 1 >= 0 && grid[r][c - 1] == '1') {
+                grid[r][c - 1] = '0';
+                q.offer(new Pair(r, c - 1));
+            }
+
+            // right
+            if (c + 1 < grid[0].length && grid[r][c + 1] == '1') {
+                grid[r][c + 1] = '0';
+                q.offer(new Pair(r, c + 1));
             }
         }
     }
