@@ -63,7 +63,7 @@ class Solution {
         for (int i = 0; i < queries.length; i++) {
             int check = queries[i][0];
             int val = queries[i][1] - 1; // 1-based to 0-based
-            int p = find_parent(val);
+            int p = parent[val];
 
             if (check == 2) {
                 offline[val] = true;
