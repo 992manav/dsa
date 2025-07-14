@@ -1,18 +1,18 @@
+import java.util.*;
+
 class Solution {
 
-    boolean dfs(int[][] graph, boolean[] visited, boolean[] inPath, int node) {
+    boolean dfs(List<List<Integer>> graph, boolean[] visited, boolean[] inPath, int node) {
         visited[node] = true;
         inPath[node] = true;
 
-        for (int j = 0; j < graph[node].length; j++) {
-            if (graph[node][j] == 1) {
-                if (!visited[j]) {
-                    if (!dfs(graph, visited, inPath, j)) {
-                        return false;
-                    }
-                } else if (inPath[j]) {
-                    return false; // Cycle found
+        for (int neighbor : graph.get(node)) {
+            if (!visited[neighbor]) {
+                if (!dfs(graph, visited, inPath, neighbor)) {
+                    return false;
                 }
+            } else if (inPath[neighbor]) {
+                return false; // Cycle detected
             }
         }
 
@@ -20,18 +20,15 @@ class Solution {
         return true;
     }
 
-    public boolean canFinish(int n, int[][] edge) {
-        int[][] graph = new int[n][n];
+    public boolean canFinish(int n, int[][] prerequisites) {
+        // Create adjacency list
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            graph.add(new ArrayList<>());
+        }
 
-        for (int i = 0; i < edge.length; i++) {
-            int from = edge[i][1];
-            int to = edge[i][0];
-
-            // Avoid redundant reverse edge
-            if (graph[to][from] == 1) {
-                return false;
-            }
-            graph[from][to] = 1;
+        for (int[] edge : prerequisites) {
+            graph.get(edge[1]).add(edge[0]); // edge[1] → edge[0]
         }
 
         boolean[] visited = new boolean[n];
