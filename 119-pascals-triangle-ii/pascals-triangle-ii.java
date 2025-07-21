@@ -1,22 +1,16 @@
 import java.util.*;
 
 class Solution {
-    public List<Integer> getRow(int rowNum) {
-        List<Integer> prev = new ArrayList<>();
-        prev.add(1);
+    public List<Integer> getRow(int rowIndex) {
+        List<Integer> row = new ArrayList<>();
+        long val = 1;
+        row.add((int) val); 
 
-        for (int row = 1; row <= rowNum; row++) {
-            List<Integer> curr = new ArrayList<>();
-            for (int j = 0; j < row + 1; j++) {
-                if (j == 0 || j == row) {
-                    curr.add(1);
-                } else {
-                    curr.add(prev.get(j - 1) + prev.get(j)); 
-                }
-            }
-            prev = curr;
+        for (int col = 0; col < rowIndex; col++) {
+            val = val * (rowIndex - col) / (col + 1);
+            row.add((int) val);
         }
 
-        return prev;
+        return row;
     }
 }
