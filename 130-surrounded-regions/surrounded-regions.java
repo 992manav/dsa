@@ -1,51 +1,37 @@
 import java.util.*;
 
-class Pair {
-    int row;
-    int col;
-
-    Pair(int row, int col) {
-        this.row = row;
-        this.col = col;
-    }
-}
-
 class Solution {
 
-    List<List<Pair>> final_lst = new ArrayList<>();
+    List<int[]> final_lst = new ArrayList<>();
     char[][] board;
     int rows, cols;
 
     void bfs(int i, int j) {
         board[i][j] = 'X';
-        Queue<Pair> q = new ArrayDeque<>();
-        List<Pair> lst = new ArrayList<>();
-        Pair start = new Pair(i, j);
-        q.add(start);
-        lst.add(start);
+        Deque<int[]> q = new ArrayDeque<>();
+        List<int[]> lst = new ArrayList<>();
+        q.add(new int[]{i, j});
+        lst.add(new int[]{i, j});
 
         boolean flag = false;
 
-        int[] dir = {1, -1, 0, 0};
-        int[] dic = {0, 0, 1, -1};
-        int dLen = dir.length;
+        int[][] directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
         while (!q.isEmpty()) {
-            Pair p = q.remove();
-            int r = p.row;
-            int c = p.col;
+            int[] p = q.remove();
+            int r = p[0], c = p[1];
 
             if (!flag && isEdge(r, c)) {
                 flag = true;
             }
 
-            for (int k = 0; k < dLen; k++) {
-                int nr = r + dir[k];
-                int nc = c + dic[k];
+            for (int[] d : directions) {
+                int nr = r + d[0];
+                int nc = c + d[1];
 
                 if (nr >= 0 && nc >= 0 && nr < rows && nc < cols && board[nr][nc] == 'O') {
                     board[nr][nc] = 'X';
-                    Pair next = new Pair(nr, nc);
+                    int[] next = new int[]{nr, nc};
                     lst.add(next);
                     q.add(next);
                 }
@@ -53,7 +39,7 @@ class Solution {
         }
 
         if (flag) {
-            final_lst.add(lst);
+            final_lst.addAll(lst);
         }
     }
 
@@ -63,8 +49,8 @@ class Solution {
 
     public void solve(char[][] board) {
         this.board = board;
-        rows = board.length;
-        cols = board[0].length;
+        this.rows = board.length;
+        this.cols = board[0].length;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -74,10 +60,8 @@ class Solution {
             }
         }
 
-        for (List<Pair> list : final_lst) {
-            for (Pair p : list) {
-                board[p.row][p.col] = 'O';
-            }
+        for (int[] p : final_lst) {
+            board[p[0]][p[1]] = 'O';
         }
     }
 }
