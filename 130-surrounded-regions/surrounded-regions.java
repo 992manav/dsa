@@ -18,7 +18,7 @@ class Solution {
 
     void bfs(int i, int j) {
         board[i][j] = 'X';
-        Queue<Pair> q = new LinkedList<>();
+        Queue<Pair> q = new ArrayDeque<>();
         List<Pair> lst = new ArrayList<>();
         Pair start = new Pair(i, j);
         q.add(start);
