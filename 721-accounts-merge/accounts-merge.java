@@ -4,9 +4,7 @@ class Solution {
     int[] rank;
 
     public int find_parent(int p) {
-        if (parent[p] == p) {
-            return p;
-        }
+        if (parent[p] == p) return p;
         return parent[p] = find_parent(parent[p]);
     }
 
@@ -25,34 +23,32 @@ class Solution {
     }
 
     public List<List<String>> accountsMerge(List<List<String>> acc) {
-        parent = new int[acc.size()];
-        rank = new int[acc.size()];
+        int n = acc.size();
+        parent = new int[n];
+        rank = new int[n];
 
-        for (int i = 0; i < parent.length; i++) {
+        for (int i = 0; i < n; i++) {
             parent[i] = i;
             rank[i] = 0;
         }
 
-        for (int i = 0; i < acc.size(); i++) {
-            int parent1 = i;
-            for (int parent2 = i + 1; parent2 < acc.size(); parent2++) {
-                if (acc.get(parent1).get(0).equals(acc.get(parent2).get(0))) {
-                    int purvaj1 = find_parent(parent1);
-                    int purvaj2 = find_parent(parent2);
-                    if (purvaj1 != purvaj2) {
-                        boolean flag = false;
-                        for (int j = 1; j < acc.get(parent1).size(); j++) {
-                            for (int k = 1; k < acc.get(parent2).size(); k++) {
-                                if (acc.get(parent1).get(j).equals(acc.get(parent2).get(k))) {
-                                    unionByRank(purvaj1, purvaj2);
-                                    flag = true;
-                                    break;
-                                }
-                            }
-                            if (flag) {
-                                break;
-                            }
-                        }
+        for (int i = 0; i < n; i++) {
+            String name1 = acc.get(i).get(0);
+            for (int j = i + 1; j < n; j++) {
+                if (!acc.get(j).get(0).equals(name1)) continue;
+
+                int p1 = find_parent(i);
+                int p2 = find_parent(j);
+                if (p1 == p2) continue;
+
+                List<String> list1 = acc.get(i);
+                List<String> list2 = acc.get(j);
+
+                Set<String> set1 = new HashSet<>(list1.subList(1, list1.size()));
+                for (int k = 1; k < list2.size(); k++) {
+                    if (set1.contains(list2.get(k))) {
+                        unionByRank(p1, p2);
+                        break;
                     }
                 }
             }
@@ -60,7 +56,7 @@ class Solution {
 
         Map<Integer, List<Integer>> map = new HashMap<>();
 
-        for (int i = 0; i < parent.length; i++) {
+        for (int i = 0; i < n; i++) {
             int p = find_parent(i);
             map.putIfAbsent(p, new ArrayList<>());
             map.get(p).add(i);
@@ -70,19 +66,20 @@ class Solution {
 
         for (int key : map.keySet()) {
             List<String> lst = new ArrayList<>();
-            lst.add(acc.get(key).get(0));
+            List<Integer> indices = map.get(key);
+            lst.add(acc.get(indices.get(0)).get(0));
 
-            Set<String> emails = new HashSet<>();
-
-            for (int i : map.get(key)) {
-                for (int j = 1; j < acc.get(i).size(); j++) {
-                    emails.add(acc.get(i).get(j));
+            Set<String> emailSet = new HashSet<>();
+            for (int idx : indices) {
+                List<String> emails = acc.get(idx);
+                for (int j = 1; j < emails.size(); j++) {
+                    emailSet.add(emails.get(j));
                 }
             }
 
-            List<String> sortedEmails = new ArrayList<>(emails);
-            Collections.sort(sortedEmails);
-            lst.addAll(sortedEmails);
+            List<String> emailList = new ArrayList<>(emailSet);
+            Collections.sort(emailList);
+            lst.addAll(emailList);
 
             final_lst.add(lst);
         }
