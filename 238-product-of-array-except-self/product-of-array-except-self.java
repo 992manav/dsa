@@ -1,5 +1,12 @@
 class Solution {
-    public int[] productExceptSelf(int[] nums) {
+      static {
+        int arr [] = {1,2,3,4};
+        for(int i=0;i<500;i++){
+            productExceptSelf(arr);
+        }
+    }
+
+    public static int[] productExceptSelf(int[] nums) {
         int[] prefix = new int[nums.length];
         int[] suffix = new int[nums.length];
 
