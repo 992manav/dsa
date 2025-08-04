@@ -1,26 +1,29 @@
 class Solution {
     int max_area = 0;
     char[][] mat;
+    int[][] right;
 
-    int max_right(int r, int c) {
-        int right = 0;
-        for (int j = c; j < mat[0].length; j++) {
-            if (mat[r][j] == '1') {
-                right++;
-            } else {
-                break;
+    void precomputeRight() {
+        int rows = mat.length, cols = mat[0].length;
+        right = new int[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            int count = 0;
+            for (int j = cols - 1; j >= 0; j--) {
+                if (mat[i][j] == '1') {
+                    count++;
+                } else {
+                    count = 0;
+                }
+                right[i][j] = count;
             }
         }
-        return right;
     }
 
     void fun(int i, int j) {
         int height = 0;
         int max_left = Integer.MAX_VALUE;
-
         while (i < mat.length && mat[i][j] == '1') {
-            int m = max_right(i, j);
-            max_left = Math.min(max_left, m);
+            max_left = Math.min(max_left, right[i][j]);
             height++;
             int area = height * max_left;
             max_area = Math.max(max_area, area);
@@ -30,6 +33,7 @@ class Solution {
 
     public int maximalRectangle(char[][] ma) {
         mat = ma;
+        precomputeRight();
         for (int i = 0; i < mat.length; i++) {
             for (int j = 0; j < mat[i].length; j++) {
                 if (mat[i][j] == '1') {
