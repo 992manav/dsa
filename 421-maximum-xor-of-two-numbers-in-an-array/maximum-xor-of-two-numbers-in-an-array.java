@@ -37,20 +37,22 @@ class Solution {
     }
 
     public int findMaximumXOR(int[] nums) {
-        for (int num : nums) {
-            String binary = Integer.toBinaryString(num);
+        String[] binaries = new String[nums.length];
+
+        for (int i = 0; i < nums.length; i++) {
+            String binary = Integer.toBinaryString(nums[i]);
             while (binary.length() < 32) binary = "0" + binary;
+            binaries[i] = binary;
             insert(binary);
         }
 
         int max = Integer.MIN_VALUE;
-        for (int num : nums) {
-            String binary = Integer.toBinaryString(num);
-            while (binary.length() < 32) binary = "0" + binary;
+        for (String binary : binaries) {
             int xor = search(binary);
             max = Math.max(xor, max);
         }
 
         return max;
     }
+
 }
