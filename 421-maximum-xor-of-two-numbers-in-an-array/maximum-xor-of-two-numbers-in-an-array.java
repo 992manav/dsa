@@ -1,5 +1,6 @@
 class TrieNode {
     TrieNode[] children = new TrieNode[2];
+    boolean isEow = false;
 }
 
 class Solution {
@@ -14,6 +15,7 @@ class Solution {
             }
             curr = curr.children[index];
         }
+        curr.isEow = true;
     }
 
     int search(String s) {
@@ -40,12 +42,13 @@ class Solution {
         String[] binaries = new String[nums.length];
 
         for (int i = 0; i < nums.length; i++) {
-            String binary = String.format("%32s", Integer.toBinaryString(nums[i])).replace(' ', '0');
+            String binary = Integer.toBinaryString(nums[i]);
+            while (binary.length() < 32) binary = "0" + binary;
             binaries[i] = binary;
             insert(binary);
         }
 
-        int max = 0;
+        int max = Integer.MIN_VALUE;
         for (String binary : binaries) {
             int xor = search(binary);
             max = Math.max(xor, max);
