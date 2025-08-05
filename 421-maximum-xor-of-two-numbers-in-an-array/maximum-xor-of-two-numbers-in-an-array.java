@@ -1,6 +1,5 @@
 class TrieNode {
     TrieNode[] children = new TrieNode[2];
-    boolean isEow = false;
 }
 
 class Solution {
@@ -15,38 +14,38 @@ class Solution {
             }
             curr = curr.children[index];
         }
-        curr.isEow = true;
     }
 
     int search(String s) {
         TrieNode curr = root;
-        StringBuilder sb = new StringBuilder();
+        int xorValue = 0;
+
         for (char c : s.toCharArray()) {
-            int index = c - '0';
-            int opposite = 1 - index;
+            int bit = c - '0';
+            int opposite = 1 - bit;
 
             if (curr.children[opposite] != null) {
-                sb.append('1');
+                xorValue = (xorValue << 1) | 1;
                 curr = curr.children[opposite];
             } else {
-                sb.append('0');
-                curr = curr.children[index];
+                xorValue = xorValue << 1;
+                curr = curr.children[bit];
             }
         }
-        return Integer.parseInt(sb.toString(), 2);
+
+        return xorValue;
     }
 
     public int findMaximumXOR(int[] nums) {
         String[] binaries = new String[nums.length];
 
         for (int i = 0; i < nums.length; i++) {
-            String binary = Integer.toBinaryString(nums[i]);
-            while (binary.length() < 32) binary = "0" + binary;
+            String binary = String.format("%32s", Integer.toBinaryString(nums[i])).replace(' ', '0');
             binaries[i] = binary;
             insert(binary);
         }
 
-        int max = Integer.MIN_VALUE;
+        int max = 0;
         for (String binary : binaries) {
             int xor = search(binary);
             max = Math.max(xor, max);
@@ -54,5 +53,4 @@ class Solution {
 
         return max;
     }
-
 }
