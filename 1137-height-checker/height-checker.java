@@ -2,16 +2,16 @@ import java.util.Arrays;
 
 class Solution {
     public int heightChecker(int[] heights) {
-        int[] expected = heights.clone();
+        int[] expected = Arrays.copyOf(heights, heights.length);
         Arrays.sort(expected);
-        int count = 0;
 
+        int mismatch = 0;
         for (int i = 0; i < heights.length; i++) {
             if (heights[i] != expected[i]) {
-                count++;
+                mismatch++;
             }
         }
 
-        return count;
+        return mismatch;
     }
 }
