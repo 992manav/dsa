@@ -5,18 +5,6 @@ class Solution {
     int[] cost;
     int[] dp;
 
-    int fun(int idx) {
-        if (idx == cost.length - 2 || idx == cost.length - 1) {
-            return cost[idx];
-        }
-        if (dp[idx] != -1) {
-            return dp[idx];
-        }
-        int one = fun(idx + 1);
-        int two = fun(idx + 2);
-        return dp[idx] = Math.min(one, two) + cost[idx];
-    }
-
     public int minCostClimbingStairs(int[] cost) {
         if (cost.length == 1) {
             return cost[0];
@@ -25,8 +13,16 @@ class Solution {
             return Math.min(cost[0], cost[1]);
         }
         this.cost = cost;
-        dp = new int[cost.length];
-        Arrays.fill(dp, -1);
-        return Math.min(fun(0), fun(1));
+        int n = cost.length;
+        dp = new int[n];
+
+        dp[n - 1] = cost[n - 1];
+        dp[n - 2] = cost[n - 2];
+
+        for (int i = n - 3; i >= 0; i--) {
+            dp[i] = Math.min(dp[i + 1], dp[i + 2]) + cost[i];
+        }
+
+        return Math.min(dp[0], dp[1]);
     }
 }
