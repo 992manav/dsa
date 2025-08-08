@@ -1,46 +1,32 @@
 import java.util.Arrays;
 
 class Solution {
-    int[][] dp;
-
-    int fun(int[] nums, int index, boolean flag) {
-        if (index >= nums.length) return 0;
-
-        int f = flag ? 1 : 0;
-        if (dp[index][f] != -1) return dp[index][f];
-
-        int skip, take;
-
-        if (index == 0) {
-            skip = fun(nums, index + 1, false);
-            take = nums[index] + fun(nums, index + 2, true);
-            return dp[index][f] = Math.max(skip, take);
-        } 
-        else if (index == nums.length - 1) {
-            if (flag) {
-                skip = fun(nums, index + 1, true);
-                take = Integer.MIN_VALUE;
-            } else {
-                skip = fun(nums, index + 1, false);
-                take = nums[index] + fun(nums, index + 2, false);
-            }
-            return dp[index][f] = Math.max(skip, take);
-        } 
-        else {
-            if (flag) {
-                skip = fun(nums, index + 1, true);
-                take = nums[index] + fun(nums, index + 2, true);
-            } else {
-                skip = fun(nums, index + 1, false);
-                take = nums[index] + fun(nums, index + 2, false);
-            }
-        }
-        return dp[index][f] = Math.max(skip, take);
-    }
+    int[] dp1;
+    int[] dp2;
 
     public int rob(int[] nums) {
-        dp = new int[nums.length][2];
-        for (int[] row : dp) Arrays.fill(row, -1);
-        return fun(nums, 0, false);
+        int n = nums.length;
+        if (n == 1) return nums[0];
+
+        dp1 = new int[n];
+        dp2 = new int[n];
+
+        // Case 1: rob from 0 to n-2 (exclude last)
+        dp1[n - 1] = 0; 
+        dp1[n - 2] = nums[n - 2];
+        for (int i = n - 3; i >= 0; i--) {
+            dp1[i] = Math.max(nums[i] + dp1[i + 2], dp1[i + 1]);
+        }
+        int max1 = dp1[0];
+
+        // Case 2: rob from 1 to n-1 (exclude first)
+        dp2[n - 1] = nums[n - 1];
+        dp2[n - 2] = Math.max(nums[n - 2], nums[n - 1]);
+        for (int i = n - 3; i >= 1; i--) {
+            dp2[i] = Math.max(nums[i] + dp2[i + 2], dp2[i + 1]);
+        }
+        int max2 = dp2[1];
+
+        return Math.max(max1, max2);
     }
 }
