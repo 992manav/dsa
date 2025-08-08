@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 class Solution {
 
     int[] cost;
@@ -16,6 +18,12 @@ class Solution {
     }
 
     public int minCostClimbingStairs(int[] cost) {
+        if (cost.length == 1) {
+            return cost[0];
+        }
+        if (cost.length == 2) {
+            return Math.min(cost[0], cost[1]);
+        }
         this.cost = cost;
         dp = new int[cost.length];
         Arrays.fill(dp, -1);
