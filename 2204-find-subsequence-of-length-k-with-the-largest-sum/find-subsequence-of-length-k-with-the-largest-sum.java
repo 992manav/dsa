@@ -16,14 +16,14 @@ class Solution {
         for (int i = 0; i < nums.length; i++) {
             pq.offer(new Pair(nums[i], i));
         }
-        List<Pair> lst = new ArrayList<>();
+        Pair[] arr = new Pair[k];
         for (int i = 0; i < k; i++) {
-            lst.add(pq.poll());
+            arr[i] = pq.poll();
         }
-        Collections.sort(lst, (a, b) -> a.idx - b.idx);
+        Arrays.sort(arr, (a, b) -> a.idx - b.idx);
         int[] res = new int[k];
         for (int i = 0; i < k; i++) {
-            res[i] = lst.get(i).num;
+            res[i] = arr[i].num;
         }
         return res;
     }
