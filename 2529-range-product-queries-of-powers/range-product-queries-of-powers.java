@@ -33,21 +33,27 @@ class Solution {
             }
         }
 
-        int[] prefix = new int[lst.size()];
-        prefix[0] = lst.get(0);
-        for (int i = 1; i < lst.size(); i++) {
+        int m = lst.size();
+        int[] prefix = new int[m];
+        int[] invPrefix = new int[m];
+
+        prefix[0] = lst.get(0) % MOD;
+        for (int i = 1; i < m; i++) {
             prefix[i] = (int) (((long) prefix[i - 1] * lst.get(i)) % MOD);
         }
 
+        for (int i = 0; i < m; i++) {
+            invPrefix[i] = (int) modInverse(prefix[i]);
+        }
+
         int[] res = new int[queries.length];
-        int m = lst.size();
         for (int i = 0; i < queries.length; i++) {
             int left = m - 1 - queries[i][1];
             int right = m - 1 - queries[i][0];
             if (left == 0) {
                 res[i] = prefix[right];
             } else {
-                res[i] = (int) ((prefix[right] * modInverse(prefix[left - 1])) % MOD);
+                res[i] = (int) ((long) prefix[right] * invPrefix[left - 1] % MOD);
             }
         }
         return res;
