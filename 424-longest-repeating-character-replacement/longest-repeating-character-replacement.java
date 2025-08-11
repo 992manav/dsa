@@ -13,11 +13,12 @@ class Solution {
 
             char c = s.charAt(r);
             freq[c - 'A']++;
+            
             if (freq[c - 'A'] > max_count) {
                 max_count = freq[c - 'A'];
             }
 
-            len++;  // window size increased by 1
+            len++;  
 
             while (len - max_count > k) {
                 freq[s.charAt(l) - 'A']--;
