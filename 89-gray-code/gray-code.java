@@ -2,39 +2,44 @@ import java.util.*;
 
 class Solution {
 
-    boolean fun(int num, boolean[] arr, List<Integer> lst, int n) {
+    private boolean[] visited;
+    private List<Integer> result;
+    private int total;
 
-        if (lst.size() == (1 << n)) {   // fixed: lst.lenegth -> lst.size()
+    // Recursive DFS function to build Gray Code
+    private boolean dfs(int num, int n) {
+        if (result.size() == total) {
             return true;
         }
 
-        if (arr[num]) {
+        if (visited[num]) {
             return false;
         }
 
-        arr[num] = true;
-        lst.add(num);
+        visited[num] = true;
+        result.add(num);
 
         for (int i = 0; i < n; i++) {
             int nextNum = num ^ (1 << i);
-            if (fun(nextNum, arr, lst, n)) {
+            if (dfs(nextNum, n)) {
                 return true;
             }
         }
 
-        if (!lst.isEmpty()) {
-            lst.remove(lst.size() - 1);
-        }
+        // Backtrack
+        result.remove(result.size() - 1);
+        visited[num] = false;
+
         return false;
     }
 
     public List<Integer> grayCode(int n) {
-        int size = (1 << n);
-        boolean[] arr = new boolean[size];
-        List<Integer> lst = new ArrayList<>();
+        total = 1 << n;
+        visited = new boolean[total];
+        result = new ArrayList<>();
 
-        fun(0, arr, lst, n);
+        dfs(0, n);
 
-        return lst;
+        return result;
     }
 }
