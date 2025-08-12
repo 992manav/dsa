@@ -13,18 +13,18 @@ class Solution {
         }
 
         arr[num] = true;
+        lst.add(num);
 
         for (int i = 0; i < n; i++) {
             int nextNum = num ^ (1 << i);
-            lst.add(nextNum);
             if (fun(nextNum, arr, lst, n)) {
                 return true;
             }
-            if (!lst.isEmpty()) {
-                lst.remove(lst.size() - 1);
-            }
         }
 
+        if (!lst.isEmpty()) {
+            lst.remove(lst.size() - 1);
+        }
         return false;
     }
 
@@ -32,7 +32,7 @@ class Solution {
         int size = (1 << n);
         boolean[] arr = new boolean[size];
         List<Integer> lst = new ArrayList<>();
-        lst.add(0);
+
         fun(0, arr, lst, n);
 
         return lst;
