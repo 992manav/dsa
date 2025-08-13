@@ -16,28 +16,40 @@ class Solution {
 
         int mid = (left_index + right_index) / 2;
 
+        int leftsubtree_index = 2 * index + 1;
+        int rightsubtree_index = 2 * index + 2;
+
         if (pos <= mid) {
-            update(2 * index + 1, left_index, mid, pos);
+            update(leftsubtree_index, left_index, mid, pos);
         } else {
-            update(2 * index + 2, mid + 1, right_index, pos);
+            update(rightsubtree_index, mid + 1, right_index, pos);
         }
 
-        segment_tree[index] = segment_tree[2 * index + 1] + segment_tree[2 * index + 2];
+        segment_tree[index] = segment_tree[leftsubtree_index] + segment_tree[rightsubtree_index];
     }
 
-    int query(int index, int q_left, int q_right, int left, int right) {
-        if (q_left > right || q_right < left) {
-            return 0; // no overlap
-        }
-        if (q_left <= left && right <= q_right) {
-            return segment_tree[index]; // total overlap
+    void build_segment_tree() {
+        Arrays.fill(segment_tree, 0);
+    }
+
+    int query(int index, int q_left_index, int q_right_index, int left_index, int right_index) {
+        if (right_index < q_left_index || left_index > q_right_index) {
+            return 0;
         }
 
-        int mid = (left + right) / 2;
-        int leftCount = query(2 * index + 1, q_left, q_right, left, mid);
-        int rightCount = query(2 * index + 2, q_left, q_right, mid + 1, right);
+        if (q_left_index <= left_index && right_index <= q_right_index) {
+            return segment_tree[index];
+        }
 
-        return leftCount + rightCount;
+        int mid = (left_index + right_index) / 2;
+
+        int leftsubtree_index = 2 * index + 1;
+        int rightsubtree_index = 2 * index + 2;
+
+        int countleft = query(leftsubtree_index, q_left_index, q_right_index, left_index, mid);
+        int countright = query(rightsubtree_index, q_left_index, q_right_index, mid + 1, right_index);
+
+        return countleft + countright;
     }
 
     public long numberOfPairs(int[] nums1, int[] nums2, int diff) {
@@ -49,16 +61,28 @@ class Solution {
             nums[i] = nums1[i] - nums2[i];
         }
 
-        // Based on constraints:
-        OFFSET = 30000;
-        MAX_VAL = 60000;
+        // Find dynamic OFFSET and MAX_VAL
+        int minVal = Integer.MAX_VALUE;
+        int maxVal = Integer.MIN_VALUE;
+
+        for (int val : nums) {
+            minVal = Math.min(minVal, val);
+            maxVal = Math.max(maxVal, val);
+            minVal = Math.min(minVal, val + diff);
+            maxVal = Math.max(maxVal, val + diff);
+        }
+
+        OFFSET = -minVal; // shift so min becomes 0
+        MAX_VAL = maxVal + OFFSET;
+
         segment_tree = new int[4 * (MAX_VAL + 1)];
-        Arrays.fill(segment_tree, 0);
+        build_segment_tree();
 
         long count = 0;
 
         for (int j = 0; j < n; j++) {
-            int qRight = nums[j] + diff + OFFSET;
+            int val = nums[j] + diff;
+            int qRight = val + OFFSET;
             if (qRight >= 0) {
                 qRight = Math.min(qRight, MAX_VAL);
                 count += query(0, 0, qRight, 0, MAX_VAL);
