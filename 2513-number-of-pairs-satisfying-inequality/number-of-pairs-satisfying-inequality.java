@@ -1,64 +1,43 @@
+import java.util.*;
+
 class Solution {
 
+    int[] segment_tree;
     int[] nums;
     int diff;
+    int OFFSET;
+    int MAX_VAL;
 
-    long countPairs(int l1, int r1, int l2, int r2) {
-        long count = 0;
-        int i = l1;
-        int j = l2;
-
-        while (i <= r1 && j <= r2) {
-            if (nums[i] <= nums[j] + diff) {
-                count += (long) (r2 - j + 1);
-                i++;
-            } else {
-                j++;
-            }
+    void update(int index, int left_index, int right_index, int pos) {
+        if (left_index == right_index) {
+            segment_tree[index]++;
+            return;
         }
 
-        return count;
+        int mid = (left_index + right_index) / 2;
+
+        if (pos <= mid) {
+            update(2 * index + 1, left_index, mid, pos);
+        } else {
+            update(2 * index + 2, mid + 1, right_index, pos);
+        }
+
+        segment_tree[index] = segment_tree[2 * index + 1] + segment_tree[2 * index + 2];
     }
 
-    void merge(int start1, int end1, int start2, int end2) {
-        int[] arr = new int[end2 - start1 + 1];
-        int i = start1;
-        int j = start2;
-        int index = 0;
-
-        while (i <= end1 && j <= end2) {
-            if (nums[i] <= nums[j]) {
-                arr[index++] = nums[i++];
-            } else {
-                arr[index++] = nums[j++];
-            }
+    int query(int index, int q_left, int q_right, int left, int right) {
+        if (q_left > right || q_right < left) {
+            return 0; // no overlap
+        }
+        if (q_left <= left && right <= q_right) {
+            return segment_tree[index]; // total overlap
         }
 
-        while (i <= end1) {
-            arr[index++] = nums[i++];
-        }
+        int mid = (left + right) / 2;
+        int leftCount = query(2 * index + 1, q_left, q_right, left, mid);
+        int rightCount = query(2 * index + 2, q_left, q_right, mid + 1, right);
 
-        while (j <= end2) {
-            arr[index++] = nums[j++];
-        }
-
-        for (int k = 0; k < arr.length; k++) {
-            nums[start1 + k] = arr[k];
-        }
-    }
-
-    long mergeSort(int start, int end) {
-        if (start >= end) {
-            return 0;
-        }
-
-        int mid = (start + end) / 2;
-        long count = mergeSort(start, mid) + mergeSort(mid + 1, end);
-
-        count += countPairs(start, mid, mid + 1, end);
-        merge(start, mid, mid + 1, end);
-
-        return count;
+        return leftCount + rightCount;
     }
 
     public long numberOfPairs(int[] nums1, int[] nums2, int diff) {
@@ -70,6 +49,27 @@ class Solution {
             nums[i] = nums1[i] - nums2[i];
         }
 
-        return mergeSort(0, n - 1);
+        // Based on constraints:
+        OFFSET = 30000;
+        MAX_VAL = 60000;
+        segment_tree = new int[4 * (MAX_VAL + 1)];
+        Arrays.fill(segment_tree, 0);
+
+        long count = 0;
+
+        for (int j = 0; j < n; j++) {
+            int qRight = nums[j] + diff + OFFSET;
+            if (qRight >= 0) {
+                qRight = Math.min(qRight, MAX_VAL);
+                count += query(0, 0, qRight, 0, MAX_VAL);
+            }
+
+            int pos = nums[j] + OFFSET;
+            if (pos >= 0 && pos <= MAX_VAL) {
+                update(0, 0, MAX_VAL, pos);
+            }
+        }
+
+        return count;
     }
 }
