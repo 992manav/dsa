@@ -24,13 +24,13 @@ class Solution {
 
             if(curr.val < prev.val){
 
-                if(first == null){    //pehli gadbadi ka phela first waala badawala  uthao 
+                if(first == null){    //pehli gadbadi ka pehla first waala bada waala uthao 
                     first = prev;
                 }
 
-                second = curr;        //dusri gadbadi ka seoc uthao chhota  waala 
-                                       //agar dursti naa mili kabhi toh yeh akeli gadbadi kao aapas mein swap kardo 
-                                       //isliye curr ko second mein store kardo aga r dusri mili toh toh apne aap second mein usk dursri gadbadi ka chhpt isme sitore ho jaega
+                second = curr;        //dusri gadbadi ka second uthao chhota waala 
+                                       //agar dusri naa mili kabhi toh yeh akeli gadbadi ko aapas mein swap kardo 
+                                       //isliye curr ko second mein store kardo agar dusri mili toh toh apne aap second mein uski dusri gadbadi ka chhota isme store ho jaega
             }
 
         }
@@ -40,7 +40,7 @@ class Solution {
 
     public void recoverTree(TreeNode root) {
         
-        //Morris Travesal + 2 cases
+        //Morris Traversal + 2 cases
         curr = root;
 
         while(curr != null){
@@ -57,17 +57,18 @@ class Solution {
 
                 //2 cases 
              
-                if(IP.right == null){    // pehli baar left mein jaaoge  toh vaapis aane ka intajaam karna padega
+                if(IP.right == null){    // pehli baar left mein jaaoge  toh vaapis aane ka intezaam karna padega
 
                     IP.right = curr;
                     curr = curr.left;
                 
-                }else{      //left traverse ho chuka hai aur left travese khatam hone ke naaad vaapi aaya hun parent matlab current ke paas
+                }else{      //left traverse ho chuka hai aur left traverse khatam hone ke baad vaapas aaya hun parent matlab current ke paas
 
                     //delete karo yeh extra connection
                     IP.right = null;
 
-                    //delete karne kae baad ab left toh sab ho gaya hai toh ab inoporder ke hissab se ab yeh nopde ko print karpo
+                    //delete karne ke baad ab left toh sab ho gaya hai toh ab inorder ke hissab se ab yeh node ko print karlo
+                    
                     //print
                     check(curr, prev);
 
