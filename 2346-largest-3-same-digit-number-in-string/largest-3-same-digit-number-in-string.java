@@ -1,6 +1,6 @@
 class Solution {
     public String largestGoodInteger(String num) {
-        int ans = -1;
+        char ans = 0;
         for (int i = 0; i <= num.length() - 3; i++) {
             char c = num.charAt(i);
             int count = 0;
@@ -13,11 +13,11 @@ class Solution {
             }
 
             if (count == 3) {
-                ans = Math.max(Character.getNumericValue(c), ans);
+                ans = (c > ans) ? c : ans;
             }
         }
 
-        if (ans == -1) return "";
-        return String.valueOf(ans) + ans + ans;
+        if (ans == 0) return "";
+        return "" + ans + ans + ans;
     }
 }
