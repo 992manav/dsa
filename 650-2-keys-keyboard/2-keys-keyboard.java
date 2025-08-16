@@ -1,26 +1,28 @@
 class Solution {
+    
+    int n;
+
+    int fun(int curr_A, int clipboard, int steps) {
+        if (curr_A > n) return Integer.MAX_VALUE;
+        if (curr_A == n) return steps;
+
+        int ans = Integer.MAX_VALUE;
+
+        // Copy (sirf tab jab clipboard alag ho, warna repeat hoga)
+        if (clipboard != curr_A) {
+            ans = Math.min(ans, fun(curr_A, curr_A, steps + 1));
+        }
+
+        // Paste (sirf tab jab kuch clipboard mein ho)
+        if (clipboard > 0) {
+            ans = Math.min(ans, fun(curr_A + clipboard, clipboard, steps + 1));
+        }
+
+        return ans;
+    }
+    
     public int minSteps(int n) {
-        int count = 0;
-        while (n % 2 == 0) {
-            count += 2;
-            n = n / 2;
-        }
-
-        if (n != 1) {
-            for (int i = 3; i * i <= n; i++) {
-                if (n % i == 0) {
-                    while (n % i == 0) {
-                        count += i;
-                        n = n / i;
-                    }
-                }
-            }
-
-            if (n != 1) {
-                count += n;
-            }
-        }
-
-        return count;
+        this.n = n;
+        return fun(1, 0, 0);
     }
 }
