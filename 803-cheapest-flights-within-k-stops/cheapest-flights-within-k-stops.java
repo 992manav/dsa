@@ -1,22 +1,11 @@
 import java.util.*;
 
-class Node implements Comparable<Node> {
-    int node, level, dist;
-
-    Node(int node, int level, int dist) {
-        this.node = node;
-        this.level = level;
-        this.dist = dist;
-    }
+class Node {
+    int node, dist;
 
     Node(int node, int dist) {
-        this(node, 0, dist);
-    }
-
-    @Override
-    public int compareTo(Node other) {
-        int cmp = Integer.compare(this.level, other.level);
-        return (cmp == 0) ? Integer.compare(this.dist, other.dist) : cmp;
+        this.node = node;
+        this.dist = dist;
     }
 }
 
@@ -31,25 +20,23 @@ class Solution {
         Arrays.fill(dist, Integer.MAX_VALUE);
         dist[src] = 0;
 
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        pq.add(new Node(src, 0, 0));
+        Queue<Node> q = new LinkedList<>();
+        q.add(new Node(src, 0));
 
-        int level = 0;
-        while (!pq.isEmpty() && level <= k) {
-            int len = pq.size();
-            while (len-- > 0) {
-                Node cur = pq.poll();
-                int node = cur.node, cost = cur.dist;
-
-                for (Node nei : graph[node]) {
+        int stops = 0;
+        while (!q.isEmpty() && stops <= k) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                Node cur = q.poll();
+                for (Node nei : graph[cur.node]) {
                     int to = nei.node, w = nei.dist;
-                    if (cost + w < dist[to]) {
-                        dist[to] = cost + w;
-                        pq.add(new Node(to, level + 1, dist[to]));
+                    if (cur.dist + w < dist[to]) {
+                        dist[to] = cur.dist + w;
+                        q.add(new Node(to, dist[to]));
                     }
                 }
             }
-            level++;
+            stops++;
         }
 
         return dist[dst] == Integer.MAX_VALUE ? -1 : dist[dst];
