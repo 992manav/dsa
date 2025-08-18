@@ -23,14 +23,14 @@ class Solution {
         int n = grid.length;
         int m = grid[0].length;
         boolean[][] visited = new boolean[n][m];
-        int[][] maxVal = new int[n][m];
+        int[][] maxValueinPathtillhere = new int[n][m];
         PriorityQueue<Node> pq = new PriorityQueue<>();
 
         pq.add(new Node(0, 0, 0));
-        for (int i = 0; i < maxVal.length; i++) {
-            Arrays.fill(maxVal[i], Integer.MAX_VALUE);
+        for (int i = 0; i < maxValueinPathtillhere.length; i++) {
+            Arrays.fill(maxValueinPathtillhere[i], Integer.MAX_VALUE);
         }
-        maxVal[0][0] = 0;
+        maxValueinPathtillhere[0][0] = 0;
 
         while (!pq.isEmpty()) {
 
@@ -54,15 +54,15 @@ class Solution {
 
                     int v = Math.abs(grid[newR][newC] - grid[r][c]);
 
-                    if(v > maxVal[r][c]){
-                        if(maxVal[newR][newC] > v){
-                            maxVal[newR][newC] = v;
-                            pq.add(new Node(newR, newC, maxVal[newR][newC]));
+                    if(v > maxValueinPathtillhere[r][c]){
+                        if(maxValueinPathtillhere[newR][newC] > v){
+                            maxValueinPathtillhere[newR][newC] = v;
+                            pq.add(new Node(newR, newC, maxValueinPathtillhere[newR][newC]));
                         }
                     } else {
-                        if(maxVal[newR][newC] > maxVal[r][c]){
-                            maxVal[newR][newC] = maxVal[r][c];
-                            pq.add(new Node(newR, newC, maxVal[newR][newC]));
+                        if(maxValueinPathtillhere[newR][newC] > maxValueinPathtillhere[r][c]){
+                            maxValueinPathtillhere[newR][newC] = maxValueinPathtillhere[r][c];
+                            pq.add(new Node(newR, newC, maxValueinPathtillhere[newR][newC]));
                         }
                     }
 
@@ -71,6 +71,6 @@ class Solution {
 
         }
 
-        return maxVal[n - 1][m - 1];
+        return maxValueinPathtillhere[n - 1][m - 1];
     }
 }
