@@ -1,97 +1,76 @@
-import java.util.*;
+import java.util.PriorityQueue;
+import java.util.Arrays;
 
-class Edges implements Comparable<Edges> {
-    int src;
-    int dest;
+class Node implements Comparable<Node> {
+    int i;
+    int j;
     int dist;
 
-    Edges(int src, int dest, int dist) {
-        this.src = src;
-        this.dest = dest;
+    Node(int i, int j, int dist) {
+        this.i = i;
+        this.j = j;
         this.dist = dist;
     }
 
-    public int compareTo(Edges other) {
-        return this.dist - other.dist; // dist upar base kari compare karva mate (priority queue ma min dist pela aave)
+    @Override
+    public int compareTo(Node other) {
+        return this.dist - other.dist;
     }
 }
 
 class Solution {
+    public int minimumEffortPath(int[][] grid) {
+        int n = grid.length;
+        int m = grid[0].length;
+        boolean[][] visited = new boolean[n][m];
+        int[][] maxVal = new int[n][m];
+        PriorityQueue<Node> pq = new PriorityQueue<>();
 
-    int[] parent;
-    int[] rank;
-
-    public int find_parent(int node) {
-        if (parent[node] == node) {
-            return node; // jyare node potano parent hoy, return thai jaay
+        pq.add(new Node(0, 0, 0));
+        for (int i = 0; i < maxVal.length; i++) {
+            Arrays.fill(maxVal[i], Integer.MAX_VALUE);
         }
-        return parent[node] = find_parent(parent[node]); // path compression: sidha root sathe connect kari de
-    }
-
-    public void union(int a, int b) {
-        int p1 = find_parent(a);
-        int p2 = find_parent(b);
-
-        if (p1 == p2) {
-            return; // already same parent hoy to union ni jarur nathi
-        }
-
-        int r1 = rank[p1];
-        int r2 = rank[p2];
-
-        if (r1 > r2) {
-            parent[p2] = p1; // mota rank walo parent bani jaay
-        } else if (r1 < r2) {
-            parent[p1] = p2;
-        } else {
-            parent[p2] = p1; 
-            rank[p1]++; // banne same rank hoy to koi ek nu rank vadhaadviye
-        }
-    }
-
-    public int minimumEffortPath(int[][] heights) {
-        // Method 1 Kruskal algo
-        PriorityQueue<Edges> pq = new PriorityQueue<>();
-        // store all edges
-        int n = heights.length;
-        int m = heights[0].length;
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (j + 1 < m) {
-                    pq.offer(new Edges(i * m + j, i * m + (j + 1), Math.abs(heights[i][j] - heights[i][j + 1]))); // right neighbor sathe edge
-                }
-                if (i + 1 < n) {
-                    pq.offer(new Edges(i * m + j, (i + 1) * m + j, Math.abs(heights[i][j] - heights[i + 1][j]))); // down neighbor sathe edge
-                }
-            }
-        }
-
-        parent = new int[n * m];
-        rank = new int[n * m];
-
-        for (int i = 0; i < parent.length; i++) {
-            parent[i] = i; // pratyek node nu parent potane banaviye
-            rank[i] = 0;
-        }
-
-        int ans = 0;
+        maxVal[0][0] = 0;
 
         while (!pq.isEmpty()) {
-            Edges e = pq.poll(); // smallest dist edge pelo nikdi jaay (pq maathi)
 
-            int s = e.src;
-            int d = e.dest;
-            int dist = e.dist;
+            Node nd = pq.poll();
 
-            union(s, d); // aa edge add kariye
+            int r = nd.i;
+            int c = nd.j;
 
-            if (find_parent(0) == find_parent(n * m - 1)) { 
-                ans = dist; // pela vakhat 0 thi end connect thay -> aa dist e paath ma max edge hoy, etle aa min effort hoy
-                break;
+            if(!visited[r][c]){
+
+                visited[r][c] = true;
+
+                int[] dirx = new int[]{-1, 1, 0, 0};
+                int[] diry = new int[]{0, 0, 1, -1};
+                
+                for (int i = 0; i < dirx.length; i++) {
+                    int newR = r + dirx[i];
+                    int newC = c + diry[i];
+
+                    if (newR < 0 || newR >= n || newC < 0 || newC >= m) continue;
+
+                    int v = Math.abs(grid[newR][newC] - grid[r][c]);
+
+                    if(v > maxVal[r][c]){
+                        if(maxVal[newR][newC] > v){
+                            maxVal[newR][newC] = v;
+                            pq.add(new Node(newR, newC, maxVal[newR][newC]));
+                        }
+                    } else {
+                        if(maxVal[newR][newC] > maxVal[r][c]){
+                            maxVal[newR][newC] = maxVal[r][c];
+                            pq.add(new Node(newR, newC, maxVal[newR][newC]));
+                        }
+                    }
+
+                }
             }
+
         }
 
-        return ans;
+        return maxVal[n - 1][m - 1];
     }
 }
