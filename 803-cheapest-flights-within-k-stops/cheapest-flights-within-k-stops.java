@@ -11,6 +11,12 @@ class Node implements Comparable<Node> {
         this.dist = dist;
     }
 
+    Node(int node, int dist) {
+        this.node = node;
+        this.dist = dist;
+        this.level = 0;
+    }
+
     @Override
     public int compareTo(Node other) {
         if (Integer.compare(this.level, other.level) == 0) {
@@ -21,28 +27,16 @@ class Node implements Comparable<Node> {
     }
 }
 
-class Pair {
-    int to;
-    int w;
-
-    Pair(int to, int w) {
-        this.to = to;
-        this.w = w;
-    }
-}
-
 class Solution {
     public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
-        List<Pair>[] graph = new ArrayList[n];
+        List<Node>[] graph = new ArrayList[n];
         for (int i = 0; i < n; i++) {
             graph[i] = new ArrayList<>();
         }
 
-        for (int i = 0; i < flights.length; i++) {
-            int from = flights[i][0];
-            int to = flights[i][1];
-            int w = flights[i][2];
-            graph[from].add(new Pair(to, w));
+        for (int[] f : flights) {
+            int from = f[0], to = f[1], w = f[2];
+            graph[from].add(new Node(to, w));
         }
 
         int[] dist = new int[n];
@@ -52,23 +46,27 @@ class Solution {
         PriorityQueue<Node> pq = new PriorityQueue<>();
         pq.add(new Node(src, 0, 0));
 
+        int level = 0;
         while (!pq.isEmpty()) {
-            Node cur = pq.poll();
-            int node = cur.node;
-            int level = cur.level;
-            int cost = cur.dist;
-
             if (level > k) break;
 
-            for (Pair neighbour : graph[node]) {
-                int to = neighbour.to;
-                int w = neighbour.w;
+            int len = pq.size();
+            for (int i = 0; i < len; i++) {
+                Node cur = pq.poll();
+                int node = cur.node;
+                int cost = cur.dist;
 
-                if (dist[to] > cost + w) {
-                    dist[to] = cost + w;
-                    pq.add(new Node(to, level + 1, dist[to]));
+                for (Node nei : graph[node]) {
+                    int to = nei.node;
+                    int w = nei.dist;
+
+                    if (dist[to] > cost + w) {
+                        dist[to] = cost + w;
+                        pq.add(new Node(to, level + 1, dist[to]));
+                    }
                 }
             }
+            level++;
         }
 
         return dist[dst] == Integer.MAX_VALUE ? -1 : dist[dst];
