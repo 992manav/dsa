@@ -40,7 +40,9 @@ class Solution {
             graph[to].add(new Pair(from, w));
         }
 
-        // Pair to isliye taaki dist ke base pe minimum time se compare kare priority queue mein baaki koi kaam nahi hai 
+        // Pair isliye taaki dist ke base pe minimum time se
+        // compare kare priority queue mein,
+        // baaki koi kaam nahi hai 
         long[][] dist = new long[n][2];   // ✅ long use to avoid overflow
 
         for (int i = 0; i < n; i++) {
@@ -68,13 +70,28 @@ class Solution {
                     int w = neigh.dist;
 
                     if (dist[node][0] + w <= dist[neighbor][0]) {  
-                        if (dist[node][0] + w == dist[neighbor][0]) {
-                            dist[neighbor][1] = (dist[neighbor][1] + dist[node][1]) % MOD;  // ✅ mod add
+                        if (dist[node][0] + w == dist[neighbor][0]) { 
+                            // jab equal aajaye toh add karo
+                            // → jaha se aaya uske ways
+                            // + abhi tak idhar pahunchne ke ways
+                            dist[neighbor][1] = 
+                                (dist[neighbor][1] + dist[node][1]) % MOD; 
                         }
 
-                        if (dist[node][0] + w < dist[neighbor][0]) {
+                        if (dist[node][0] + w < dist[neighbor][0]) {    
+                            // jab kam aaye kisi node pe aane ka distance
+                            // from source → to uske aane ke ways
+                            // ab jaha se kam aaya woh node pe nirbhar karenge directly 
+                            
+                            // jab kam aaye toh jiski wajah se kam aaya hai distance,
+                            // us node ke jaane ke jitne ways hain
+                            // ab is node ke bhi utne hi ways ho jaayenge. 
+                            // Purane jo ways the yeh node pe pahunchne ke par
+                            // woh distance zyada le rahe the,
+                            // isliye unko hatao aur ab isko hi ginno
+                            
                             dist[neighbor][0] = dist[node][0] + w;
-                            dist[neighbor][1] = dist[node][1] % MOD;  // ✅ mod add
+                            dist[neighbor][1] = dist[node][1] % MOD; 
                         }
                         
                         pq.add(new Pair(neighbor, (int) dist[neighbor][0])); 
@@ -83,6 +100,6 @@ class Solution {
             }
         }
 
-        return (int)(dist[n-1][1] % MOD);  // ✅ final mod return
+        return (int)(dist[n-1][1] % MOD);  
     }
 }
