@@ -1,21 +1,41 @@
+import java.util.*;
+
+class Pair {
+    int prefixSum;
+    int i;
+
+    Pair(int prefixSum, int index) {
+        this.prefixSum = prefixSum;
+        this.i = index;
+    }
+}
+
 class Solution {
     public int minSubArrayLen(int target, int[] nums) {
-        int i = 0;
-        int j = 0;
-        int sum = 0;
-        int min = Integer.MAX_VALUE; // fixed typo
+        Deque<Pair> dq = new LinkedList<>();
+        int minLength = Integer.MAX_VALUE;
+        int prefixSum = 0;
 
-        while (j < nums.length) {
-            sum += nums[j];
+        // base prefix sum before array starts
+        dq.offerLast(new Pair(0, -1));
 
-            while (sum >= target) { // use while to shrink window as much as possible
-                min = Math.min(min, j - i + 1); // fixed: compare length, not sum
-                sum -= nums[i];
-                i++;
+        for (int j = 0; j < nums.length; j++) {
+            prefixSum += nums[j];
+
+            // check if current subarray is valid
+            while (!dq.isEmpty() && prefixSum - dq.peekFirst().prefixSum >= target) {
+                minLength = Math.min(minLength, j - dq.peekFirst().i);
+                dq.pollFirst();
             }
-            j++;
+
+            // maintain monotonic deque
+            while (!dq.isEmpty() && dq.peekLast().prefixSum >= prefixSum) {
+                dq.pollLast();
+            }
+
+            dq.offerLast(new Pair(prefixSum, j));
         }
 
-        return (min == Integer.MAX_VALUE) ? 0 : min;
+        return minLength == Integer.MAX_VALUE ? 0 : minLength;
     }
 }
