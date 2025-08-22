@@ -1,40 +1,23 @@
 import java.util.*;
 
 class Solution {
-    int[] nums;
-    int[][] dp;
-
-    int fun(int last_index, int index) {
-        if (index >= nums.length) {
-            return 0;
-        }
-
-        int li = last_index + 1;
-
-        if (dp[index][li] != -1) {
-            return dp[index][li];
-        }
-
-        int take = 0;
-        if (last_index == -1 || nums[index] > nums[last_index]) {
-            take = 1 + fun(index, index + 1);
-        }
-
-        int skip = fun(last_index, index + 1);
-
-        dp[index][li] = Math.max(take, skip);
-        return dp[index][li];
-    }
-
+    
     public int lengthOfLIS(int[] nums) {
-        this.nums = nums;
-        int n = nums.length;
-        dp = new int[n][n + 1]; 
+        int[] dp = new int[nums.length];
+        int len = 0;
+        Arrays.fill(dp, 1);
 
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(dp[i], -1);
+        for (int i = 0; i < dp.length; i++) {
+            int max = 0;
+            for (int j = 0; j < i; j++) {
+                if (nums[j] < nums[i]) {
+                    max = Math.max(max, dp[j]);
+                }
+            }
+            dp[i] = max + 1;
+            len = Math.max(len, dp[i]);
         }
 
-        return fun(-1, 0);
+        return len;
     }
 }
