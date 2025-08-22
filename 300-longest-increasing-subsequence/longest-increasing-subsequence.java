@@ -1,23 +1,17 @@
 import java.util.*;
 
 class Solution {
-    
     public int lengthOfLIS(int[] nums) {
-        int[] dp = new int[nums.length];
-        int len = 0;
-        Arrays.fill(dp, 1);
+        TreeSet<Integer> piles = new TreeSet<>();
 
-        for (int i = 0; i < dp.length; i++) {
-            int max = 0;
-            for (int j = 0; j < i; j++) {
-                if (nums[j] < nums[i]) {
-                    max = Math.max(max, dp[j]);
-                }
+        for (int x : nums) {
+            Integer just_bigger = piles.ceiling(x);
+            if (just_bigger != null) {
+                piles.remove(just_bigger); 
             }
-            dp[i] = max + 1;
-            len = Math.max(len, dp[i]);
+            piles.add(x);
         }
 
-        return len;
+        return piles.size();  
     }
 }
