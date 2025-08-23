@@ -12,22 +12,26 @@ class Solution {
 
         if (dp[sum1][index] != null) return dp[sum1][index];
 
-        boolean one = fun(sum1 + nums[index], index + 1);
-        boolean two = fun(sum1, index + 1);
+        // Early return: agar sum1 branch true hai to sum2 branch skip
+        if (fun(sum1 + nums[index], index + 1)) {
+            dp[sum1][index] = true;
+            return true;
+        }
 
-        dp[sum1][index] = one || two;
+        dp[sum1][index] = fun(sum1, index + 1);
         return dp[sum1][index];
     }
 
     public boolean canPartition(int[] nums) {
         this.nums = nums;
+
         totalSum = 0;
         for (int num : nums) totalSum += num;
 
         if (totalSum % 2 != 0) return false;
 
         target = totalSum / 2;
-        dp = new Boolean[target + 1][nums.length + 1];
+        dp = new Boolean[target + 1][nums.length]; // last column can be nums.length-1
 
         return fun(0, 0);
     }
