@@ -12,7 +12,7 @@ class Solution {
             num >>= 1;
             len++;
         }
-        return r - len + 1;
+        return Math.max(0, r - len + 1); // safe: avoid negative index
     }
 
     public int[][] substringXorQueries(String s, int[][] queries) {
@@ -28,24 +28,21 @@ class Solution {
                 first_one = i;
             }
 
-            if (s.charAt(i) == '0') {
-                if (!map.containsKey(0)) map.put(0, i);
-                continue;
-            }
-            int num = 0;
-            for (int j = i; j < s.length() && j < i + 32; j++) {
-                num = (num << 1);
-                if (s.charAt(j) == '1') {
-                    num += 1;
-                }
-                if (!map.containsKey(num)) {
-                    map.put(num, j); // store right index
+            if (s.charAt(i) == '1') {
+                int num = 0;
+                for (int j = i; j < s.length() && j < i + 32; j++) {
+                    num <<= 1;
+                    if (s.charAt(j) == '1') {
+                        num += 1;
+                    }
+                    if (!map.containsKey(num)) {
+                        map.put(num, j);
+                    }
                 }
             }
         }
 
         int[][] ans = new int[queries.length][2];
-        Map<Integer, int[]> xorAns = new HashMap<>();
 
         for (int i = 0; i < queries.length; i++) {
             int xor = queries[i][0] ^ queries[i][1];
@@ -59,11 +56,6 @@ class Solution {
                 continue;
             }
 
-            if (xorAns.containsKey(xor)) {
-                ans[i] = xorAns.get(xor);
-                continue;
-            }
-
             int r = find(xor, map);
             if (r == -1) {
                 ans[i] = new int[]{-1, -1};
@@ -71,8 +63,6 @@ class Solution {
                 int l = calc(xor, r);
                 ans[i] = new int[]{l, r};
             }
-
-            xorAns.put(xor, ans[i]);
         }
         return ans;
     }
