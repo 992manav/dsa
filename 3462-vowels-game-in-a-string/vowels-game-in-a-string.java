@@ -9,13 +9,13 @@ class Solution {
     } 
     
     int vowels(String s) { 
-        int count = 0; 
+       
         for (char c : s.toCharArray()) { 
             if (check(c)) { 
-                count++; 
+                return 1;
             } 
         } 
-        return count; 
+        return 0; 
     } 
     
     public boolean doesAliceWin(String s) { 
