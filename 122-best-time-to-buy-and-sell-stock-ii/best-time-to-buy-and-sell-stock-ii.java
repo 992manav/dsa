@@ -6,22 +6,17 @@ class Solution {
         int[] nextGreater = new int[n];
         Arrays.fill(nextGreater, -1);
 
-        Stack<Integer> st = new Stack<>();
+        Deque<Integer> st = new ArrayDeque<>();
 
         for (int i = n - 1; i >= 0; i--) {
-            boolean fall = false; // reset for each i
-
-            // pop until we find a bigger element
+            boolean fall = false;
             while (!st.isEmpty() && prices[st.peek()] <= prices[i]) {
                 fall = true;
                 st.pop();
             }
-
-            // only assign nextGreater if no fall happened
             if (!st.isEmpty() && !fall) {
                 nextGreater[i] = st.peek();
             }
-
             st.push(i);
         }
 
