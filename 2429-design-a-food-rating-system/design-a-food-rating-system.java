@@ -7,9 +7,9 @@ class FoodRatings {
     int n;
 
     public void insert(String f, String c, int r) {
-        TreeMap<Integer, TreeSet<String>> mp = map.computeIfAbsent(c, k -> new TreeMap<>());
-        TreeSet<String> set = mp.computeIfAbsent(r, k -> new TreeSet<>());
-        set.add(f);
+        map.computeIfAbsent(c, k -> new TreeMap<>())
+            .computeIfAbsent(r, k -> new TreeSet<>())
+            .add(f);
     }
 
     public FoodRatings(String[] foods, String[] cus, int[] rat) {
@@ -37,7 +37,6 @@ class FoodRatings {
 
     public String highestRated(String c) {
         TreeMap<Integer, TreeSet<String>> mp = map.get(c);
-        int highestRating = mp.lastKey();
-        return mp.get(highestRating).first();
+        return mp.get(mp.lastKey()).first();
     }
 }
