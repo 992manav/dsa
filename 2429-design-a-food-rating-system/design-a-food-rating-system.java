@@ -7,23 +7,9 @@ class FoodRatings {
     int n;
 
     public void insert(String f, String c, int r) {
-        if (map.containsKey(c)) {
-            TreeMap<Integer, TreeSet<String>> mp = map.get(c);
-            if (mp.containsKey(r)) {
-                TreeSet<String> set = mp.get(r);
-                set.add(f);
-            } else {
-                TreeSet<String> set = new TreeSet<>();
-                set.add(f);
-                mp.put(r, set);
-            }
-        } else {
-            TreeMap<Integer, TreeSet<String>> mp = new TreeMap<>();
-            TreeSet<String> set = new TreeSet<>();
-            set.add(f);
-            mp.put(r, set);
-            map.put(c, mp);
-        }
+        TreeMap<Integer, TreeSet<String>> mp = map.computeIfAbsent(c, k -> new TreeMap<>());
+        TreeSet<String> set = mp.computeIfAbsent(r, k -> new TreeSet<>());
+        set.add(f);
     }
 
     public FoodRatings(String[] foods, String[] cus, int[] rat) {
@@ -44,9 +30,7 @@ class FoodRatings {
         TreeMap<Integer, TreeSet<String>> mp = map.get(c);
         TreeSet<String> set = mp.get(r);
         set.remove(f);
-        if (set.isEmpty()) {
-            mp.remove(r);
-        }
+        if (set.isEmpty()) mp.remove(r);
         insert(f, c, nr);
         f_r_map.put(f, nr);
     }
@@ -54,7 +38,6 @@ class FoodRatings {
     public String highestRated(String c) {
         TreeMap<Integer, TreeSet<String>> mp = map.get(c);
         int highestRating = mp.lastKey();
-        TreeSet<String> set = mp.get(highestRating);
-        return set.first();
+        return mp.get(highestRating).first();
     }
 }
