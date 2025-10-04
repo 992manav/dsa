@@ -1,39 +1,27 @@
 class Solution {
 
-    int m, n;
-    int[][] grid;
-    int[][] dp;
-
-    int fun(int i, int j) {
-
-        // Out of bounds
-        if (i >= m || j >= n) return Integer.MAX_VALUE;
-
-        // Destination reached
-        if (i == m - 1 && j == n - 1) return grid[i][j];
-
-        // Check memo
-        if (dp[i][j] != -1) return dp[i][j];
-
-        // Explore down and right
-        int down = fun(i + 1, j);
-        int right = fun(i, j + 1);
-
-        dp[i][j] = grid[i][j] + Math.min(down, right); // combine addition here
-
-        return dp[i][j];
-    }
-
     public int minPathSum(int[][] grid) {
-        this.m = grid.length;
-        this.n = grid[0].length;
-        this.grid = grid;
+        int m = grid.length;
+        int n = grid[0].length;
+        int[][] dp = new int[m][n];
 
-        dp = new int[m][n];
-        for (int i = 0; i < m; i++)
-            for (int j = 0; j < n; j++)
-                dp[i][j] = -1;
+        // Fill dp from bottom-right to top-left
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = n - 1; j >= 0; j--) {
 
-        return fun(0, 0);
+                // Destination cell
+                if (i == m - 1 && j == n - 1) {
+                    dp[i][j] = grid[i][j];
+                    continue;
+                }
+
+                int down = (i + 1 < m) ? dp[i + 1][j] : Integer.MAX_VALUE;
+                int right = (j + 1 < n) ? dp[i][j + 1] : Integer.MAX_VALUE;
+
+                dp[i][j] = grid[i][j] + Math.min(down, right);
+            }
+        }
+
+        return dp[0][0];
     }
 }
