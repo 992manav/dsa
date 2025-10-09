@@ -20,7 +20,7 @@ class Solution {
         int n = words.length;
         dp = new int[n];
         Arrays.fill(dp, -1);
-        Arrays.sort(words, Comparator.comparingInt(String::length));
+        // Arrays.sort(words, Comparator.comparingInt(String::length));
         graph = new ArrayList[n];
         for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
         Map<Integer, List<Integer>> byLen = new HashMap<>();
