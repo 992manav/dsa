@@ -2,54 +2,56 @@ import java.util.*;
 
 class Solution {
 
-    int[] dp;
-    List<Integer>[] graph;
+    private List<String> words;
+    private int[][] dp;
+    private int n;
 
-    int dfs(int node, boolean[] visited) {
-        if (dp[node] != -1) return dp[node];
-        visited[node] = true;
-        int max = 0;
-        for (int next : graph[node]) {
-            if (!visited[next]) max = Math.max(max, dfs(next, visited));
-        }
-        visited[node] = false;
-        return dp[node] = 1 + max;
-    }
+    // Check if words[i] can follow words[j] in the chain
+    private boolean canTake(int i, int j) {
+        String a = words.get(i); // longer
+        String b = words.get(j); // shorter
+        if (a.length() != b.length() + 1) return false;
 
-    public int longestStrChain(String[] words) {
-        int n = words.length;
-        dp = new int[n];
-        Arrays.fill(dp, -1);
-        // Arrays.sort(words, Comparator.comparingInt(String::length));
-        graph = new ArrayList[n];
-        for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
-        Map<Integer, List<Integer>> byLen = new HashMap<>();
-        for (int i = 0; i < n; i++)
-            byLen.computeIfAbsent(words[i].length(), k -> new ArrayList<>()).add(i);
-        for (int len : byLen.keySet()) {
-            if (!byLen.containsKey(len + 1)) continue;
-            for (int i : byLen.get(len)) {
-                for (int j : byLen.get(len + 1)) {
-                    if (check(words[i], words[j])) graph[i].add(j);
-                }
+        int p1 = 0, p2 = 0;
+        boolean skipped = false;
+        while (p1 < a.length() && p2 < b.length()) {
+            if (a.charAt(p1) == b.charAt(p2)) {
+                p1++; p2++;
+            } else {
+                if (skipped) return false;
+                skipped = true;
+                p1++;
             }
-        }
-        int maxChain = 0;
-        boolean[] visited = new boolean[n];
-        for (int i = 0; i < n; i++)
-            maxChain = Math.max(maxChain, dfs(i, visited));
-        return maxChain;
-    }
-
-    boolean check(String a, String b) {
-        int lenA = a.length(), lenB = b.length();
-        if (lenB != lenA + 1) return false;
-        int i = 0, j = 0, diff = 0;
-        while (i < lenA && j < lenB) {
-            if (a.charAt(i) == b.charAt(j)) i++;
-            else if (++diff > 1) return false;
-            j++;
         }
         return true;
     }
+
+    private int helper(int i, int prevIdx) {
+        if (i == n) return 0;
+        if (dp[i][prevIdx + 1] != -1) return dp[i][prevIdx + 1];
+
+        int notTake = helper(i + 1, prevIdx);
+        int take = 0;
+
+        if (prevIdx == -1 || canTake(i, prevIdx)) {
+            take = 1 + helper(i + 1, i);
+        }
+
+        return dp[i][prevIdx + 1] = Math.max(take, notTake);
+    }
+
+    public int longestStrChain(String[] wordsArr) {
+        words = Arrays.asList(wordsArr);
+        n = words.size();
+
+        // Sort words by length
+        Collections.sort(words, (a, b) -> Integer.compare(a.length(), b.length()));
+
+        dp = new int[n + 1][n + 1];
+        for (int[] row : dp) Arrays.fill(row, -1);
+
+        return helper(0, -1);
+    }
+
+  
 }
