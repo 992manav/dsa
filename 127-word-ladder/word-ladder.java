@@ -2,37 +2,8 @@ import java.util.*;
 
 class Solution {
 
-    List<String> wl;
-    int[][] matrig;
-    int end;
-    int n;
-
-    int bfs(int start) {
-        boolean[] visited = new boolean[n];
-        Queue<Integer> q = new LinkedList<>();
-        q.offer(start);
-        visited[start] = true; // mark immediately
-        int level = 1;
-
-        while (!q.isEmpty()) {
-            int size = q.size();
-            for (int i = 0; i < size; i++) {
-                int row = q.poll();
-
-                if (row == end) return level;
-
-                // Traverse only neighbors that exist
-                for (int j = 0; j < n; j++) {
-                    if (matrig[row][j] == 1 && !visited[j]) {
-                        visited[j] = true;  // mark visited immediately
-                        q.offer(j);
-                    }
-                }
-            }
-            level++;
-        }
-        return Integer.MAX_VALUE;
-    }
+    Set<String> wordSet;
+    String endWord;
 
     boolean check(String a, String b) {
         int diff = 0;
@@ -44,31 +15,36 @@ class Solution {
         return diff == 1;
     }
 
-    public int ladderLength(String bw, String endWord, List<String> wlInput) {
-        wl = new ArrayList<>(wlInput);
-        n = wl.size();
+    int bfs(String beginWord) {
+        Queue<String> q = new LinkedList<>();
+        Set<String> visited = new HashSet<>();
+        q.offer(beginWord);
+        visited.add(beginWord);
+        int level = 1;
 
-        if (!wl.contains(endWord)) return 0;
+        while (!q.isEmpty()) {
+            int size = q.size();
+            for (int i = 0; i < size; i++) {
+                String word = q.poll();
+                if (word.equals(endWord)) return level;
 
-        matrig = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) { // only upper triangle
-                if (check(wl.get(i), wl.get(j))) {
-                    matrig[i][j] = 1;
-                    matrig[j][i] = 1;
+                for (String next : wordSet) {
+                    if (!visited.contains(next) && check(word, next)) {
+                        visited.add(next);
+                        q.offer(next);
+                    }
                 }
             }
+            level++;
         }
+        return 0;
+    }
 
-        end = wl.indexOf(endWord);
-        int min = Integer.MAX_VALUE;
+    public int ladderLength(String beginWord, String endWordInput, List<String> wordList) {
+        wordSet = new HashSet<>(wordList);
+        endWord = endWordInput;
+        if (!wordSet.contains(endWord)) return 0;
 
-        for (int i = 0; i < n; i++) {
-            if (check(wl.get(i), bw)) {
-                min = Math.min(bfs(i), min);
-            }
-        }
-
-        return min == Integer.MAX_VALUE ? 0 : min + 1;
+        return bfs(beginWord);
     }
 }
