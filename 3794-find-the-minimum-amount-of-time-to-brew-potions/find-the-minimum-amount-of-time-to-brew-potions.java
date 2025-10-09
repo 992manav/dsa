@@ -45,10 +45,4 @@ class Solution {
         return current[n - 1];
     }
 
-    public static void main(String[] args) {
-        Solution sol = new Solution();
-        int[] arr = {3, 5, 3, 9};
-        int[] brr = {1, 10, 7, 3};
-        System.out.println(sol.minTime(arr, brr));
-    }
 }
