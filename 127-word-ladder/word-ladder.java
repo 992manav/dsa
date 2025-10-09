@@ -8,11 +8,10 @@ class Solution {
     int n;
 
     int bfs(int start) {
-
         boolean[] visited = new boolean[n];
         Queue<Integer> q = new LinkedList<>();
         q.offer(start);
-        visited[start] = true; // mark visited immediately
+        visited[start] = true; // mark immediately
         int level = 1;
 
         while (!q.isEmpty()) {
@@ -22,16 +21,16 @@ class Solution {
 
                 if (row == end) return level;
 
+                // Traverse only neighbors that exist
                 for (int j = 0; j < n; j++) {
                     if (matrig[row][j] == 1 && !visited[j]) {
-                        visited[j] = true; // mark when adding to queue
+                        visited[j] = true;  // mark visited immediately
                         q.offer(j);
                     }
                 }
             }
             level++;
         }
-
         return Integer.MAX_VALUE;
     }
 
@@ -39,8 +38,7 @@ class Solution {
         int diff = 0;
         for (int i = 0; i < a.length(); i++) {
             if (a.charAt(i) != b.charAt(i)) {
-                diff++;
-                if (diff > 1) return false;
+                if (++diff > 1) return false;
             }
         }
         return diff == 1;
@@ -54,7 +52,7 @@ class Solution {
 
         matrig = new int[n][n];
         for (int i = 0; i < n; i++) {
-            for (int j = i + 1; j < n; j++) { // only fill upper triangle
+            for (int j = i + 1; j < n; j++) { // only upper triangle
                 if (check(wl.get(i), wl.get(j))) {
                     matrig[i][j] = 1;
                     matrig[j][i] = 1;
