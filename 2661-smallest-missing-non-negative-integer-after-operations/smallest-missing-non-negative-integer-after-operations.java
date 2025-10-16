@@ -25,19 +25,28 @@ class Solution {
         this.k = k;
         this.nums = nums;
         int n = nums.length;
-        int[] freq = new int[k];
+
+        int[] freq = new int[k]; // only track remainders modulo k
+
         for (int i = 0; i < n; i++) {
-            int curr = ((nums[i] % k) + k) % k;
+            int curr = replace(nums[i]);
+            curr = ((curr % k) + k) % k; // ensure 0 <= curr < k
             freq[curr]++;
         }
-        int minFreq = Integer.MAX_VALUE;
-        int minIndex = -1;
+
+        int min = Integer.MAX_VALUE;
+        int min_index = 0;
+
         for (int i = 0; i < k; i++) {
-            if (freq[i] < minFreq) {
-                minFreq = freq[i];
-                minIndex = i;
+            if (freq[i] == 0) {
+                return i; // if a remainder never appears, that remainder itself is missing
+            }
+            if (freq[i] < min) {
+                min = freq[i];
+                min_index = i;
             }
         }
-        return minFreq * k + minIndex;
+
+        return min * k + min_index; // correct formula for smallest missing number
     }
 }
