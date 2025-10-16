@@ -3,13 +3,9 @@ class Solution {
     int n;
 
     void swap(int i, int j) {
-        if (nums[j] < 0 || nums[j] > n) {
-            nums[j] = nums[i];
-        } else {
-            int temp = nums[i];
-            nums[i] = nums[j];
-            nums[j] = temp;
-        }
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
     }
 
     public int firstMissingPositive(int[] nums) {
@@ -26,9 +22,7 @@ class Solution {
         }
 
         for (int i = 0; i < n; i++) {
-            if (nums[i] != i + 1) {
-                return i + 1;
-            }
+            if (nums[i] != i + 1) return i + 1;
         }
 
         return n + 1;
