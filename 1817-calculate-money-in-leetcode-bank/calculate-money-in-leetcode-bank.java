@@ -1,24 +1,24 @@
 class Solution {
-    public int totalMoney(int n) {
-        int q = n / 7;
+    public int totalMoney(int divas) {   // divas = number of days
+        int saptaah = divas / 7;         // saptaah = number of full weeks
 
-        int m = q + 3;
-        int sum = 0;
+        int madhya = saptaah + 3;        // madhya = middle value for formula
+        int kulRakam = 0;                // kulRakam = total amount
 
-        if (q > 0) {
-            sum = 7 * m * (m + 1) / 2 - 42;
+        if (saptaah > 0) {
+            kulRakam = 7 * madhya * (madhya + 1) / 2 - 42;
         }
 
-        int r = n % 7;
+        int bakiDivas = divas % 7;       // bakiDivas = remaining days
 
-        int start = q + 1;
+        int sharuRakam = saptaah + 1;    // sharuRakam = starting amount of next week
 
-        int cur = 0;
-        for (int i = 0; i < r; i++) {
-            cur += start;
-            start++;
+        int extraRakam = 0;              // extraRakam = leftover week money
+        for (int i = 0; i < bakiDivas; i++) {
+            extraRakam += sharuRakam;
+            sharuRakam++;
         }
 
-        return sum + cur;
+        return kulRakam + extraRakam;
     }
 }
