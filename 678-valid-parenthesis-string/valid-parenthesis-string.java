@@ -2,19 +2,18 @@ import java.util.*;
 
 class Solution {
     public boolean checkValidString(String s) {
-
         Stack<Character> st = new Stack<>();
         int count = 0;
 
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
+            
             if (c == '(' || c == '*') {
-                if(c=='('){
-                    count=0;
+                if (c == '(') {
+                    count = 0;
                 }
                 st.push(c);
-
-            } else if (c == ')') {
+            } else { // c == ')'
                 if (st.isEmpty()) {
                     if (count > 0) {
                         count--;
@@ -23,48 +22,49 @@ class Solution {
                     }
                 } else {
                     char top = st.peek();
-
+                    
                     if (top == '(') {
                         st.pop();
-                    } else {
+                    } else { // top == '*'
                         while (!st.isEmpty() && st.peek() == '*') {
                             count++;
                             st.pop();
                         }
-
+                        
                         if (st.isEmpty()) {
                             if (count == 0) {
                                 return false;
                             }
                             count--;
-                        } else if (st.peek() == '(') {
+                        } else { // st.peek() == '('
                             st.pop();
                         }
-
-                        while (count-- > 0) {
+                        
+                        while (count > 0) {
                             st.push('*');
+                            count--;
                         }
-                        count = 0;
                     }
                 }
             }
         }
 
+        // Final validation
         while (!st.isEmpty()) {
-            if (st.peek() == '(') {
+            char top = st.pop();
+            if (top == '(') {
                 if (count > 0) {
                     count--;
                 } else {
                     return false;
                 }
-                st.pop();
-            } else if (st.peek() == ')') {
+            } else if (top == ')') {
                 return false;
-            } else {
-                count++; // <-- added this ONLY
-                st.pop();
+            } else { // top == '*'
+                count++;
             }
         }
+        
         return true;
     }
 }
