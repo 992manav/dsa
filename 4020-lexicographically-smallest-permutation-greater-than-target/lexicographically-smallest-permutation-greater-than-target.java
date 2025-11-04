@@ -28,16 +28,14 @@ class Solution {
     void reverse(char[] nums, int start, int end) {
         while (start < end) {
             char temp = nums[start];
-            nums[start] = nums[end];
-            nums[end] = temp;
-            start++;
-            end--;
+            nums[start++] = nums[end];
+            nums[end--] = temp;
         }
     }
 
     public String lexGreaterPermutation(String s, String target) {
 
-        if (s.compareTo(target) == 0) {
+        if (s.equals(target)) {
             String p = nextPermutation(s);
             return (p.compareTo(target) <= 0) ? "" : p;
         }
@@ -46,16 +44,13 @@ class Solution {
         Arrays.sort(arr);
         String reverse = new StringBuilder(new String(arr)).reverse().toString();
 
-        if (reverse.compareTo(target) < 0) {
-            return "";
-        }
+        if (reverse.compareTo(target) < 0) return "";
 
         int[] freq = new int[26];
-        for (int i = 0; i < s.length(); i++) freq[s.charAt(i) - 'a']++;
+        for (char c : s.toCharArray()) freq[c - 'a']++;
 
         StringBuilder sb = new StringBuilder();
-        boolean flag = false;
-        boolean flag1 = false;
+        boolean flag = false, flag1 = false;
         int i;
 
         for (i = 0; i < target.length(); i++) {
@@ -78,15 +73,14 @@ class Solution {
         if (flag) {
             char c = target.charAt(i);
             int idx = c - 'a';
-
-            // \U0001f527 FIX: try to place next greater character than target[i]
             boolean placed = false;
+
+            // try to place next greater character than target[i]
             for (int j = idx + 1; j < 26; j++) {
                 if (freq[j] > 0) {
                     sb.append((char) (j + 'a'));
                     freq[j]--;
-                    placed = true;
-                    flag1 = true;
+                    flag1 = placed = true;
                     break;
                 }
             }
@@ -97,12 +91,12 @@ class Solution {
                     char last = sb.charAt(sb.length() - 1);
                     freq[last - 'a']++;
                     sb.deleteCharAt(sb.length() - 1);
+
                     for (int j = (last - 'a') + 1; j < 26; j++) {
                         if (freq[j] > 0) {
                             sb.append((char) (j + 'a'));
                             freq[j]--;
-                            flag1 = true;
-                            placed = true;
+                            flag1 = placed = true;
                             break;
                         }
                     }
@@ -112,29 +106,19 @@ class Solution {
 
             // append smallest remaining
             for (int k = 0; k < 26; k++) {
-                while (freq[k] > 0) {
-                    sb.append((char) (k + 'a'));
-                    freq[k]--;
-                }
+                while (freq[k]-- > 0) sb.append((char) (k + 'a'));
             }
         }
 
         if (flag || flag1) {
-            if (reverse.compareTo(target) <= 0) {
-                return "";
-            } else {
-                String str = sb.toString();
-                if (str.compareTo(target) <= 0) {
-                    String p = nextPermutation(str);
-                    if (p.compareTo(target) <= 0) {
-                        return "";
-                    } else {
-                        return p;
-                    }
-                } else {
-                    return str;
-                }
+            if (reverse.compareTo(target) <= 0) return "";
+
+            String str = sb.toString();
+            if (str.compareTo(target) <= 0) {
+                String p = nextPermutation(str);
+                return (p.compareTo(target) <= 0) ? "" : p;
             }
+            return str;
         }
 
         return sb.toString();
