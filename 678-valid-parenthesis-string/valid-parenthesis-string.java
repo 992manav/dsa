@@ -1,56 +1,67 @@
-import java.util.Stack;
+import java.util.*;
 
 class Solution {
     public boolean checkValidString(String s) {
-        
+
         Stack<Character> st = new Stack<>();
+        int count = 0;
 
         for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
+            char c = s.charAt(i);
+            if (c == '(' || c == '*') {
+                st.push(c);
 
-            if (ch == '(' || ch == '*') {
-                st.push(ch);
-            } else if (ch == ')') {
-                if (st.isEmpty()) return false;
-
-                if (st.peek() == '(') {
-                    st.pop();
-                } else {
-                    int count = 0;
-
-                    // Count and remove consecutive '*' from stack
-                    while (!st.isEmpty() && st.peek() == '*') {
-                        st.pop();
-                        count++;
-                    }
-
-                    if (!st.isEmpty() && st.peek() == '(') {
-                        st.pop();  // match '(' with ')'
-                    } else if (count > 0) {
-                        count--;  // treat one '*' as '('
+            } else if (c == ')') {
+                if (st.isEmpty()) {
+                    if (count > 0) {
+                        count--;
                     } else {
-                        return false; // no matching '(' or '*'
+                        return false;
                     }
+                } else {
+                    char top = st.peek();
 
-                    // Push back remaining '*' if any
-                    while (count-- > 0) {
-                        st.push('*');
+                    if (top == '(') {
+                        st.pop();
+                    } else {
+                        while (!st.isEmpty() && st.peek() == '*') {
+                            count++;
+                            st.pop();
+                        }
+
+                        if (st.isEmpty()) {
+                            if (count == 0) {
+                                return false;
+                            }
+                            count--;
+                        } else if (st.peek() == '(') {
+                            st.pop();
+                        }
+
+                        while (count-- > 0) {
+                            st.push('*');
+                        }
+                        count = 0;
                     }
                 }
             }
         }
 
-        // If only '*' left, it's okay; if any unmatched '(', return false
-        int starCount = 0;
         while (!st.isEmpty()) {
-            if (st.pop() == '(') {
-                if (starCount == 0) return false;
-                starCount--; // use one '*' as ')'
+            if (st.peek() == '(') {
+                if (count > 0) {
+                    count--;
+                } else {
+                    return false;
+                }
+                st.pop();
+            } else if (st.peek() == ')') {
+                return false;
             } else {
-                starCount++; // count '*'
+                count++; // <-- added this ONLY
+                st.pop();
             }
         }
-
         return true;
     }
 }
