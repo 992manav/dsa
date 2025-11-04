@@ -33,18 +33,37 @@ class Solution {
         }
     }
 
+    // \U0001f539 Fast lexicographic comparison (avoids creating new Strings)
+    boolean isLessOrEqual(String a, String b) {
+        int n = Math.min(a.length(), b.length());
+        for (int i = 0; i < n; i++) {
+            char ca = a.charAt(i), cb = b.charAt(i);
+            if (ca != cb) return ca < cb;
+        }
+        return a.length() <= b.length();
+    }
+
+    boolean isLess(String a, String b) {
+        int n = Math.min(a.length(), b.length());
+        for (int i = 0; i < n; i++) {
+            char ca = a.charAt(i), cb = b.charAt(i);
+            if (ca != cb) return ca < cb;
+        }
+        return a.length() < b.length();
+    }
+
     public String lexGreaterPermutation(String s, String target) {
 
         if (s.equals(target)) {
             String p = nextPermutation(s);
-            return (p.compareTo(target) <= 0) ? "" : p;
+            return (isLessOrEqual(p, target)) ? "" : p;
         }
 
         char[] arr = s.toCharArray();
         Arrays.sort(arr);
         String reverse = new StringBuilder(new String(arr)).reverse().toString();
 
-        if (reverse.compareTo(target) < 0) return "";
+        if (isLess(reverse, target)) return "";
 
         int[] freq = new int[26];
         for (char c : s.toCharArray()) freq[c - 'a']++;
@@ -67,7 +86,7 @@ class Solution {
 
         if (!flag) {
             String p = nextPermutation(target);
-            return (p.compareTo(target) <= 0) ? "" : p;
+            return (isLessOrEqual(p, target)) ? "" : p;
         }
 
         if (flag) {
@@ -111,12 +130,13 @@ class Solution {
         }
 
         if (flag || flag1) {
-            if (reverse.compareTo(target) <= 0) return "";
+            if (isLessOrEqual(reverse, target)) return "";
 
             String str = sb.toString();
-            if (str.compareTo(target) <= 0) {
+            if (isLessOrEqual(str, target)) {
                 String p = nextPermutation(str);
-                return (p.compareTo(target) <= 0) ? "" : p;
+                if (isLessOrEqual(p, target)) return "";
+                return p;
             }
             return str;
         }
