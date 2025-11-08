@@ -18,22 +18,30 @@ class Solution {
                 } else if (c == min) {
                     String a = new StringBuilder(s.substring(0, min_index + 1)).reverse().append(s.substring(min_index + 1)).toString();
                     String b = new StringBuilder(s.substring(0, i + 1)).reverse().append(s.substring(i + 1)).toString();
-                    if (a.compareTo(b) > 0) {
+                    int x = a.compareTo(b);
+                    if (x > 0) {
                         min_index = i;
                     }
                 }
             }
 
-            if (c > lastc && max == -1) max = i;
+            if (c > lastc && max == -1) {
+                max = i;
+            }
 
             if (c == lastc) {
                 String last2 = new StringBuilder(s.substring(0, i)).append(new StringBuilder(s.substring(i)).reverse()).toString();
 
                 if (max == -1) {
-                    if (equal == null || last2.compareTo(equal) < 0) equal = last2;
+                    if (equal == null || last2.compareTo(equal) < 0) {
+                        equal = last2;
+                    }
                 } else {
                     String last1 = new StringBuilder(s.substring(0, max)).append(new StringBuilder(s.substring(max)).reverse()).toString();
-                    if (last1.compareTo(last2) > 0) equal = last2;
+                    int x = last1.compareTo(last2);
+                    if (x > 0) {
+                        equal = last2;
+                    }
                 }
             }
         }
@@ -43,12 +51,26 @@ class Solution {
         String last = null;
         if (max != -1) {
             last = new StringBuilder(s.substring(0, max)).append(new StringBuilder(s.substring(max)).reverse()).toString();
-            if (equal != null && equal.compareTo(last) < 0) last = equal;
+            if (equal != null && equal.compareTo(last) < 0) {
+                last = equal;
+            }
         }
 
-        if (equal != null && (last == null || equal.compareTo(last) < 0)) last = equal;
+        if (equal != null && (last == null || equal.compareTo(last) < 0)) {
+            last = equal;
+        }
 
-        if (last == null || str.compareTo(last) < 0) return str;
-        return last;
+        // ------------ PROPER IF ELSE ----------
+        if (last == null) {
+            return str;
+        } else {
+            int cmp = str.compareTo(last);
+            if (cmp < 0) {
+                return str;
+            } else {
+                return last;
+            }
+        }
+        // --------------------------------------
     }
 }
