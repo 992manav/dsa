@@ -27,15 +27,18 @@ class Solution {
         return tot;
     }
     private int lowerBound(List<Integer> a, int key){
-        int l=0, r=a.size();
-        while(l<r){
-            int m=(l+r)>>>1;
-            if(a.get(m)>=key){
-                r=m;
+        int low = 0;
+        int high = a.size();
+        int ans = a.size();
+        while(low < high){
+            int mid = (low + high) / 2;
+            if(a.get(mid) >= key){
+                ans = mid;
+                high = mid;
             } else {
-                l=m+1;
+                low = mid + 1;
             }
         }
-        return l;
+        return ans;
     }
 }
