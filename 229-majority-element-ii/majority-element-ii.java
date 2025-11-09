@@ -2,23 +2,36 @@ import java.util.*;
 
 class Solution {
     public List<Integer> majorityElement(int[] nums) {
-        Arrays.sort(nums);
-        int count = nums.length / 3;
-        int i = 0;
-        int j = 1;
-        List<Integer> lst = new ArrayList<>();
-
-        while (j <= nums.length) {
-            if (j == nums.length || nums[j] != nums[i]) {
-                int diff = j - i;
-                if (diff > count) {
-                    lst.add(nums[i]);
-                }
-                i = j;
+        int el1 = 0;
+        int el2 = 0;
+        int c1 = 0;
+        int c2 = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int x = nums[i];
+            if (el1 == x) {
+                c1++;
+            } else if (el2 == x) {
+                c2++;
+            } else if (c1 == 0) {
+                el1 = x;
+                c1 = 1;
+            } else if (c2 == 0) {
+                el2 = x;
+                c2 = 1;
+            } else {
+                c1--;
+                c2--;
             }
-            j++;
         }
-
-        return lst;
+        c1 = 0;
+        c2 = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == el1) c1++;
+            else if (nums[i] == el2) c2++;
+        }
+        List<Integer> ans = new ArrayList<>();
+        if (c1 > nums.length / 3) ans.add(el1);
+        if (c2 > nums.length / 3) ans.add(el2);
+        return ans;
     }
 }
