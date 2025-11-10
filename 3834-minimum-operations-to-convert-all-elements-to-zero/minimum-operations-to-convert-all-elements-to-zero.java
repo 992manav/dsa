@@ -3,35 +3,35 @@ class Solution {
     public int minOperations(int[] nums) {
         int n = nums.length;
         int count = 0;
-        Stack<Integer> st = new Stack<>();
+        Deque<Integer> stack = new ArrayDeque<>();
 
         for(int i=n-1;i>=0;i--){
             int num = nums[i];
 
-            if(st.isEmpty()){
-                st.push(i);
+            if(stack.isEmpty()){
+                stack.push(i);
                 if(num!=0){
                     count++;
                 }
                 continue;
             }
 
-            if(num > nums[st.peek()]){
-                st.push(i);
+            if(num > nums[stack.peek()]){
+                stack.push(i);
                 count++;
                 continue;
             }
 
             boolean flag = (num==0);
 
-            while(!st.isEmpty() && num <= nums[st.peek()]){
-                if(num == nums[st.peek()]){
+            while(!stack.isEmpty() && num <= nums[stack.peek()]){
+                if(num == nums[stack.peek()]){
                     flag = true;
                 }
-                st.pop();
+                stack.pop();
             }
 
-            st.push(i);
+            stack.push(i);
             if(!flag){
                 count++;
             }
