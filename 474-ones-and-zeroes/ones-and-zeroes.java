@@ -5,6 +5,7 @@ class Solution {
     int m;
     int n;
     int[][][] dp;
+    int[][] cnt;   // cnt[i][0] = zeros, cnt[i][1] = ones
 
     int fun(int index,int count0,int count1,int count){
         if(index == arr.length){
@@ -15,32 +16,12 @@ class Solution {
             return dp[index][count0][count1];
         }
 
-        String s = arr[index];
+        int c0 = cnt[index][0];
+        int c1 = cnt[index][1];
 
-        int c0 = 0;
-        int c1 = 0;
         boolean flag = false;
 
-        for(char c : s.toCharArray()){
-            if(c == '0'){
-                c0++;
-            } else {
-                c1++;
-            }
-            if(c1 > n){
-                break;
-            }
-            if(c0 > m){
-                break;
-            }
-        }
-
-        if(c1 > n){
-            flag = true;
-        }
-        if(c0 > m){
-            flag = true;
-        }
+        
         if(count0 + c0 > m){
             flag = true;
         }
@@ -65,7 +46,6 @@ class Solution {
         }
 
         dp[index][count0][count1] = ans;
-
         return ans;
     }
 
@@ -78,11 +58,11 @@ class Solution {
             return 0;
         }
 
-        Arrays.sort(arr, new Comparator<String>(){
-            public int compare(String a, String b){
-                return a.length() - b.length();
-            }
-        });
+        // Arrays.sort(arr, new Comparator<String>(){
+        //     public int compare(String a, String b){
+        //         return a.length() - b.length();
+        //     }
+        // });
 
         this.arr = arr;
         this.m = m;
@@ -95,6 +75,21 @@ class Solution {
                     dp[i][j][k] = -1;
                 }
             }
+        }
+
+        cnt = new int[arr.length][2];
+        for(int i=0;i<arr.length;i++){
+            int zeros = 0;
+            int ones = 0;
+            for(char c : arr[i].toCharArray()){
+                if(c == '0'){
+                    zeros++;
+                } else {
+                    ones++;
+                }
+            }
+            cnt[i][0] = zeros;
+            cnt[i][1] = ones;
         }
 
         return fun(0,0,0,0);
