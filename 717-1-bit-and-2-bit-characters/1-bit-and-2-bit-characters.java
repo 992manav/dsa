@@ -1,14 +1,23 @@
 class Solution {
     public boolean isOneBitCharacter(int[] bits) {
         int n = bits.length;
-        int i = 0;
-        while (i < n - 1) {
-            if (bits[i] == 1) {
-                i += 2;
+        int count = 0;
+
+        if (bits[n - 1] == 1) {
+            return false;
+        } else {
+            for (int i = n - 2; i >= 0; i--) {
+                if (bits[i] == 1) {
+                    count++;
+                } else {
+                    break;
+                }
+            }
+            if (count % 2 == 0) {
+                return true;
             } else {
-                i += 1;
+                return false;
             }
         }
-        return i == n - 1;
     }
 }
