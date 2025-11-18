@@ -20,33 +20,13 @@ class Pair implements Comparable<Pair> {
 class Solution {
 
     List<Pair> lst;
-    int n;
-
-    int binary_search(int key) {
-        int low = 0;
-        int high = n - 1;
-        int ans = -1;
-
-        while (low <= high) {
-            int mid = low + (high - low) / 2;
-
-            if (lst.get(mid).start < key) {
-                ans = mid;
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        }
-
-        return ans;
-    }
 
     int fun(int[] lT, int[] lD, int[] wT, int[] wD) {
         int min_end = Integer.MAX_VALUE;
 
         for (int i = 0; i < lT.length; i++) {
-            int x = lT[i] + lD[i];
-            if (x < min_end) min_end = x;
+            int finish = lT[i] + lD[i];
+            if (finish < min_end) min_end = finish;
         }
 
         lst = new ArrayList<>();
@@ -55,22 +35,18 @@ class Solution {
         }
 
         Collections.sort(lst);
-        n = lst.size();
-
-        int idx = binary_search(min_end);
 
         int best = Integer.MAX_VALUE;
 
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < lst.size(); i++) {
             Pair p = lst.get(i);
 
-            int st;
-            if (p.start >= min_end) st = p.start;
-            else st = min_end;
+            int startTime;
+            if (p.start >= min_end) startTime = p.start;
+            else startTime = min_end;
 
-            int fin = st + p.duration;
-
-            if (fin < best) best = fin;
+            int finish = startTime + p.duration;
+            if (finish < best) best = finish;
         }
 
         return best;
