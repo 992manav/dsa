@@ -3,10 +3,10 @@ import java.util.*;
 class Solution {
     public int[] subarrayMajority(int[] nums, int[][] queries) {
         List<Query> list = new ArrayList<>();
-        for(int i = 0; i < queries.length; i++) {
+        int m = queries.length;
+        for(int i = 0; i < m; i++) {
             list.add(new Query(queries[i][0], queries[i][1], i, queries[i][2]));
         }
-
         MosAlgorithm mos = new MosAlgorithm(nums);
         mos.sortQuery(list);
         return mos.processQueries(list);
@@ -17,18 +17,23 @@ class MosAlgorithm {
     int[] arr;
     int n;
     int blockSize;
-    int currL = 0, currR = -1;
+    int currL;
+    int currR;
+    int max;
+    int val;
+    int f;
 
     Map<Integer, Integer> freq = new HashMap<>();
     Map<Integer, TreeSet<Integer>> map = new HashMap<>();
-    int max = 0;
 
     public MosAlgorithm(int[] arr) {
         this.arr = arr;
-        this.n = arr.length;
-
-        this.blockSize = Math.max(1, (int) Math.sqrt(n)); 
-        Query.blockSize = this.blockSize;
+        n = arr.length;
+        blockSize = Math.max(1, (int) Math.sqrt(n));
+        Query.blockSize = blockSize;
+        currL = 0;
+        currR = -1;
+        max = 0;
     }
 
     public void sortQuery(List<Query> queries) {
@@ -36,10 +41,7 @@ class MosAlgorithm {
     }
 
     public int[] processQueries(List<Query> queries) {
-        currL = 0;
-        currR = -1;
         int[] ans = new int[queries.size()];
-
         for(Query q : queries) {
             while(currL > q.left) {
                 currL--;
@@ -63,40 +65,33 @@ class MosAlgorithm {
     }
 
     public void add(int idx) {
-        int val = arr[idx];
-        int f = freq.getOrDefault(val, 0);
+        val = arr[idx];
+        f = freq.getOrDefault(val, 0);
 
-        if (f != 0) {
-            map.get(f).remove(val);
-        }
+        if (f != 0) map.get(f).remove(val);
 
         freq.put(val, f + 1);
 
-        if (!map.containsKey(f + 1)) {
-            map.put(f + 1, new TreeSet<>());
-        }
+        if (!map.containsKey(f + 1)) map.put(f + 1, new TreeSet<>());
         map.get(f + 1).add(val);
 
-        if (f + 1 > max) {
-            max = f + 1;
-        }
+        if (f + 1 > max) max = f + 1;
     }
 
     public void remove(int idx) {
-        int val = arr[idx];
-        int f = freq.get(val);
+        val = arr[idx];
+        f = freq.get(val);
 
         map.get(f).remove(val);
         freq.remove(val);
 
         if (f != 1) {
             freq.put(val, f - 1);
+            if (!map.containsKey(f - 1)) map.put(f - 1, new TreeSet<>());
             map.get(f - 1).add(val);
         }
 
-        while(max > 0 && map.get(max).isEmpty()) {
-            max--;
-        }
+        while(max > 0 && map.get(max).isEmpty()) max--;
     }
 
     public int getAnswer(int threshold) {
@@ -118,17 +113,13 @@ class Query implements Comparable<Query> {
 
     @Override
     public int compareTo(Query other) {
-        int block1 = this.left / blockSize;
+        int block1 = left / blockSize;
         int block2 = other.left / blockSize;
 
-        if (block1 != block2) {
-            return Integer.compare(block1, block2);
-        }
+        if (block1 != block2) return Integer.compare(block1, block2);
 
-        if (block1 % 2 == 1) {
-            return Integer.compare(this.right, other.right);
-        }
+        if (block1 % 2 == 1) return Integer.compare(right, other.right);
 
-        return Integer.compare(other.right, this.right);
+        return Integer.compare(other.right, right);
     }
 }
