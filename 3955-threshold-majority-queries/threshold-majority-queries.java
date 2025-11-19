@@ -116,10 +116,19 @@ class Query implements Comparable<Query> {
         int block1 = left / blockSize;
         int block2 = other.left / blockSize;
 
-        if (block1 != block2) return Integer.compare(block1, block2);
+        if (block1 != block2) {
+            return Integer.compare(block1, block2);
+        }
 
-        if (block1 % 2 == 1) return Integer.compare(right, other.right);
+        if (right == other.right) {
+            return Integer.compare(left, other.left);
+        }
+
+        if (block1 % 2 == 1) {
+            return Integer.compare(right, other.right);
+        }
 
         return Integer.compare(other.right, right);
     }
+
 }
