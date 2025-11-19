@@ -6,6 +6,7 @@ class Solution {
         for(int i = 0; i < queries.length; i++) {
             list.add(new Query(queries[i][0], queries[i][1], i, queries[i][2]));
         }
+
         MosAlgorithm mos = new MosAlgorithm(nums);
         mos.sortQuery(list);
         return mos.processQueries(list);
@@ -25,26 +26,14 @@ class MosAlgorithm {
     public MosAlgorithm(int[] arr) {
         this.arr = arr;
         this.n = arr.length;
-        this.blockSize = (int) Math.sqrt(n);
+
+        this.blockSize = Math.max(1, (int) Math.sqrt(n)); 
+        Query.blockSize = this.blockSize;
     }
 
     public void sortQuery(List<Query> queries) {
-        queries.sort((a, b) -> {
-            int block1 = a.left / blockSize;
-            int block2 = b.left / blockSize;
-
-            if (block1 != block2) {
-                return Integer.compare(block1, block2);
-            }
-
-            if (block1 % 2 == 1) {
-                return Integer.compare(a.right, b.right);
-            } else {
-                return Integer.compare(b.right, a.right);
-            }
-        });
+        Collections.sort(queries);
     }
-
 
     public int[] processQueries(List<Query> queries) {
         currL = 0;
@@ -116,12 +105,30 @@ class MosAlgorithm {
     }
 }
 
-class Query {
+class Query implements Comparable<Query> {
     int left, right, idx, threshold;
+    static int blockSize;
+
     Query(int l, int r, int i, int t) {
         left = l;
         right = r;
         idx = i;
         threshold = t;
+    }
+
+    @Override
+    public int compareTo(Query other) {
+        int block1 = this.left / blockSize;
+        int block2 = other.left / blockSize;
+
+        if (block1 != block2) {
+            return Integer.compare(block1, block2);
+        }
+
+        if (block1 % 2 == 1) {
+            return Integer.compare(this.right, other.right);
+        }
+
+        return Integer.compare(other.right, this.right);
     }
 }
