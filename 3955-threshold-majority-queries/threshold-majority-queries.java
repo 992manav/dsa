@@ -32,19 +32,10 @@ class MosAlgorithm {
         queries.sort((a, b) -> {
             int block1 = a.left / blockSize;
             int block2 = b.left / blockSize;
-
-            if (block1 != block2) {
-                return Integer.compare(block1, block2);
-            }
-
-            if (block1 % 2 == 1) {
-                return Integer.compare(a.right, b.right);
-            } else {
-                return Integer.compare(b.right, a.right);
-            }
+            if (block1 != block2) return Integer.compare(block1, block2);
+            return Integer.compare(a.right, b.right);
         });
     }
-
 
     public int[] processQueries(List<Query> queries) {
         currL = 0;
