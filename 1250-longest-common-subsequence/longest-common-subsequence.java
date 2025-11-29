@@ -1,14 +1,41 @@
+import java.util.*;
+
 class Solution {
 
     String s, t;
     int[][] dp;
+    Map<Character, List<Integer>> map = new HashMap<>();
 
-    int check(char c, int index) {
-        for (int i = index + 1; i < t.length(); i++) {
-            if (t.charAt(i) == c) {
-                return i;
+    int binary_search(int index, List<Integer> lst) {
+
+        int low = 0;
+        int high = lst.size() - 1;
+
+        int ans = -1;
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            if (lst.get(mid) <= index) {
+                low = mid + 1;
+            } else {
+                ans = mid;
+                high = mid - 1;
             }
         }
+
+        return ans;
+    }
+
+    int check(char c, int index) {
+
+        List<Integer> lst = map.get(c);
+        if (lst == null) return -1;
+
+        int pos = binary_search(index, lst); 
+        if (pos != -1) {
+            return lst.get(pos);
+        }
+
         return -1;
     }
 
@@ -41,6 +68,14 @@ class Solution {
             for (int j = 0; j <= t.length(); j++) {
                 dp[i][j] = -1;
             }
+        }
+
+       
+        map.clear();
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            map.putIfAbsent(c, new ArrayList<>());
+            map.get(c).add(i);
         }
 
         return fun(0, -1);
