@@ -1,23 +1,43 @@
 class Solution {
-    public int longestCommonSubsequence(String text1, String text2) {
-        int n1 = text1.length();
-        int n2 = text2.length();
-        int[][] dp = new int[n1 + 2][n2 + 2];
 
-        for (int i = n1 - 1; i >= 0; i--) {
-            for (int j = n2 - 1; j >= 0; j--) {
-                if (text1.charAt(i) == text2.charAt(j)) {
-                    dp[i][j] = dp[i + 1][j + 1] + 1;
-                } else {
-                    if (dp[i + 1][j] > dp[i][j + 1]) {
-                        dp[i][j] = dp[i + 1][j];
-                    } else {
-                        dp[i][j] = dp[i][j + 1];
-                    }
-                }
+    int[][] dp;
+    String a, b;
+
+    int fun(int i, int j) {
+        // agar koi string khatam thai gai to LCS zero
+        if (i == a.length() || j == b.length()) return 0;
+
+        // jo pehla thi compute karelu hoy to direct return
+        if (dp[i][j] != -1) return dp[i][j];
+
+        // agar character match thai gaya
+        if (a.charAt(i) == b.charAt(j)) {
+            dp[i][j] = 1 + fun(i + 1, j + 1);
+            return dp[i][j];
+        }
+
+        // match nai hoy to next possibilities ma thi max lai leva nu
+        int op1 = fun(i + 1, j);
+        int op2 = fun(i, j + 1);
+
+        if (op1 > op2) dp[i][j] = op1;
+        else dp[i][j] = op2;
+
+        return dp[i][j];
+    }
+
+    public int longestCommonSubsequence(String text1, String text2) {
+        a = text1;
+        b = text2;
+        dp = new int[a.length()][b.length()];
+
+        // dp fill -1 so we know kon compute nathi thayu
+        for (int i = 0; i < a.length(); i++) {
+            for (int j = 0; j < b.length(); j++) {
+                dp[i][j] = -1;
             }
         }
 
-        return dp[0][0];
+        return fun(0, 0);
     }
 }
