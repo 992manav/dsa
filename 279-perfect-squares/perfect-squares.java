@@ -1,20 +1,28 @@
 import java.util.*;
 
 public class Solution {
+
+    // Global DP array (max n = 10000)
+    static int[] dp = new int[10001];
+
     public int numSquares(int n) {
-        int[] minCount = new int[n + 1];
-        Arrays.fill(minCount, Integer.MAX_VALUE);
-        minCount[0] = 0;
 
-        for (int base = 1; base * base <= n; base++) {
-            int squareValue = base * base;
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
 
-            for (int currentSum = squareValue; currentSum <= n; currentSum++) {
-                int remaining = currentSum - squareValue;  // ← only THIS is correct
-                minCount[currentSum] = Math.min(minCount[remaining] + 1, minCount[currentSum]);
+        for (int num = 1; num * num <= n; num++) {
+
+            int square = num * num;
+
+            for (int target = square; target <= n; target++) {
+                int remaining = target - square;
+
+                if (dp[remaining] != Integer.MAX_VALUE) {
+                    dp[target] = Math.min(dp[target], dp[remaining] + 1);
+                }
             }
         }
 
-        return minCount[n];
+        return dp[n];
     }
 }
