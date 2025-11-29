@@ -60,8 +60,13 @@ class Solution {
     }
 
     public int longestCommonSubsequence(String text1, String text2) {
+        if (text1.length() <= text2.length()) {
         s = text1;
         t = text2;
+        } else {
+            s = text2;
+            t = text1;
+        }
 
         dp = new int[s.length()][t.length() + 1];
         for (int i = 0; i < s.length(); i++) {
