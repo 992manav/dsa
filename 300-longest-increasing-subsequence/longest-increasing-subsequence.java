@@ -1,22 +1,22 @@
 import java.util.*;
 
 class Solution {
-    
     public int lengthOfLIS(int[] nums) {
-        int[] dp = new int[nums.length];
-        int len = 0;
-        Arrays.fill(dp, 1);
+        int[] yahaanKhatamLIS = new int[nums.length];
+        Arrays.fill(yahaanKhatamLIS, 1);
 
-        for (int i = 0; i < dp.length; i++) {
-            int max = 0;
-            for (int j = 0; j < i; j++) {
-                if (nums[j] < nums[i]) {
-                    dp[i]=Math.max(dp[i],dp[j]+1);
+        int sabseBadaLength = 0;
+
+        for (int abhiIndex = 0; abhiIndex < nums.length; abhiIndex++) {
+            for (int pichlaIndex = 0; pichlaIndex < abhiIndex; pichlaIndex++) {
+                if (nums[pichlaIndex] < nums[abhiIndex]) {
+                    yahaanKhatamLIS[abhiIndex] =
+                        Math.max(yahaanKhatamLIS[abhiIndex], yahaanKhatamLIS[pichlaIndex] + 1);
                 }
             }
-            len = Math.max(len, dp[i]);
+            sabseBadaLength = Math.max(sabseBadaLength, yahaanKhatamLIS[abhiIndex]);
         }
 
-        return len;
+        return sabseBadaLength;
     }
 }
