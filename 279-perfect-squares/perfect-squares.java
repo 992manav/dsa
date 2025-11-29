@@ -1,34 +1,20 @@
-class Solution {
+import java.util.*;
 
-    int[] dp = new int[10001];
+public class Solution {
+    public int numSquares(int n) {
+        int[] minCount = new int[n + 1];
+        Arrays.fill(minCount, Integer.MAX_VALUE);
+        minCount[0] = 0;
 
-    int fun(int n) {
-        if (n == 0) return 0;
-        if (n < 0) return -1;
+        for (int base = 1; base * base <= n; base++) {
+            int squareValue = base * base;
 
-        if (dp[n] != 0) return dp[n];
-
-        int root = (int) Math.sqrt(n);
-        int best = Integer.MAX_VALUE;
-
-        for (int i = root; i >= 1; i--) {
-            int r = fun(n - i * i);
-            if (r != -1) {
-                int val = r + 1;
-                if (val < best) best = val;
+            for (int currentSum = squareValue; currentSum <= n; currentSum++) {
+                int remaining = currentSum - squareValue;  // ← only THIS is correct
+                minCount[currentSum] = Math.min(minCount[remaining] + 1, minCount[currentSum]);
             }
         }
 
-        if (best == Integer.MAX_VALUE) {
-            dp[n] = -1;
-            return -1;
-        }
-
-        dp[n] = best;
-        return best;
-    }
-
-    public int numSquares(int n) {
-        return fun(n);
+        return minCount[n];
     }
 }
