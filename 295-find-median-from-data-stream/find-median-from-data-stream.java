@@ -1,41 +1,46 @@
+import java.util.*;
+
 class MedianFinder {
 
-    List<Integer> lst;
-
-    int binary_search(int target){
-        int low = 0;
-        int high = lst.size() - 1;
-        int ans = lst.size();
-
-        while(low <= high){
-            int mid = low + (high - low) / 2;
-            if(lst.get(mid) <= target){
-                low = mid + 1;
-            }else{
-                ans = mid;
-                high = mid - 1;
-            }
-        }
-        return ans;
-    }
+    PriorityQueue<Integer> pq1; 
+    PriorityQueue<Integer> pq2; 
 
     public MedianFinder() {
-        lst = new ArrayList<>();
+        pq1 = new PriorityQueue<>(Collections.reverseOrder()); // max-heap
+        pq2 = new PriorityQueue<>(); // min-heap
     }
-    
+
     public void addNum(int num) {
-        int index = binary_search(num);
-        lst.add(index, num);
-    }
-    
-    public double findMedian() {
-        int n = lst.size();
-        if(n % 2 == 0){
-            double a = lst.get(n/2);
-            double b = lst.get(n/2 - 1);
-            return (a + b) / 2.0;
-        }else{
-            return lst.get(n/2);
+
+        int top2;
+        if(pq2.isEmpty()) {
+            top2 = Integer.MIN_VALUE;
+        } else {
+            top2 = pq2.peek();
         }
+
+        if(num < top2) {
+            pq1.add(num);
+        } else {
+            pq2.add(num);
+        }
+
+        if(pq1.size() == pq2.size() + 2) {
+            pq2.add(pq1.peek());
+            pq1.poll();
+        } else if(pq2.size() == pq1.size() + 2) {
+            pq1.add(pq2.peek());
+            pq2.poll();
+        }
+    }
+
+    public double findMedian() {
+        if(pq1.size() == pq2.size()) {
+            return ((double)pq1.peek() + (double)pq2.peek()) / 2.0;
+        }
+        if(pq1.size() > pq2.size()) {
+            return pq1.peek();
+        }
+        return pq2.peek();
     }
 }
