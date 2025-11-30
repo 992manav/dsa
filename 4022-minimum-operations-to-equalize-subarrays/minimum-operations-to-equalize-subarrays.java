@@ -1,39 +1,21 @@
 import java.util.*;
 
-class Solution {
+class Query implements Comparable<Query> {
 
-    public long[] minOperations(int[] nums, int k, int[][] queries) {
+    int left, right, idx;
+    static int blockSize;
 
-        int n = nums.length;
-        int m = queries.length;
+    Query(int l, int r, int i) {
+        left = l;
+        right = r;
+        idx = i;
+    }
 
-        long[] last = new long[n];
-        for (int i = 1; i < n; i++) {
-            if (nums[i] % k == nums[i - 1] % k) last[i] = last[i - 1];
-            else last[i] = i;
-        }
-
-        long[] ans = new long[m];
-        List<Query> list = new ArrayList<>();
-
-        for (int i = 0; i < m; i++) {
-            int L = queries[i][0];
-            int R = queries[i][1];
-
-            if (last[R] > L) {
-                ans[i] = -1;
-            } else {
-                list.add(new Query(L, R, i));
-            }
-        }
-
-        Query.blockSize = 100;
-        Collections.sort(list);
-
-        MosAlgorithm mos = new MosAlgorithm(nums, k);
-        mos.processQueries(list, ans);
-
-        return ans;
+    public int compareTo(Query o) {
+        int b1 = left / blockSize;
+        int b2 = o.left / blockSize;
+        if (b1 != b2) return b1 - b2;
+        return right - o.right;
     }
 }
 
@@ -148,21 +130,41 @@ class MosAlgorithm {
 }
 
 
-class Query implements Comparable<Query> {
+class Solution {
 
-    int left, right, idx;
-    static int blockSize;
+    public long[] minOperations(int[] nums, int k, int[][] queries) {
 
-    Query(int l, int r, int i) {
-        left = l;
-        right = r;
-        idx = i;
-    }
+        int n = nums.length;
+        int m = queries.length;
 
-    public int compareTo(Query o) {
-        int b1 = left / blockSize;
-        int b2 = o.left / blockSize;
-        if (b1 != b2) return b1 - b2;
-        return right - o.right;
+        long[] last = new long[n];
+        for (int i = 1; i < n; i++) {
+            if (nums[i] % k == nums[i - 1] % k) last[i] = last[i - 1];
+            else last[i] = i;
+        }
+
+        long[] ans = new long[m];
+        List<Query> list = new ArrayList<>();
+
+        for (int i = 0; i < m; i++) {
+            int L = queries[i][0];
+            int R = queries[i][1];
+
+            if (last[R] > L) {
+                ans[i] = -1;
+            } else {
+                list.add(new Query(L, R, i));
+            }
+        }
+
+        Query.blockSize = 100;
+        Collections.sort(list);
+
+        MosAlgorithm mos = new MosAlgorithm(nums, k);
+        mos.processQueries(list, ans);
+
+        return ans;
     }
 }
+
+
