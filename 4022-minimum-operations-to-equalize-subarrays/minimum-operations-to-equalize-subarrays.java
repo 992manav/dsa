@@ -1,6 +1,7 @@
 import java.util.*;
 
-// Ek single range query: [left, right] + original index
+// Ek single range query store karva mate: [left, right] + original index
+// Mo's algorithm ma queries ne sort karva use thay
 class Query implements Comparable<Query> {
 
     int left, right, idx;
@@ -12,146 +13,145 @@ class Query implements Comparable<Query> {
         idx = i;
     }
 
-    // Mo's algorithm ke hisab se sorting
-    // Pehle left ko block me divide karke (sqrt decomposition)
-    // Phir right ke hisab se
+    // Mo's algorithm ni sorting logic:
+    // Pela left ne blockSize thi divide kari block number male
+    // Same block hoy to right ni value pr sort karvu
     public int compareTo(Query o) {
-        int b1 = left / blockSize;   // mera left ka block
-        int b2 = o.left / blockSize; // dusre ka left ka block
+        int b1 = left / blockSize;    // aa query no left block
+        int b2 = o.left / blockSize;  // biji query no left block
 
-        // Agar dono different block me hai to block ke hisab se sort karo
-        if (b1 != b2) return b1 - b2;
+        if (b1 != b2) return b1 - b2; // juo, alag block hoy to block number pr sort
 
-        // Agar same block me hai to right ke hisab se sort karo
-        return right - o.right;
+        return right - o.right;       // same block ma hoy to right ni value pr sort
     }
 }
 
 
-// Mo's algorithm ka data structure jo window maintain karega
+// Aa class Mo's algorithm nu main data structure maintain kare che
+// Window ma elements add/remove kari sum, median, etc handle thay che
 class MosAlgorithm {
 
     int[] arr;
     int k;
 
-    // S1 = median ke left wala half (median included)
-    // S2 = median ke right wala half
-    // Yeh TreeMap sorted map hai, frequency store karta hai
+    // S1 = median walanu left half (median pan include)
+    // S2 = median ni right side nu half
+    // TreeMap ma sorted order + frequency store thay
     TreeMap<Integer, Integer> S1 = new TreeMap<>();
     TreeMap<Integer, Integer> S2 = new TreeMap<>();
 
-    long sum1 = 0;   // S1 ka total sum
-    long sum2 = 0;   // S2 ka total sum
-    int count1 = 0;  // S1 me kitne elements hai
-    int count2 = 0;  // S2 me kitne elements hai
+    long sum1 = 0;  // S1 na total elements nu sum
+    long sum2 = 0;  // S2 na total elements nu sum
+    int count1 = 0; // S1 ma total count
+    int count2 = 0; // S2 ma total count
 
-    int L = 0;  // Mo window ka current left
-    int R = -1; // Mo window ka current right (empty window)
+    int L = 0;      // Mo window no current left pointer
+    int R = -1;     // Mo window no current right pointer (start ma empty)
 
     MosAlgorithm(int[] arr, int k) {
         this.arr = arr;
         this.k = k;
     }
 
-    // Mo's algorithm main processing: window ko query ke hisab se adjust karo
+    // Mo's algorithm — window ne query pr adjust karo ane answer compute karo
     public void processQueries(List<Query> queries, long[] ans) {
         for (Query q : queries) {
 
-            // window ka left ko query.left tak laye
+            // window no left ne target left sudhi laavo (value add karo)
             while (L > q.left) {
                 L--;
                 add(L);
             }
 
-            // window ka right ko query.right tak badhao
+            // window no right target right sudhi move karo (add)
             while (R < q.right) {
                 R++;
                 add(R);
             }
 
-            // left ko aage badhao (remove karte hue)
+            // left pointer ne aagal push karo (remove kari)
             while (L < q.left) {
                 remove(L);
                 L++;
             }
 
-            // right ko peeche lao (remove karte hue)
+            // right pointer ne pachhal laavo (remove)
             while (R > q.right) {
                 remove(R);
                 R--;
             }
 
-            // ab current window ka answer compute karo
+            // ahiya current window nu answer nikalvo
             ans[q.idx] = getAnswer();
         }
     }
 
-    // Window me element add karna
+    // Window ma element add karvo
     public void add(int idx) {
         int x = arr[idx];
 
-        // Decide karna x S1 me jayega ya S2 me
-        // Rule: S1 me hamesha median tak wale chhote elements rakhe jaate hain
+        // Decide karvu ke x S1 ma jase ke S2 ma
+        // Rule: S1 ma chhota elements + median hoy
         if (S1.isEmpty() || x <= S1.lastKey()) {
-
-            // x median se chhota ya equal hai -> S1 me jayega
+            // x median karta chhoto ke equal: S1 ma muki do
             addTo(S1, x);
             sum1 += x;
             count1++;
         }
         else {
-            // x median se bada hai -> S2 me jayega
+            // x moto hoy to S2 ma jay
             addTo(S2, x);
             sum2 += x;
             count2++;
         }
 
-        // S1 aur S2 ka size balance rakho taki median correct rahe
+        // S1 ane S2 ni size hamesha balanced rehvi joiye
         balance();
     }
 
-    // Window se element remove karna
+    // Window ma thi element remove karvo
     public void remove(int idx) {
         int x = arr[idx];
 
-        // Agar x S1 me milta hai to S1 se remove
+        // Jo x S1 ma hase to S1 ma thi delete karo
         if (S1.containsKey(x)) {
             removeFrom(S1, x);
             sum1 -= x;
             count1--;
         }
-        else { // Otherwise definitely S2 me hai
+        else {
+            // Nahi to S2 ma j hase (karan ke S1 ma hoy to upar catch thai jase)
             removeFrom(S2, x);
             sum2 -= x;
             count2--;
         }
 
-        // S1 aur S2 ka size phir se balance karo
+        // Remove pachi pan balance jaruri
         balance();
     }
 
-    // Map me x ki frequency +1
+    // Map ma x ni frequency +1 karva
     void addTo(TreeMap<Integer, Integer> map, int x) {
         map.put(x, map.getOrDefault(x, 0) + 1);
     }
 
-    // Map me se x ki frequency -1 (agar 0 ho jaye to entry delete)
+    // Map ma thi x ni frequency -1 karo (0 thay to remove)
     void removeFrom(TreeMap<Integer, Integer> map, int x) {
         int c = map.get(x);
         if (c == 1) map.remove(x);
         else map.put(x, c - 1);
     }
 
-    // MOST IMPORTANT: S1 aur S2 ka size relation maintain karna:
+    // VERY VERY IMP: S1 ane S2 ne balance karvu
     //
-    // S1 should have:
-    //      count1 = count2  OR  count1 = count2 + 1
+    // Rule:
+    //     S1 ni size = S2 ni size  OR S1 ni size = S2 + 1
     //
     void balance() {
 
-        // Agar S1 chhota ho S2 se => median S2 me chala gaya => fix karo
+        // Jo S1 ma elements ochha hoy (median S2 ma chali gayo) -> fix karo
         while (count1 < count2) {
-            int x = S2.firstKey();   // S2 ka smallest = median side ka element
+            int x = S2.firstKey();  // S2 no smallest element
             removeFrom(S2, x);
             sum2 -= x;
             count2--;
@@ -161,9 +161,9 @@ class MosAlgorithm {
             count1++;
         }
 
-        // Agar S1 me bahut zyada elements ho -> median S1 ke end me hoga
+        // Jo S1 ma bahu extra elements hoy
         while (count1 > count2 + 1) {
-            int x = S1.lastKey();   // S1 ka largest = median ya median ke just left
+            int x = S1.lastKey();   // S1 no last = median side no element
             removeFrom(S1, x);
             sum1 -= x;
             count1--;
@@ -174,25 +174,24 @@ class MosAlgorithm {
         }
     }
 
-    // Answer nikalna:
-    // Median = S1.lastKey()
+    // Answer calculation:
     //
-    // diff1 = sab left elements ko median tak lane ka cost
-    // diff2 = sab right elements ko median tak lane ka cost
+    // median = S1.lastKey()
+    //
+    // diff1 = S1 na elements ne median sudhi lana no cost
+    // diff2 = S2 na elements ne median sudhi utaarva no cost
     //
     long getAnswer() {
 
-        int median = S1.lastKey(); // S1 ka lastKey hi pure subarray ka median hota hai
+        int median = S1.lastKey(); // S1 no lastKey j window no median
 
-        // Left ki total difference:
-        // S1 wale elements chhote hote hai → (median - x)
+        // S1 ma badha x <= median: cost = (median - x)
         long diff1 = (long) median * count1 - sum1;
 
-        // Right ki total difference:
-        // S2 wale elements bade hote hai → (x - median)
+        // S2 ma badha x >= median: cost = (x - median)
         long diff2 = sum2 - (long) median * count2;
 
-        // Har operation me +/- k kar sakte hai
+        // Ek operation ma ±k badlai sakay
         return (diff1 + diff2) / k;
     }
 }
@@ -202,57 +201,55 @@ class Solution {
 
     public long[] minOperations(int[] nums, int k, int[][] queries) {
 
-          int n = nums.length;
+        int n = nums.length;
         int m = queries.length;
 
-        // MOD K condition check (IMPORTANT)
+        // MOD K checker:
         //
         // Rule:
-        // Agar kisi range ke sare elements ka:
-        //       nums[i] % k SAME nahi hai → equal banana IMPOSSIBLE
+        //   Jo koi range L..R ma nums[i] % k same NATHI
+        //   To tene equal banavu IMPOSSIBLE
         //
-        // because operation x -> x + k mod k ko change nahi karta
+        // Karan: operation ma x -> x ± k karvathi mod k value same j rahe che
         //
-
-        // GROUP array — sabse simple mod-equality checker
-        // group[i] increases whenever nums[i] % k != nums[i-1] % k
+        // group array thi consecutive same-mod segments banave
         int[] group = new int[n];
         group[0] = 0;
 
         for (int i = 1; i < n; i++) {
             if (nums[i] % k == nums[i - 1] % k)
-                group[i] = group[i - 1];       // same mod group
+                group[i] = group[i - 1];     // same mod group continue
             else
-                group[i] = group[i - 1] + 1;   // new mod group starts
+                group[i] = group[i - 1] + 1; // navo mod group start
         }
 
         long[] ans = new long[m];
         List<Query> list = new ArrayList<>();
 
-        // Check per query if L..R lie in same mod group
+        // Har query ma check karo ke L..R same mod group ma che ke nahi
         for (int i = 0; i < m; i++) {
 
             int L = queries[i][0];
             int R = queries[i][1];
 
-            // If different group => mod breaks => impossible to equalize
+            // Jo group mismatch -> mod equality broke -> impossible
             if (group[L] != group[R]) {
                 ans[i] = -1;
-            } 
+            }
             else {
                 list.add(new Query(L, R, i));
             }
         }
 
-        // Mo's algorithm ka block size
+        // Mo's algorithm block size (static set)
         Query.blockSize = 100;
 
-        // Mo ordering
+        // Queries ne Mo's algorithm ni order ma sort karo
         Collections.sort(list);
 
         MosAlgorithm mos = new MosAlgorithm(nums, k);
 
-        // Mo’s ke sorted queries process karo
+        // Sorted queries execute karo
         mos.processQueries(list, ans);
 
         return ans;
