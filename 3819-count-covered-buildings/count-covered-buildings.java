@@ -1,50 +1,35 @@
-import java.util.*;
-
 class Solution {
+    public int countCoveredBuildings(int n, int[][] ar) {
+        int ans = 0;
+        int[] maxX = new int[n + 1];
+        int[] maxY = new int[n + 1];
+        int[] minX = new int[n + 1];
+        int[] minY = new int[n + 1];
 
-    public int countCoveredBuildings(int n, int[][] grid) {
+        for (int i = 0; i <= n; i++) {
+            minX[i] = n + 1;
+            minY[i] = n + 1;
+        }
 
-        Map<Integer, TreeSet<Integer>> xmap = new HashMap<>();
-        Map<Integer, TreeSet<Integer>> ymap = new HashMap<>();
+        for (int i = 0; i < ar.length; i++) {
+            int x = ar[i][0];
+            int y = ar[i][1];
 
-        for (int i = 0; i < grid.length; i++) {
-            int x = grid[i][0];
-            int y = grid[i][1];
+            maxX[x] = Math.max(maxX[x], y);
+            maxY[y] = Math.max(maxY[y], x);
+            minX[x] = Math.min(minX[x], y);
+            minY[y] = Math.min(minY[y], x);
+        }
 
-            if (xmap.containsKey(x)) {
-                xmap.get(x).add(y);
-            } else {
-                TreeSet<Integer> set = new TreeSet<>();
-                set.add(y);
-                xmap.put(x, set);
-            }
+        for (int i = 0; i < ar.length; i++) {
+            int x = ar[i][0];
+            int y = ar[i][1];
 
-            if (ymap.containsKey(y)) {
-                ymap.get(y).add(x);
-            } else {
-                TreeSet<Integer> set = new TreeSet<>();
-                set.add(x);
-                ymap.put(y, set);
+            if (x > minY[y] && x < maxY[y] && y > minX[x] && y < maxX[x]) {
+                ans++;
             }
         }
 
-        int count = 0;
-
-        for (int i = 0; i < grid.length; i++) {
-            int x = grid[i][0];
-            int y = grid[i][1];
-
-            TreeSet<Integer> setx = ymap.get(y);
-            TreeSet<Integer> sety = xmap.get(x);
-
-            if (sety.lower(y) != null &&
-                sety.higher(y) != null &&
-                setx.lower(x) != null &&
-                setx.higher(x) != null) {
-                count++;
-            }
-        }
-
-        return count;
+        return ans;
     }
 }
