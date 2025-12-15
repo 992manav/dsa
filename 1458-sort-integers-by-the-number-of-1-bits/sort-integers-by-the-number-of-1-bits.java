@@ -11,27 +11,22 @@ class Solution {
     }
 
     public int[] sortByBits(int[] arr) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>((pehla, dusra) -> {
+            int bitCountA = fun(pehla);
+            int bitCountB = fun(dusra);
 
-        TreeMap<Integer, ArrayList<Integer>> map = new TreeMap<>();
-
-        for(int i = 0; i < arr.length; i++){
-            int bits = fun(arr[i]);
-
-            if(map.containsKey(bits)){
-                map.get(bits).add(arr[i]);
-            } else {
-                ArrayList<Integer> list = new ArrayList<>();
-                list.add(arr[i]);
-                map.put(bits, list);
+            if (bitCountA == bitCountB) {
+                return pehla - dusra;
             }
+            return bitCountA - bitCountB;
+        });
+
+        for (int num : arr) {
+            pq.add(num);
         }
 
-        int idx = 0;
-        for(ArrayList<Integer> list : map.values()){
-            Collections.sort(list);
-            for(int x : list){
-                arr[idx++] = x;
-            }
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = pq.poll();
         }
 
         return arr;
