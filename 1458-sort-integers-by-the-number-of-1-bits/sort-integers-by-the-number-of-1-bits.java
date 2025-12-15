@@ -1,31 +1,29 @@
+import java.util.*;
+// 2¹³ = 8192
+// 2¹⁴ = 16384
+// So:
+
+// yaml
+// Copy code
+// 8192 ≤ 10000 < 16384
+// 👉 Matlab numbers 14 bits tak ja sakte hain
 class Solution {
-    public int[] sortByBits(int[] nums) {
+    public int[] sortByBits(int[] arr) {
+    // 0010000
+    // 1400000
+        int base = 100000;
 
-        // int[] par comparator directly kaam nahi karta
-        // isliye Integer[] banate hain
-        Integer[] arr = new Integer[nums.length];
-        for (int i = 0; i < nums.length; i++) {
-            arr[i] = nums[i];
+        for (int i = 0; i < arr.length; i++) {
+            int bitCount = Integer.bitCount(arr[i]);
+            arr[i] = bitCount * base + arr[i];
         }
 
-        Arrays.sort(arr, (first, second) -> {
+        Arrays.sort(arr);
 
-            // first aur second ke binary me kitne 1s hain
-            int firstBits = Integer.bitCount(first);
-            int secondBits = Integer.bitCount(second);
-
-            if (firstBits == secondBits) {
-                return first - second;
-            } else {
-                return firstBits - secondBits;
-            }
-        });
-
-        // wapas Integer[] se int[] me copy
-        for (int i = 0; i < nums.length; i++) {
-            nums[i] = arr[i];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = arr[i] % base;
         }
 
-        return nums;
+        return arr;
     }
 }
