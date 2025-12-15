@@ -12,7 +12,8 @@ class Solution {
         for(int i=1;i<list.size()-1;i+=2){
             int first = list.get(i);
             int sec = list.get(i+1);
-            ans = (ans*(sec-first))%MOD;
+            int choices=sec-first;
+            ans = ans*choices%MOD;
         }
         return (int)ans;
     }
