@@ -1,34 +1,31 @@
 class Solution {
-    int fun(int n){
-        int count = 0;
-        while(n != 0){
-            if((n & 1) == 1){
-                count++;
-            }
-            n = n >> 1;
+    public int[] sortByBits(int[] nums) {
+
+        // int[] par comparator directly kaam nahi karta
+        // isliye Integer[] banate hain
+        Integer[] arr = new Integer[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            arr[i] = nums[i];
         }
-        return count;
-    }
 
-    public int[] sortByBits(int[] arr) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>((pehla, dusra) -> {
-            int bitCountA = fun(pehla);
-            int bitCountB = fun(dusra);
+        Arrays.sort(arr, (first, second) -> {
 
-            if (bitCountA == bitCountB) {
-                return pehla - dusra;
+            // first aur second ke binary me kitne 1s hain
+            int firstBits = Integer.bitCount(first);
+            int secondBits = Integer.bitCount(second);
+
+            if (firstBits == secondBits) {
+                return first - second;
+            } else {
+                return firstBits - secondBits;
             }
-            return bitCountA - bitCountB;
         });
 
-        for (int num : arr) {
-            pq.add(num);
+        // wapas Integer[] se int[] me copy
+        for (int i = 0; i < nums.length; i++) {
+            nums[i] = arr[i];
         }
 
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = pq.poll();
-        }
-
-        return arr;
+        return nums;
     }
 }
