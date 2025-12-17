@@ -1,25 +1,45 @@
+import java.util.*;
+
 class Solution {
     public int unequalTriplets(int[] nums) {
-        int[] freq = new int[1001];
+        Arrays.sort(nums);
+        int n = nums.length;
 
-        for (int i = 0; i < nums.length; i++) {
-            freq[nums[i]]++;
-        }
-
+        int prev = 0;
+        int curr = 0;
+        int front = 0;
         int count = 0;
-        for (int i = 0; i <= 1000; i++) {
-            if(freq[i]!=0){
-                for (int j = i + 1; j <= 1000; j++) {
-                    if(freq[j]!=0){
-                        for (int k = j + 1; k <= 1000; k++) {
-                            if(freq[k]!=0){
-                                 count += freq[i] * freq[j] * freq[k];
-                            }
-                        }
-                    }
-                }
-            }
+
+        while (prev + 1 < n && nums[prev] == nums[prev + 1]) {
+            prev++;
         }
+
+        curr = prev + 1;
+        if (curr >= n) return 0;
+
+        while (curr + 1 < n && nums[curr] == nums[curr + 1]) {
+            curr++;
+        }
+
+        front = curr + 1;
+
+        while (front < n) {
+            int left = prev + 1;
+            int mid = curr - prev;
+            int right = n - front;
+
+            count += left * mid * right;
+
+            prev = curr;
+
+            while (front + 1 < n && nums[front] == nums[front + 1]) {
+                front++;
+            }
+
+            curr = front;
+            front++;
+        }
+
         return count;
     }
 }
