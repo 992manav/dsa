@@ -1,6 +1,14 @@
 import java.util.*;
 
 class Solution {
+
+    int moveSame(int[] nums, int idx, int n) {
+        while (idx + 1 < n && nums[idx] == nums[idx + 1]) {
+            idx++;
+        }
+        return idx;
+    }
+
     public int unequalTriplets(int[] nums) {
         Arrays.sort(nums);
         int n = nums.length;
@@ -10,17 +18,12 @@ class Solution {
         int front = 0;
         int count = 0;
 
-        while (prev + 1 < n && nums[prev] == nums[prev + 1]) {
-            prev++;
-        }
+        prev = moveSame(nums, prev, n);
 
         curr = prev + 1;
         if (curr >= n) return 0;
 
-        while (curr + 1 < n && nums[curr] == nums[curr + 1]) {
-            curr++;
-        }
-
+        curr = moveSame(nums, curr, n);
         front = curr + 1;
 
         while (front < n) {
@@ -32,10 +35,7 @@ class Solution {
 
             prev = curr;
 
-            while (front + 1 < n && nums[front] == nums[front + 1]) {
-                front++;
-            }
-
+            front = moveSame(nums, front, n);
             curr = front;
             front++;
         }
