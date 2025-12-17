@@ -39,7 +39,6 @@ class Solution {
                     else if (next == 'L') {
                         collision += count + 1;
                         j++;
-                        j = moveSame(s, j, 'S');
                         int cnt = countLeft(s, j);
                         collision += cnt;
                         j = j + cnt;
