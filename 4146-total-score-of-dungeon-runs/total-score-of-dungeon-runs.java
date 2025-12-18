@@ -2,7 +2,7 @@ class Solution {
 
     int binary_search(int[] prefix_d, int hp, int tot_demand_sum, int r, int max_i) {
         int low = 0;
-        int high = max_i;
+        int high = max_i - 1;
         int ans = -1;
 
         while (low <= high) {
@@ -41,14 +41,22 @@ class Solution {
             int r = req[i];
             int tot_demand_sum = prefix_d[i];
 
-            if (hp - tot_demand_sum >= r) {
-                tot += i + 1;
-            } else {
+            int count = 0;
+
+            // handle start = i separately
+            if (hp - d[i] >= r) {
+                count = 1;
+            }
+
+            // binary search for starts in [0 ... i-1]
+            if (i > 0) {
                 int index = binary_search(prefix_d, hp, tot_demand_sum, r, i);
                 if (index != -1) {
-                    tot += (i - index + 1);
+                    count += (i - index);
                 }
             }
+
+            tot += count;
         }
 
         return tot;
