@@ -1,65 +1,35 @@
 import java.util.*;
 
 class Solution {
-
-    public static int minDeletionSize(String[] strs) {
-
-        int rows = strs.length;
+    public int minDeletionSize(String[] strs) {
         int cols = strs[0].length();
+        int rows = strs.length;
 
-        List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i < cols; i++) {
-            graph.add(new ArrayList<>());
-        }
+        int[] lis = new int[cols];
+        Arrays.fill(lis, 1);
 
-        int[] indegree = new int[cols];
-
-        for (int c1 = 0; c1 < cols; c1++) {
-            for (int c2 = c1 + 1; c2 < cols; c2++) {
-
-                boolean valid = true;
-
-                for (int r = 0; r < rows; r++) {
-                    if (strs[r].charAt(c1) > strs[r].charAt(c2)) {
-                        valid = false;
-                        break;
-                    }
-                }
-
-                if (valid) {
-                    graph.get(c1).add(c2);
-                    indegree[c2]++;
+        for (int currCol = 1; currCol < cols; currCol++) {
+            for (int prevCol = 0; prevCol < currCol; prevCol++) {
+                if (isNonDecreasing(strs, prevCol, currCol)) {
+                    lis[currCol] = Math.max(lis[currCol], lis[prevCol] + 1);
                 }
             }
         }
 
-        Queue<Integer> queue = new ArrayDeque<>();
-
-        for (int i = 0; i < cols; i++) {
-            if (indegree[i] == 0) {
-                queue.add(i);
-            }
+        int maxLis = 0;
+        for (int len : lis) {
+            maxLis = Math.max(maxLis, len);
         }
 
-        int longestChain = 0;
+        return cols - maxLis;
+    }
 
-        while (!queue.isEmpty()) {
-            int size = queue.size();
-
-            for (int i = 0; i < size; i++) {
-                int col = queue.poll();
-
-                for (int next : graph.get(col)) {
-                    indegree[next]--;
-                    if (indegree[next] == 0) {
-                        queue.add(next);
-                    }
-                }
+    private boolean isNonDecreasing(String[] strs, int leftCol, int rightCol) {
+        for (String row : strs) {
+            if (row.charAt(leftCol) > row.charAt(rightCol)) {
+                return false;
             }
-
-            longestChain++;
         }
-
-        return cols - longestChain;
+        return true;
     }
 }
