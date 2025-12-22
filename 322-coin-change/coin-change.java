@@ -1,66 +1,63 @@
-import java.util.Arrays;
+import java.util.*;
 
-class Solution {
+public class Solution {
 
-    int[][] dp;
+    public static int coinChange(int[] arr, int amt) {
+        if (amt == 0) return 0;
 
-    int fun(int[] coins, int index, int amount) {
+        Arrays.sort(arr);
+        int n = arr.length;
 
-        if (amount == 0) {
-            return 0;
-        }
-
-        if (index < 0) {
+        if (n == 1) {
+            if (amt % arr[0] == 0) return amt / arr[0];
             return -1;
         }
 
-        if (dp[index][amount] != -2) {
-            return dp[index][amount];
+        int chhota = arr[0];
+        int g = chhota;
+        int idx = 1;
+
+        while (idx < n && arr[idx] <= amt) {
+            if (arr[idx] == amt) return 1;
+            g = gcd(g, arr[idx]);
+            arr[idx] -= chhota;
+            idx++;
         }
 
-        int best = Integer.MAX_VALUE;
+        if (amt % g != 0) return -1;
 
-        if (amount < coins[index]) {
-            int res = fun(coins, index - 1, amount);
-            if (res != -1) {
-                best = res;
-            }
-        } else {
-            int maxUse = amount / coins[index];
-            for (int used = maxUse; used >= 0; used--) {
-                int newAmount = amount - used * coins[index];
-                int res = fun(coins, index - 1, newAmount);
-                if (res != -1) {
-                    int cur = res + used;
-                    if (cur < best) {
-                        best = cur;
-                        if (best == 0) {
-                            break;
-                        }
-                    }
-                }
+        int minCnt = (amt - 1) / (arr[idx - 1] + chhota) + 1;
+        int maxCnt = amt / chhota;
+
+        for (int cnt = minCnt; cnt <= maxCnt; cnt++) {
+            if (milSaktaHai(arr, 1, idx - 1, amt - cnt * chhota, cnt)) {
+                return cnt;
             }
         }
 
-        if (best == Integer.MAX_VALUE) {
-            dp[index][amount] = -1;
-        } else {
-            dp[index][amount] = best;
-        }
-
-        return dp[index][amount];
+        return -1;
     }
 
-    public int coinChange(int[] coins, int amount) {
+    private static boolean milSaktaHai(int[] arr, int l, int r, int amt, int limit) {
+        if (amt == 0) return true;
+        if (l > r || amt < arr[l] || amt / arr[r] > limit) return false;
+        if (amt % arr[r] == 0) return true;
 
-        int n = coins.length;
-        Arrays.sort(coins);
-
-        dp = new int[n][amount + 1];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(dp[i], -2);
+        for (int use = amt / arr[r]; use >= 0; use--) {
+            if (milSaktaHai(arr, l, r - 1, amt - use * arr[r], limit - use)) {
+                return true;
+            }
         }
 
-        return fun(coins, n - 1, amount);
+        return false;
+    }
+
+    private static int gcd(int a, int b) {
+        while (b != 0) {
+            int t = b;
+            b = a % b;
+            a = t;
+        }
+        return a;
     }
 }
