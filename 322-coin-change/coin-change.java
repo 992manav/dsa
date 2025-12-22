@@ -4,7 +4,7 @@ class Solution {
 
     int[][] dp;
 
-    int fun(int[] coins, int index, int amount, int count) {
+    int fun(int[] coins, int index, int amount) {
 
         if (amount == 0) {
             return 0;
@@ -15,16 +15,13 @@ class Solution {
         }
 
         if (dp[index][amount] != -2) {
-            if (dp[index][amount] == -1) {
-                return -1;
-            }
             return dp[index][amount];
         }
 
         int best = Integer.MAX_VALUE;
 
         if (amount < coins[index]) {
-            int res = fun(coins, index - 1, amount, count);
+            int res = fun(coins, index - 1, amount);
             if (res != -1) {
                 best = res;
             }
@@ -32,10 +29,14 @@ class Solution {
             int maxUse = amount / coins[index];
             for (int used = maxUse; used >= 0; used--) {
                 int newAmount = amount - used * coins[index];
-                int res = fun(coins, index - 1, newAmount, count + used);
+                int res = fun(coins, index - 1, newAmount);
                 if (res != -1) {
-                    if (res + used < best) {
-                        best = res + used;
+                    int cur = res + used;
+                    if (cur < best) {
+                        best = cur;
+                        if (best == 0) {
+                            break;
+                        }
                     }
                 }
             }
@@ -43,11 +44,11 @@ class Solution {
 
         if (best == Integer.MAX_VALUE) {
             dp[index][amount] = -1;
-            return -1;
+        } else {
+            dp[index][amount] = best;
         }
 
-        dp[index][amount] = best;
-        return best;
+        return dp[index][amount];
     }
 
     public int coinChange(int[] coins, int amount) {
@@ -60,6 +61,6 @@ class Solution {
             Arrays.fill(dp[i], -2);
         }
 
-        return fun(coins, n - 1, amount, 0);
+        return fun(coins, n - 1, amount);
     }
 }
