@@ -2,7 +2,7 @@ import java.util.*;
 
 class Solution {
 
-    int[][] dp;
+    int[][][] dp;
 
     int fun(int index, int len, int target, List<Integer> nums) {
 
@@ -17,8 +17,8 @@ class Solution {
             return -1;
         }
 
-        if (dp[index][target] != -2) {
-            return dp[index][target];
+        if (dp[index][target][len] != -2) {
+            return dp[index][target][len];
         }
 
         int val = nums.get(index);
@@ -33,12 +33,12 @@ class Solution {
         }
 
         if (count == 0) {
-            dp[index][target] = -1;
+            dp[index][target][len] = -1;
         } else {
-            dp[index][target] = count;
+            dp[index][target][len] = count;
         }
 
-        return dp[index][target];
+        return dp[index][target][len];
     }
 
     int findcombi(int target, List<Integer> nums) {
@@ -49,9 +49,10 @@ class Solution {
 
         int len = nums.size();
 
-        dp = new int[len + 1][target + 1];
         for (int i = 0; i <= len; i++) {
-            Arrays.fill(dp[i], -2);
+            for (int t = 0; t <= target; t++) {
+                dp[i][t][len] = -2;
+            }
         }
 
         int res = fun(0, len, target, nums);
@@ -62,6 +63,15 @@ class Solution {
     }
 
     public List<Integer> findCoins(int[] numWays) {
+
+        int n = numWays.length + 2;
+        dp = new int[n][n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                Arrays.fill(dp[i][j], -2);
+            }
+        }
 
         List<Integer> lst = new ArrayList<>();
 
