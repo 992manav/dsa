@@ -49,11 +49,11 @@ class Solution {
 
         int len = nums.size();
 
-        for (int i = 0; i <= len; i++) {
-            for (int t = 0; t <= target; t++) {
-                dp[i][t][len] = -2;
-            }
-        }
+        // for (int i = 0; i <= len; i++) {
+        //     for (int t = 0; t <= target; t++) {
+        //         dp[i][t][len] = -2;
+        //     }
+        // }
 
         int res = fun(0, len, target, nums);
         if (res == -1) {
