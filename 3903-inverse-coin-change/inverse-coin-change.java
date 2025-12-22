@@ -4,21 +4,21 @@ class Solution {
 
     int[][][] dp;
 
-    int fun(int index, int len, int target, List<Integer> nums) {
+    int fun(int index, int target, int lstLen, List<Integer> nums) {
 
         if (target < 0) {
             return -1;
         }
 
-        if (index == len) {
+        if (index == lstLen) {
             if (target == 0) {
                 return 1;
             }
             return -1;
         }
 
-        if (dp[index][target][len] != -2) {
-            return dp[index][target][len];
+        if (dp[index][target][lstLen] != -2) {
+            return dp[index][target][lstLen];
         }
 
         int val = nums.get(index);
@@ -26,19 +26,19 @@ class Solution {
         int count = 0;
 
         for (int i = 0; i <= maxTake; i++) {
-            int res = fun(index + 1, len, target - val * i, nums);
+            int res = fun(index + 1, target - val * i, lstLen, nums);
             if (res != -1) {
                 count += res;
             }
         }
 
         if (count == 0) {
-            dp[index][target][len] = -1;
+            dp[index][target][lstLen] = -1;
         } else {
-            dp[index][target][len] = count;
+            dp[index][target][lstLen] = count;
         }
 
-        return dp[index][target][len];
+        return dp[index][target][lstLen];
     }
 
     int findcombi(int target, List<Integer> nums) {
@@ -47,15 +47,9 @@ class Solution {
             return 0;
         }
 
-        int len = nums.size();
+        int lstLen = nums.size();
 
-        // for (int i = 0; i <= len; i++) {
-        //     for (int t = 0; t <= target; t++) {
-        //         dp[i][t][len] = -2;
-        //     }
-        // }
-
-        int res = fun(0, len, target, nums);
+        int res = fun(0, target, lstLen, nums);
         if (res == -1) {
             return 0;
         }
