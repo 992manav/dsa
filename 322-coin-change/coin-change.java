@@ -1,63 +1,25 @@
-import java.util.*;
+class Solution {
+    public int coinChange(int[] coins, int amount) {
+        // 1. Create the DP array
+        int[] dp = new int[amount + 1]; // Create an array to store minimum coin counts. The size is amount + 1 because we want an index for amount 0 to amount
 
-public class Solution {
+        // 2. Initialize the DP array
+        Arrays.fill(dp, amount + 1);  // Initialize to "infinity" (a value larger than any possible answer).  This means initially we assume it's impossible to make any amount (except 0).
+        dp[0] = 0;                     // Base case:  We need 0 coins to make an amount of 0.  Important!
 
-    public static int coinChange(int[] arr, int amt) {
-        if (amt == 0) return 0;
-
-        Arrays.sort(arr);
-        int n = arr.length;
-
-        if (n == 1) {
-            if (amt % arr[0] == 0) return amt / arr[0];
-            return -1;
-        }
-
-        int chhota = arr[0];
-        int g = chhota;
-        int idx = 1;
-
-        while (idx < n && arr[idx] <= amt) {
-            if (arr[idx] == amt) return 1;
-            g = gcd(g, arr[idx]);
-            arr[idx] -= chhota;
-            idx++;
-        }
-
-        if (amt % g != 0) return -1;
-
-        int minCnt = (amt - 1) / (arr[idx - 1] + chhota) + 1;
-        int maxCnt = amt / chhota;
-
-        for (int cnt = minCnt; cnt <= maxCnt; cnt++) {
-            if (milSaktaHai(arr, 1, idx - 1, amt - cnt * chhota, cnt)) {
-                return cnt;
+        // 3. Iterate through the amounts and coins
+        for (int i = 1; i <= amount; i++) {   // Iterate through each possible amount (from 1 to the target amount)
+            for (int coin : coins) {          // For each amount, try using each available coin
+                if (coin <= i) {             // Check if the current coin's value is small enough to be used for the current amount
+                    dp[i] = Math.min(dp[i], dp[i - coin] + 1);  // This is the core DP step:
+                                                                 // * `dp[i - coin]`: The minimum coins needed to make the amount *before* using the current coin.
+                                                                 // * `+ 1`: We add 1 because we're using the current coin.
+                                                                 // * `Math.min()`:  We keep the *smallest* value - the one that gives us the fewest coins.
+                }
             }
         }
 
-        return -1;
-    }
-
-    private static boolean milSaktaHai(int[] arr, int l, int r, int amt, int limit) {
-        if (amt == 0) return true;
-        if (l > r || amt < arr[l] || amt / arr[r] > limit) return false;
-        if (amt % arr[r] == 0) return true;
-
-        for (int use = amt / arr[r]; use >= 0; use--) {
-            if (milSaktaHai(arr, l, r - 1, amt - use * arr[r], limit - use)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private static int gcd(int a, int b) {
-        while (b != 0) {
-            int t = b;
-            b = a % b;
-            a = t;
-        }
-        return a;
+        // 4. Return the result
+        return (dp[amount] > amount) ? -1 : dp[amount]; // If dp[amount] is still greater than amount, it means we couldn't make the amount, so return -1. Otherwise, return the minimum number of coins.
     }
 }
