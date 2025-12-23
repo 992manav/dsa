@@ -6,23 +6,22 @@ class Solution {
     int[] prefix;
     int[][] events;
 
-    int binary_search(int start) {
+    int binary_search(int start, int right) {
         int low = 0;
-        int high = n - 1;
-        int ans = 0;
+        int high = right;
+        int best = 0;
 
         while (low <= high) {
             int mid = (low + high) / 2;
 
             if (events[mid][1] < start) {
-                ans = Math.max(ans, prefix[mid]);
+                best = prefix[mid];
                 low = mid + 1;
             } else {
                 high = mid - 1;
             }
         }
-
-        return ans;
+        return best;
     }
 
     public int maxTwoEvents(int[][] events) {
@@ -42,8 +41,7 @@ class Solution {
         int ans = 0;
 
         for (int i = 0; i < n; i++) {
-            int start = events[i][0];
-            int best = binary_search(start);
+            int best = binary_search(events[i][0], i - 1);
             ans = Math.max(ans, best + events[i][2]);
         }
 
