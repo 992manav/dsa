@@ -5,24 +5,22 @@ class Solution {
         int n = nums.length;
 
         Map<Integer, Integer> map = new HashMap<>();
-        boolean flag = false;
         int same = 0;
 
         for (int i = 0; i < n; i++) {
             if (nums[i] == forb[i]) {
-                flag = true;
                 map.put(nums[i], map.getOrDefault(nums[i], 0) + 1);
                 same++;
             }
         }
 
-        if (!flag) {
+        if (same == 0) {
             return 0;
         }
 
-        int total = n + n;
-
+        int total = 2 * n;
         int[] c = new int[total];
+
         System.arraycopy(nums, 0, c, 0, n);
         System.arraycopy(forb, 0, c, n, n);
 
@@ -46,8 +44,7 @@ class Solution {
 
         int swaps = (same + 1) / 2;
 
-        for (Integer key : map.keySet()) {
-            int count = map.get(key);
+        for (int count : map.values()) {
             if (count > swaps) {
                 swaps = count;
             }
