@@ -15,25 +15,27 @@ class Solution {
         return a / gcd(a, b) * b;
     }
 
+    int mergeWithStack(Deque<Integer> stack, int cur) {
+        while (!stack.isEmpty()) {
+            int top = stack.peekLast();
+            int g = gcd(top, cur);
+
+            if (g == 1) {
+                break;
+            }
+
+            stack.pollLast();
+            cur = lcm(top, cur);
+        }
+        return cur;
+    }
+
     public List<Integer> replaceNonCoprimes(int[] nums) {
 
         Deque<Integer> stack = new ArrayDeque<>();
 
         for (int i = 0; i < nums.length; i++) {
-            int cur = nums[i];
-
-            while (!stack.isEmpty()) {
-                int top = stack.peekLast();
-                int g = gcd(top, cur);
-
-                if (g == 1) {
-                    break;
-                }
-
-                stack.pollLast();
-                cur = lcm(top, cur);
-            }
-
+            int cur = mergeWithStack(stack, nums[i]);
             stack.addLast(cur);
         }
 
