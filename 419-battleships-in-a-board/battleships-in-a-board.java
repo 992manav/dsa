@@ -10,36 +10,22 @@ class Solution {
 
                 if (board[i][j] == 'X') {
 
-                    if (j > 0 && board[i][j - 1] == 'X') {
+                    boolean left = j > 0 && board[i][j - 1] == 'X';
+                    boolean right = j < n - 1 && board[i][j + 1] == 'X';
+                    boolean up = i > 0 && board[i - 1][j] == 'X';
+                    boolean down = i < m - 1 && board[i + 1][j] == 'X';
 
-                        if (j < n - 1 && board[i][j + 1] == 'X') {
-                            continue;
-                        } else {
-                            count++;
-                        }
-
-                    } else if (j < n - 1 && board[i][j + 1] == 'X') {
-
-                        continue;
-
-                    } else {
-
-                        if (i > 0 && board[i - 1][j] == 'X') {
-
-                            if (i < m - 1 && board[i + 1][j] == 'X') {
-                                continue;
-                            } else {
-                                count++;
-                            }
-
-                        } else if (i < m - 1 && board[i + 1][j] == 'X') {
-
-                            continue;
-
-                        } else {
-
-                            count++;
-                        }
+                    // horizontal ship ending here
+                    if (left && !right) {
+                        count++;
+                    }
+                    // vertical ship ending here
+                    else if (up && !down) {
+                        count++;
+                    }
+                    // single cell ship
+                    else if (!left && !right && !up && !down) {
+                        count++;
                     }
                 }
             }
