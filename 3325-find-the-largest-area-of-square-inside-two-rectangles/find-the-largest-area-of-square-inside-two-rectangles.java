@@ -3,10 +3,7 @@ import java.util.*;
 class Solution {
 
     static class Pair {
-        int blx;
-        int bly;
-        int trx;
-        int tryy;
+        int blx, bly, trx, tryy;
 
         Pair(int blx, int bly, int trx, int tryy) {
             this.blx = blx;
@@ -37,27 +34,25 @@ class Solution {
             return a.tryy - b.tryy;
         });
 
-        Queue<Pair> q = new LinkedList<>();
-        PriorityQueue<Pair> pq = new PriorityQueue<>(
-            (a, b) -> a.trx - b.trx
+        TreeSet<Pair> active = new TreeSet<>(
+            (a, b) -> {
+                if (a.trx != b.trx) return a.trx - b.trx;
+                return System.identityHashCode(a) - System.identityHashCode(b);
+            }
         );
 
         long ans = 0;
 
-        for (int i = 0; i < n; i++) {
+        for (Pair p : lst) {
 
-            Pair p = lst.get(i);
-
-            while (!pq.isEmpty() && pq.peek().trx < p.blx) {
-                Pair rem = pq.poll();
-                q.remove(rem);
+            while (!active.isEmpty() && active.first().trx < p.blx) {
+                active.pollFirst();
             }
 
-            for (Pair prev : q) {
+            for (Pair prev : active) {
 
                 int left = Math.max(p.blx, prev.blx);
                 int right = Math.min(p.trx, prev.trx);
-
                 int bottom = Math.max(p.bly, prev.bly);
                 int top = Math.min(p.tryy, prev.tryy);
 
@@ -70,8 +65,7 @@ class Solution {
                 }
             }
 
-            q.add(p);
-            pq.add(p);
+            active.add(p);
         }
 
         return ans;
