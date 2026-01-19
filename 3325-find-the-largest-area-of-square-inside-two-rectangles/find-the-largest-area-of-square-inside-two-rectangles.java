@@ -37,18 +37,23 @@ class Solution {
             return a.tryy - b.tryy;
         });
 
-        Stack<Pair> st = new Stack<>();
+        Queue<Pair> q = new LinkedList<>();
+        PriorityQueue<Pair> pq = new PriorityQueue<>(
+            (a, b) -> a.trx - b.trx
+        );
+
         long ans = 0;
 
         for (int i = 0; i < n; i++) {
 
             Pair p = lst.get(i);
-            Stack<Pair> tmp = new Stack<>();
 
-            // 🔑 check with ALL previous rectangles
-            while (!st.isEmpty()) {
+            while (!pq.isEmpty() && pq.peek().trx < p.blx) {
+                Pair rem = pq.poll();
+                q.remove(rem);
+            }
 
-                Pair prev = st.pop();
+            for (Pair prev : q) {
 
                 int left = Math.max(p.blx, prev.blx);
                 int right = Math.min(p.trx, prev.trx);
@@ -63,16 +68,10 @@ class Solution {
                     int side = Math.min(width, height);
                     ans = Math.max(ans, (long) side * side);
                 }
-
-                tmp.push(prev);
             }
 
-            // restore original stack
-            while (!tmp.isEmpty()) {
-                st.push(tmp.pop());
-            }
-
-            st.push(p);
+            q.add(p);
+            pq.add(p);
         }
 
         return ans;
