@@ -11,9 +11,9 @@ class Solution {
             int diff_x=Math.abs(new_x-x);
             int diff_y=Math.abs(new_y-y);
 
-            System.out.println("hi");
-            System.out.println(diff_x);
-            System.out.println(diff_y);
+            // System.out.println("hi");
+            // System.out.println(diff_x);
+            // System.out.println(diff_y);
             
 
             if(diff_x<diff_y){
@@ -22,7 +22,7 @@ class Solution {
                 sum+=(diff_y)+(diff_x-diff_y);
             }
 
-            System.out.println(sum);
+            // System.out.println(sum);
 
             x=new_x;
             y=new_y;
