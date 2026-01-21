@@ -4,34 +4,31 @@ class Solution {
 
     List<List<Integer>> piles;
     int len;
-    int[][][] dp;
+    int[][] dp;
 
-    int fun(int p_i, int index, int k) {
+    int fun(int p_i, int k) {
 
         if (k == 0 || p_i == len) {
             return 0;
         }
 
-        if (dp[p_i][index][k] != -1) {
-            return dp[p_i][index][k];
+        if (dp[p_i][k] != -1) {
+            return dp[p_i][k];
         }
 
-        int road1 = 0;
-        int road2 = 0;
+        int best = fun(p_i + 1, k);
 
-        if (index < piles.get(p_i).size()) {
-            int curr = piles.get(p_i).get(index);
+        int currSum = 0;
+        int limit = Math.min(k, piles.get(p_i).size());
 
-            road1 = fun(p_i, index + 1, k - 1) + curr;
-            road2 = fun(p_i + 1, 0, k - 1) + curr;
+        for (int i = 0; i < limit; i++) {
+            currSum += piles.get(p_i).get(i);
+            int take = currSum + fun(p_i + 1, k - (i + 1));
+            best = Math.max(best, take);
         }
 
-        int road3 = fun(p_i + 1, 0, k);
-
-        int take_max = Math.max(road1, road2);
-        dp[p_i][index][k] = Math.max(road3, take_max);
-
-        return dp[p_i][index][k];
+        dp[p_i][k] = best;
+        return best;
     }
 
     public int maxValueOfCoins(List<List<Integer>> piles, int k) {
@@ -39,19 +36,12 @@ class Solution {
         this.piles = piles;
         this.len = piles.size();
 
-        int maxPileSize = 0;
-        for (List<Integer> p : piles) {
-            maxPileSize = Math.max(maxPileSize, p.size());
-        }
-
-        dp = new int[len][maxPileSize + 1][k + 1];
+        dp = new int[len][k + 1];
 
         for (int i = 0; i < len; i++) {
-            for (int j = 0; j <= maxPileSize; j++) {
-                Arrays.fill(dp[i][j], -1);
-            }
+            Arrays.fill(dp[i], -1);
         }
 
-        return fun(0, 0, k);
+        return fun(0, k);
     }
 }
