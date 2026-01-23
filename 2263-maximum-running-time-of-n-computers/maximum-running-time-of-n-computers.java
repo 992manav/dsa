@@ -12,10 +12,7 @@ class Solution {
 
         for (int i = 0; i < n; i++) {
             long val = maxHeap.poll();
-            if (!freq.containsKey(val)) {
-                freq.put(val, 0L);
-            }
-            freq.put(val, freq.get(val) + 1);
+            freq.put(val, freq.getOrDefault(val, 0L) + 1);
         }
 
         long extra = 0;
@@ -24,34 +21,30 @@ class Solution {
         }
 
         PriorityQueue<Long> minHeap = new PriorityQueue<>();
-        for (long k : freq.keySet()) {
-            minHeap.add(k);
+        for (long key : freq.keySet()) {
+            minHeap.add(key);
         }
 
         while (true) {
-            long smaller = minHeap.poll();
+
+            long curr = minHeap.poll();
+            long count = freq.get(curr);
 
             if (minHeap.isEmpty()) {
-                return smaller + extra / freq.get(smaller);
+                return curr + extra / count;
             }
 
-            long larger = minHeap.poll();
+            long next = minHeap.poll();
+            long diff = next - curr;
+            long need = count * diff;
 
-            long countSmaller = freq.get(smaller);
-            long diff = larger - smaller;
-
-            if (countSmaller * diff > extra) {
-                return smaller + extra / countSmaller;
+            if (need > extra) {
+                return curr + extra / count;
             }
 
-            extra -= countSmaller * diff;
-
-            if (!freq.containsKey(larger)) {
-                freq.put(larger, 0L);
-            }
-            freq.put(larger, freq.get(larger) + countSmaller);
-
-            minHeap.add(larger);
+            extra -= need;
+            freq.put(next, freq.getOrDefault(next, 0L) + count);
+            minHeap.add(next);
         }
     }
 }
