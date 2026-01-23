@@ -1,72 +1,90 @@
 class Solution {
 
-    long[] base;
     int n;
     int r;
-    long k;
 
-   boolean check(long target){
-        long left=k;
-        long add=0;
-        long[] diff=new long[n+2*r+5];
-        int i=0;
-        while(i<n){
-            add=add+diff[i];
-            long cur=base[i]+add;
-            if(cur<target){
-                long need=target-cur;
-                if(need>left) return false;
-                left=left-need;
-                add=add+need;
-                int pos=i+2*r+1;
-                if(pos<diff.length) diff[pos]=diff[pos]-need;
+    boolean possiblehaikya(long min_pow, long[] pow, long k) {
+
+        long[] diff = new long[n + 1];
+
+        for (int i = 0; i < pow.length; i++) {
+
+            if (i > 0) {
+                diff[i] = diff[i - 1] + diff[i];
             }
-            i=i+1;
+
+            long cur_pow = pow[i] + diff[i];
+
+            if (cur_pow < min_pow) {
+
+                long kitnaadd = min_pow - cur_pow;
+
+                if (kitnaadd <= k) {
+                    k = k - kitnaadd;
+                } else {
+                    return false;
+                }
+
+                int right = Math.min(i + r, n - 1);
+                int right_r = Math.min(i + 2 * r, n - 1);
+
+                diff[i] += kitnaadd;
+                diff[right_r + 1] -= kitnaadd;
+            }
         }
+
         return true;
     }
 
+    public long maxPower(int[] nums, int r, int k) {
 
-    public long maxPower(int[] sta, int r, int k) {
-        this.n=sta.length;
-        this.r=r;
-        this.k=k;
-        int len=n+2*r+5;
-        long[] diff=new long[len];
-        int i=0;
-        while(i<n){
-            int L=i-r;
-            int R=i+r;
-            if(L<0)L=0;
-            if(R>=n)R=n-1;
-            diff[L]=diff[L]+sta[i];
-            diff[R+1]=diff[R+1]-sta[i];
-            i=i+1;
+        this.n = nums.length;
+        this.r = r;
+
+        long[] prefix = new long[n];
+        prefix[0] = nums[0];
+
+        for (int i = 1; i < n; i++) {
+            prefix[i] = prefix[i - 1] + nums[i];
         }
-        base=new long[n];
-        long cur=0;
-        long min=1000000000000L;
-        long sum=k;
-        i=0;
-        while(i<n){
-            cur=cur+diff[i];
-            base[i]=cur;
-            if(base[i]<min)min=base[i];
-            sum=sum+sta[i];
-            i=i+1;
-        }
-        long low=min;
-        long high=sum;
-        long ans=0;
-        while(low<=high){
-            long mid=low+(high-low)/2;
-            if(check(mid)){
-                ans=mid;
-                low=mid+1;
-            }else{
-                high=mid-1;
+
+        long[] pow = new long[n];
+
+        for (int i = 0; i < n; i++) {
+
+            int right = Math.min(i + r, n - 1);
+            int left = Math.max(0, i - r);
+
+            if (left == 0) {
+                pow[i] = prefix[right];
+            } else {
+                pow[i] = prefix[right] - prefix[left - 1];
             }
         }
+
+        long low = Long.MAX_VALUE;
+        long high = Long.MIN_VALUE;
+
+        for (int i = 0; i < n; i++) {
+            low = Math.min(low, pow[i]);
+            high = Math.max(high, pow[i]);
+        }
+
+        high = high + k;
+        long ans = -1;
+
+        while (low <= high) {
+
+            long mid = low + (high - low) / 2;
+
+            if (possiblehaikya(mid, pow, k)) {
+                ans = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
+        }
+
         return ans;
     }
 }
