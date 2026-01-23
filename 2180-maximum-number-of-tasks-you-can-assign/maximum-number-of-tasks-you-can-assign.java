@@ -2,90 +2,103 @@ import java.util.*;
 
 class Solution {
 
-    int[] tasks;
-    int[] workers;
-    int pills;
-    int strength;
-    int n, m;
+    int[] saareTasks;
+    int[] saareWorkers;
+    int totalPills;
+    int pillKiStrength;
+    int totalTasks, totalWorkers;
 
-    int binary_search(int low, int high, int task, boolean[] removed) {
-        int ans = -1;
+    int lalluWorkerKhojo(int low, int high, int taskKiTakat, boolean[] alreadyUsed) {
+        int milGayaIndex = -1;
 
         while (low <= high) {
-            int mid = low + (high - low) / 2;
+            int beechKaIndex = low + (high - low) / 2;
 
-            while (mid <= high && removed[mid]) mid++;
-            if (mid > high) break;
+            while (beechKaIndex <= high && alreadyUsed[beechKaIndex]) {
+                beechKaIndex++;
+            }
+            if (beechKaIndex > high) break;
 
-            if (workers[mid] + strength >= task) {
-                ans = mid;
-                high = mid - 1;
+            if (saareWorkers[beechKaIndex] + pillKiStrength >= taskKiTakat) {
+                milGayaIndex = beechKaIndex;
+                high = beechKaIndex - 1;
             } else {
-                low = mid + 1;
+                low = beechKaIndex + 1;
             }
         }
-        return ans;
+        return milGayaIndex;
     }
 
-    boolean kyapossiblehai(int x) {
+    boolean kyaYePossibleHai(int kitneTasks) {
 
-        boolean[] removed = new boolean[m];
-        int pillsLeft = pills;
-        int t = x - 1;
+        boolean[] alreadyUsed = new boolean[totalWorkers];
+        int bachiHuiPills = totalPills;
+        int taskPointer = kitneTasks - 1;
 
-        for (int w = m - 1; w >= Math.max(0,m-1-x) && t >= 0; w--) {
+        for (int workerPointer = totalWorkers - 1;workerPointer >= Math.max(0, totalWorkers - 1 - kitneTasks) && taskPointer >= 0;workerPointer--) {
 
-            if (removed[w]) continue;
+            if (alreadyUsed[workerPointer]) continue;
 
-            if (workers[w] >= tasks[t]) {
-                t--;
+            if (saareWorkers[workerPointer] >= saareTasks[taskPointer]) {
+                taskPointer--;
             } else {
-                if (pillsLeft == 0) return false;
+                if (bachiHuiPills == 0) return false;
 
-                int idx = binary_search(Math.max(0,m-1-x), w, tasks[t], removed);
-                if (idx == -1) return false;
+                int lalluWorkerIndex = lalluWorkerKhojo(
+                    Math.max(0, totalWorkers - 1 - kitneTasks),
+                    workerPointer,
+                    saareTasks[taskPointer],
+                    alreadyUsed
+                );
 
-                removed[idx] = true;
+                if (lalluWorkerIndex == -1) return false;
 
-                pillsLeft--;
+                alreadyUsed[lalluWorkerIndex] = true;
+                bachiHuiPills--;
 
-                if(idx!=w){
-                    w++;
+                if (lalluWorkerIndex != workerPointer) {
+                    workerPointer++;
                 }
-                t--;
+                taskPointer--;
             }
         }
 
-        return t < 0;
+        return taskPointer < 0;
     }
 
-    public int maxTaskAssign(int[] tasks, int[] workers, int pills, int strength) {
+    public int maxTaskAssign(
+        int[] tasks,
+        int[] workers,
+        int pills,
+        int strength
+    ) {
 
-        this.tasks = tasks;
-        this.workers = workers;
-        this.pills = pills;
-        this.strength = strength;
+        this.saareTasks = tasks;
+        this.saareWorkers = workers;
+        this.totalPills = pills;
+        this.pillKiStrength = strength;
 
-        n = tasks.length;
-        m = workers.length;
+        totalTasks = saareTasks.length;
+        totalWorkers = saareWorkers.length;
 
-        Arrays.sort(tasks);
-        Arrays.sort(workers);
+        Arrays.sort(saareTasks);
+        Arrays.sort(saareWorkers);
 
-        int low = 0, high = Math.min(n, m);
-        int ans = 0;
+        int low = 0;
+        int high = Math.min(totalTasks, totalWorkers);
+        int finalAnswer = 0;
 
         while (low <= high) {
-            int mid = low + (high - low) / 2;
+            int midTasks = low + (high - low) / 2;
 
-            if (kyapossiblehai(mid)) {
-                ans = mid;
-                low = mid + 1;
+            if (kyaYePossibleHai(midTasks)) {
+                finalAnswer = midTasks;
+                low = midTasks + 1;
             } else {
-                high = mid - 1;
+                high = midTasks - 1;
             }
         }
 
-        return ans;
+        return finalAnswer;
     }
 }
