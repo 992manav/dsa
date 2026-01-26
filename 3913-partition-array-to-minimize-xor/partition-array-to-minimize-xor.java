@@ -4,11 +4,16 @@ class Solution {
     int[] prefix;
     int[][][] dp;
 
+    int getXor(int l, int r) {
+        if (l > r) return 0;
+        if (l == 0) return prefix[r];
+        return prefix[r] ^ prefix[l - 1];
+    }
+
     int fun(int i, int start, int k) {
         if (i == n) {
             if (k != 0) return Integer.MAX_VALUE;
-            int curXor = prefix[n - 1] ^ (start > 0 ? prefix[start - 1] : 0);
-            return curXor;
+            return getXor(start, n - 1);
         }
 
         if (dp[i][start][k] != -1) {
@@ -17,17 +22,16 @@ class Solution {
 
         int ans = Integer.MAX_VALUE;
 
-        // continue segment
         ans = Math.min(ans, fun(i + 1, start, k));
-
-        // cut here
+       
         if (k > 0) {
-            int curXor = prefix[i - 1] ^ (start > 0 ? prefix[start - 1] : 0);
+            int curXor = getXor(start, i - 1);
             int next = fun(i + 1, i, k - 1);
             ans = Math.min(ans, Math.max(curXor, next));
         }
 
-        return dp[i][start][k] = ans;
+        dp[i][start][k] = ans;
+        return ans;
     }
 
     public int minXor(int[] nums, int k) {
