@@ -37,8 +37,7 @@ class Solution {
             }
         }
 
-        PriorityQueue<Pair> pq =
-            new PriorityQueue<>((a, b) -> a.dist - b.dist);
+        PriorityQueue<Pair> pq =new PriorityQueue<>((a, b) -> a.dist - b.dist);
 
         int[] dist = new int[n];
         Arrays.fill(dist, Integer.MAX_VALUE);
@@ -56,15 +55,16 @@ class Solution {
             if (visited[node]) continue;
             visited[node] = true;
 
-            for (Map.Entry<Integer, Integer> e : graph[node].entrySet()) {
-                int nei = e.getKey();
-                int wt = e.getValue();
+            for (Integer neb : graph[node].keySet()) {
 
-                if (!visited[nei] && dist[node] + wt < dist[nei]) {
-                    dist[nei] = dist[node] + wt;
-                    pq.add(new Pair(nei, dist[nei]));
-                }
+                    int wt = graph[node].get(neb);
+
+                    if (!visited[neb] && dist[node] + wt < dist[neb]) {
+                        dist[neb] = dist[node] + wt;
+                        pq.add(new Pair(neb, dist[neb]));
+                    }
             }
+
         }
 
         if (dist[n - 1] == Integer.MAX_VALUE) {
