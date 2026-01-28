@@ -1,53 +1,52 @@
+import java.util.*;
+
 class Solution {
-
-    boolean[] visited;
-    boolean[] safe;
-
-    boolean dfs(int[][] graph, int node) {
-        visited[node] = true;
-
-        if (graph[node].length == 0) {
-            safe[node] = true;
-            return true;
-        }
-
-        for (int j = 0; j < graph[node].length; j++) {
-            int neighbour = graph[node][j];
-
-            if (visited[neighbour]) {
-                if (!safe[neighbour]) {
-                    return false;
-                }
-            } else {
-                if (!dfs(graph, neighbour)) {
-                    return false;
-                }
-            }
-        }
-
-        safe[node] = true;
-        return true;
-    }
-
     public List<Integer> eventualSafeNodes(int[][] graph) {
 
         int n = graph.length;
-        visited = new boolean[n];
-        safe = new boolean[n];
+
+        List<List<Integer>> reverse = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            reverse.add(new ArrayList<>());
+        }
+
+        int[] outdegree = new int[n];
 
         for (int i = 0; i < n; i++) {
-            if (!visited[i]) {
-                dfs(graph, i);
+            outdegree[i] = graph[i].length;
+            for (int v : graph[i]) {
+                reverse.get(v).add(i);
             }
         }
 
-        List<Integer> result = new ArrayList<>();
+        Queue<Integer> q = new LinkedList<>();
+        for (int i = 0; i < n; i++) {
+            if (outdegree[i] == 0) {
+                q.offer(i);
+            }
+        }
+
+        boolean[] safe = new boolean[n];
+
+        while (!q.isEmpty()) {
+            int node = q.poll();
+            safe[node] = true;
+
+            for (int parent : reverse.get(node)) {
+                outdegree[parent]--;
+                if (outdegree[parent] == 0) {
+                    q.offer(parent);
+                }
+            }
+        }
+
+        List<Integer> ans = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             if (safe[i]) {
-                result.add(i);
+                ans.add(i);
             }
         }
 
-        return result;
+        return ans;
     }
 }
