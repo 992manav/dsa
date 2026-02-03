@@ -24,36 +24,39 @@ class Solution {
     public int maxArea(int[] height) {
         int n = height.length;
 
-        TreeMap<Integer, int[]> map = new TreeMap<>();
+        TreeMap<Integer, Integer> first = new TreeMap<>();
+        TreeMap<Integer, Integer> last = new TreeMap<>();
 
         for (int i = 0; i < n; i++) {
-            if (!map.containsKey(height[i])) {
-                map.put(height[i], new int[]{i, i});
-            } else {
-                map.get(height[i])[1] = i;
+            if (!first.containsKey(height[i])) {
+                first.put(height[i], i);
             }
+            last.put(height[i], i);
         }
 
-        List<Integer> keys = new ArrayList<>(map.keySet());
-        int m = keys.size();
+        int m = first.size();
 
-        int[] left = new int[m];
-        int[] right = new int[m];
-
-        for (int i = 0; i < m; i++) {
-            left[i] = map.get(keys.get(i))[0];
-            right[i] = map.get(keys.get(i))[1];
+        List<Integer> lst = new ArrayList<>();
+        for (Integer key : last.keySet()) {
+            lst.add(last.get(key));
         }
+
+        List<Integer> lst1 = new ArrayList<>();
+        for (Integer key : first.keySet()) {
+            lst1.add(first.get(key));
+        }
+
+        List<Integer> keys = new ArrayList<>(first.keySet());
 
         int[] suffix_max = new int[m];
         int[] prefix_min = new int[m];
 
-        suffix_max[m - 1] = right[m - 1];
-        prefix_min[m - 1] = left[m - 1];
+        suffix_max[m - 1] = lst.get(m - 1);
+        prefix_min[m - 1] = lst1.get(m - 1);
 
         for (int i = m - 2; i >= 0; i--) {
-            suffix_max[i] = Math.max(right[i], suffix_max[i + 1]);
-            prefix_min[i] = Math.min(left[i], prefix_min[i + 1]);
+            suffix_max[i] = Math.max(lst.get(i), suffix_max[i + 1]);
+            prefix_min[i] = Math.min(lst1.get(i), prefix_min[i + 1]);
         }
 
         int ans = 0;
