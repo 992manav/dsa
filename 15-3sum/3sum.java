@@ -1,63 +1,50 @@
 import java.util.*;
 
 class Solution {
+    List<List<Integer>> ans = new ArrayList<>();
+    int[] nums;
 
-    public List<List<Integer>> threeSum(int[] nums) {
+    void fun(int low, int high, int target) {
+        while (low < high) {
+            int sum = nums[low] + nums[high];
 
-        Arrays.sort(nums);
-        List<List<Integer>> final_list = new ArrayList<>();
+            if (sum < target) {
+                low++;
+            } else if (sum > target) {
+                high--;
+            } else {
+                List<Integer> lst = new ArrayList<>();
+                lst.add(-target);
+                lst.add(nums[low]);
+                lst.add(nums[high]);
+                ans.add(lst);
 
-        for (int i = 0; i < nums.length; i++) {
+                low++;
+                high--;
 
-            if (i > 0 && nums[i] == nums[i - 1]) {
-                continue; // skip duplicate i
-            }
-
-            if (nums[i] > 0) {
-                break;
-            }
-
-            int target = -nums[i];
-            int j = i + 1;
-            int k = nums.length - 1;
-
-            while (j < k) {
-
-                int sum = nums[j] + nums[k];
-
-                if (sum == target) {
-
-                    final_list.add(Arrays.asList(nums[i], nums[j], nums[k]));
-
-                    while (j < nums.length - 1 && nums[j + 1] == nums[j]) {
-                        j++;
-                    }
-
-                    while (k > j + 1 && nums[k - 1] == nums[k]) {
-                        k--;
-                    }
-
-                    j++;
-                    k--;
-                } else if (sum > target) {
-
-                    while (k - 1 > j && nums[k - 1] == nums[k]) {
-                        k--;
-                    }
-                    k--;  // default decrement when not skipping duplicates
-
-                } else {
-
-                    while (j + 1 < k && nums[j + 1] == nums[j]) {
-                        j++;
-                    }
-                    j++;  // default increment when not skipping duplicates
-
+                while (low < high && nums[low] == nums[low - 1]) {
+                    low++;
                 }
 
+                while (low < high && nums[high] == nums[high + 1]) {
+                    high--;
+                }
             }
         }
+    }
 
-        return final_list;
+    public List<List<Integer>> threeSum(int[] nums) {
+        Arrays.sort(nums);
+        this.nums = nums;
+        int n = nums.length;
+
+        for (int i = 0; i < n - 2; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+            fun(i + 1, n - 1, -nums[i]);
+        }
+
+        return ans;
     }
 }
