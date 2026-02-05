@@ -1,6 +1,6 @@
 class Solution {
 
-    int[] nums;   // 🔧 added (sirf yeh)
+    int[] nums;   
 
     void makenegative(int idx){
         if(nums[idx]>0){
@@ -9,7 +9,7 @@ class Solution {
     }
 
     public int missingNumber(int[] nums) {
-        this.nums = nums;   // 🔧 added (sirf yeh)
+        this.nums = nums;  
 
         int n=nums.length;
         for(int i=0;i<n;i++){
