@@ -37,7 +37,7 @@ class Solution {
             }
         }
 
-         System.out.println(Arrays.toString(nums));
+        //  System.out.println(Arrays.toString(nums));
 
         
         for(int i=0;i<n;i++){
