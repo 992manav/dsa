@@ -1,30 +1,53 @@
 class Solution {
-    int[] nums;
-    int n;
+    int[] nums;   
 
-    void swap(int i, int j) {
-        int temp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = temp;
+    void makenegative(int idx){
+        if(nums[idx]>=0){
+            nums[idx]=nums[idx]*-1;
+        }
     }
 
-    public int firstMissingPositive(int[] nums) {
-        this.nums = nums;
-        n = nums.length;
 
-        for (int i = 0; i < n;) {
-            int correctIndex = nums[i] - 1;
-            if (nums[i] > 0 && nums[i] <= n && nums[i] != nums[correctIndex]) {
-                swap(i, correctIndex);
-            } else {
-                i++;
+    public int firstMissingPositive(int[] nums) {
+        this.nums = nums;  
+
+        int n=nums.length;
+        for(int i=0;i<n;i++){
+            if(nums[i]<=0){
+                nums[i]=Integer.MAX_VALUE;
             }
         }
 
-        for (int i = 0; i < n; i++) {
-            if (nums[i] != i + 1) return i + 1;
+
+
+        for(int i=0;i<n;i++){
+            if(nums[i]!=Integer.MAX_VALUE){
+
+                int idx=Math.abs(nums[i])-1;
+
+                if(idx<=n-1 && idx>=0){
+                    // if(nums[idx]==Integer.MAX_VALUE ){
+                    //     makenegative(0);
+                    //     nums[idx]=idx*-1;
+                    // }
+                    makenegative(idx);
+                }
+
+
+            }
         }
 
-        return n + 1;
+         System.out.println(Arrays.toString(nums));
+
+        
+        for(int i=0;i<n;i++){
+            if(nums[i]>=0){
+                // if(nums[i]==0){
+                    return i+1;   
+                // }
+            }
+        }
+
+        return n+1;
     }
 }
