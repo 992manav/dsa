@@ -3,11 +3,13 @@ class Solution {
         StringBuilder sb = new StringBuilder(a);
         int count = 1;
 
+        int limit = b.length() / a.length() + 2;
+
         while (!sb.toString().contains(b)) {
             sb.append(a);
             count++;
 
-            if (count > (b.length() / a.length()) + 2) {
+            if (count > limit) {
                 return -1;
             }
         }
