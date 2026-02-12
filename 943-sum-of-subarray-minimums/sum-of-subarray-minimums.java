@@ -1,58 +1,57 @@
-import java.util.Arrays;
-import java.util.Stack;
+import java.util.*;
 
 class Solution {
+    public int sumSubarrayMins(int[] arr) {
 
-    static final int MOD = (int)1e9 + 7;
+        int n = arr.length;
+        int[] prev_min = new int[n];
+        int[] next_min = new int[n];
 
-    static {
-        Solution sol = new Solution();
-        for (int i = 0; i < 500; i++) {
-            sol.sumSubarrayMins(new int[]{1, 2, 3}); // Use a non-empty test input for meaningful warm-up
-        }
-    }
-
-    void fun_left(int[] left, int[] arr) {
         Stack<Integer> st = new Stack<>();
 
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < n; i++) {
             while (!st.isEmpty() && arr[st.peek()] > arr[i]) {
                 st.pop();
             }
 
-            left[i] = st.isEmpty() ? 0 : st.peek() + 1;
+            if (st.isEmpty()) {
+                prev_min[i] = -1;
+            } else {
+                prev_min[i] = st.peek();
+            }
+
             st.push(i);
         }
-    }
 
-    void fun_right(int[] right, int[] arr) {
-        Stack<Integer> st = new Stack<>();
+        st = new Stack<>();
 
-        for (int i = arr.length - 1; i >= 0; i--) {
+        for (int i = n - 1; i >= 0; i--) {
             while (!st.isEmpty() && arr[st.peek()] >= arr[i]) {
                 st.pop();
             }
 
-            right[i] = st.isEmpty() ? arr.length - 1 : st.peek() - 1;
+            if (st.isEmpty()) {
+                next_min[i] = n;
+            } else {
+                next_min[i] = st.peek();
+            }
+
             st.push(i);
         }
-    }
 
-    public int sumSubarrayMins(int[] arr) {
-        int[] left = new int[arr.length];
-        int[] right = new int[arr.length];
+        long ans = 0;
+        int MOD = 1000000007;
 
-        fun_left(left, arr);
-        fun_right(right, arr);
+        for (int i = 0; i < n; i++) {
 
-        long sum = 0;
-        for (int i = 0; i < arr.length; i++) {
-            long leftCount = i - left[i] + 1;
-            long rightCount = right[i] - i + 1;
-            long contribution = (arr[i] % MOD * leftCount % MOD * rightCount % MOD) % MOD;
-            sum = (sum + contribution) % MOD;
+            long left = i - prev_min[i];
+            long right = next_min[i] - i;
+
+            long contri = (left * right) % MOD;
+
+            ans = (ans + (arr[i] * contri) % MOD) % MOD;
         }
 
-        return (int) sum;
+        return (int) ans;
     }
 }
