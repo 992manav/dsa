@@ -1,30 +1,34 @@
 class Solution {
 
-    String fun(StringBuilder s, StringBuilder sb, int n) {
+    String fun(StringBuilder s, int n) {
 
         if (n == 0) {
-            return s.toString(); 
+            return s.toString();
         }
 
-        int count = 0;
-      
+        StringBuilder sb = new StringBuilder();
+        int count = 1;
+        int i;
 
-        for (int i = 0; i < s.length(); i++) {
-            count++;
+        for (i = 1; i < s.length(); i++) {
 
-            if (i + 1 == s.length() || s.charAt(i) != s.charAt(i + 1)) {
+            if (s.charAt(i) != s.charAt(i - 1)) {
                 sb.append(count);
-                sb.append(s.charAt(i));
-                count = 0;
+                sb.append(s.charAt(i - 1)); 
+                count = 1;
+            } else {
+                count++;
             }
         }
 
-        return fun(sb, new StringBuilder(), n - 1);
+        sb.append(count);
+        sb.append(s.charAt(i - 1));
 
+        return fun(sb, n - 1);
     }
 
     public String countAndSay(int n) {
         StringBuilder sb = new StringBuilder("1");
-        return fun(sb, new StringBuilder(), n - 1);
+        return fun(sb, n - 1);
     }
 }
