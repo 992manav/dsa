@@ -35,14 +35,14 @@ class Solution {
 
         fun(0, 0, n/2, map);
         fun(n/2, 0, n, map1);
-        
+
         for(Integer key : map.keySet()){
 
             int target = goal - key;
 
-            // smallest value in map1
-            Integer first = map1.firstKey();
-            min = Math.min(min, Math.abs(goal - (key + first)));
+            // // smallest value in map1
+            // Integer first = map1.firstKey();
+            // min = Math.min(min, Math.abs(goal - (key + first)));
 
             // closest lower or equal
             Integer floor = map1.floorKey(target);
