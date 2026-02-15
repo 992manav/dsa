@@ -9,22 +9,21 @@ class Solution {
             return null;
         }
 
-        if(node == p || node == q){
+        int cur = node.val;
+
+        if(cur == p.val || cur == q.val){
             return node;
         }
 
-        TreeNode l = fun(node.left);
-        TreeNode r = fun(node.right);
-
-        if(l != null && r != null){
+        if(cur < p.val && cur < q.val){
+            return fun(node.right);  
+        } 
+        else if(cur > p.val && cur > q.val){
+            return fun(node.left);    
+        } 
+        else{
             return node;
         }
-
-        if(l != null){
-            return l;
-        }
-
-        return r;
     }
 
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
