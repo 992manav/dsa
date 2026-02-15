@@ -1,40 +1,60 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+
 class Solution {
-    TreeNode lcaNode;
-    boolean findLCA(TreeNode node, int minBound, int maxBound, int small, int large) {
-        if (node == null) return false;
+    TreeNode p;
+    TreeNode q;
+    TreeNode fun(TreeNode node){
 
-        int val = node.val;
-
-        if (val == small) {
-            if (large > minBound && large < maxBound) {
-                lcaNode = node;
-                return true;
-            }
-        } else if (val > small) {
-            if (!findLCA(node.left, minBound, val, small, large)) {
-                if (large >= val && large < maxBound) {
-                    lcaNode = node;
-                    return true;
-                }
-            } else return true;
-        } else { 
-            if(findLCA(node.right, val, maxBound, small, large)){
-                return true;
-            }
+        if(node==null){
+            return null;
         }
 
-        return false;
+        boolean flag=false;
+        if(node==p || node==q){
+            flag=true;
+        }
+
+        TreeNode l=fun(node.left);
+        TreeNode r=fun(node.right);
+
+        if(l!=null && r!=null){
+            return node;
+        }
+
+        if(l!=null){
+            if(flag){
+                return node;
+            }
+            return l;
+        }
+
+
+        if(r!=null){
+            if(flag){
+                return node;
+            }
+            return r;
+        }
+
+
+        if(flag){
+                return node;
+        }
+        return null;
+
     }
-
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
-        int val1 = p.val;
-        int val2 = q.val;
-
-        int small = Math.min(val1, val2);
-        int large = Math.max(val1, val2);
-
-        findLCA(root, Integer.MIN_VALUE, Integer.MAX_VALUE, small, large);
-
-        return lcaNode;
+        this.p=p;
+        this.q=q;
+        TreeNode lca=fun(root);
+        return lca;
     }
 }
