@@ -1,46 +1,40 @@
 class Solution {
-
+    int n;
+    char[] c;
     String s;
-    int[][] dp;
+    String expand(int i,int j){
 
-    int check_pali(int i, int j) {
-        if (i >= j) return 1; // base case
-
-        if (dp[i][j] != -1) {
-            return dp[i][j];
+        while(i>=0 && j<n){
+            if(c[i]!=c[j]){
+                break;
+            }
+            i--;
+            j++;
         }
 
-        if (s.charAt(i) != s.charAt(j)) {
-            return dp[i][j] = 0;
-        }
 
-        return dp[i][j] = check_pali(i + 1, j - 1);
+        return s.substring(i+1,j);
+
     }
-
     public String longestPalindrome(String s) {
-        this.s = s;
-        int n = s.length();
-        dp = new int[n][n];
+        c=s.toCharArray();
+        n=s.length();
+        this.s=s;
+        String ans=s.charAt(0)+"";
+        for(int i=0;i<n;i++){
+            String odd=expand(i,i);
+            String even=expand(i,i+1);
 
-        for (int x = 0; x < n; x++) {
-            for (int y = 0; y < n; y++) {
-                dp[x][y] = -1;
+            if(ans.length()<odd.length()){
+                ans=odd;
             }
+
+            if(ans.length()<even.length()){
+                ans=even;
+            }
+
         }
 
-        int max_len = 0;
-        String ans = "";
-        for (int i = 0; i < s.length(); i++) {
-            for (int j = i; j < s.length(); j++) {
-                if (check_pali(i, j) == 1) {
-                    int len = j - i + 1;
-                    if (len > max_len) {
-                        max_len = len;
-                        ans = s.substring(i, j + 1);
-                    }
-                }
-            }
-        }
         return ans;
     }
 }
