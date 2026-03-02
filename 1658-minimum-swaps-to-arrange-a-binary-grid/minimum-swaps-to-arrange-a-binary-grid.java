@@ -35,7 +35,7 @@ class Solution {
         }
 
         for (int i = 0; i < n; i++) {
-            System.out.println(Arrays.toString(arr));
+            // System.out.println(Arrays.toString(arr));
             if (arr[i] <m-1-i ) {
                 
                 // System.out.println(target[i]);
