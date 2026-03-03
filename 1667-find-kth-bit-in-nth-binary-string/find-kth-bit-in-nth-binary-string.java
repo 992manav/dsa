@@ -1,19 +1,32 @@
 class Solution {
-    public char findKthBit(int n, int k) {
-        String s="0";
-        while(n>1){
-            StringBuilder sb=new StringBuilder(s);
-            sb.append('1');
 
-            for (int i = s.length()-1; i >=0; i--) {
-                sb.append((char)(s.charAt(i) ^ 1));
+    char fun(int n,int k,boolean flag){
+        if(n==1){
+            if(flag){
+                return '0';
+            }else{
+               return '1';
             }
-
-            s=sb.toString();
-            n--;
         }
 
-        // System.out.println(s);
-        return s.charAt(k-1);
+        int mid = (n + 1) / 2;
+
+        if(k < mid){
+            return fun(n/2,k,flag);
+        }else if(k == mid){
+            if(flag){
+                return '1';
+            }else{
+                return '0';
+            }
+        }else{
+            int idx = n - k + 1;
+            return fun(n/2,idx,!flag);
+        }
+    }
+
+    public char findKthBit(int n, int k) {
+        int len = (1 << n) - 1;
+        return fun(len,k,true);
     }
 }
