@@ -2,20 +2,44 @@ import java.math.BigInteger;
 
 class Solution {
     public int numSteps(String s) {
-        BigInteger n = new BigInteger(s, 2);
-        BigInteger one = BigInteger.ONE;
-        BigInteger two = BigInteger.valueOf(2);
-        BigInteger zero = BigInteger.ZERO;
-
+        int idx = s.length() - 1;
         int count = 0;
 
-        while(!n.equals(one)){
-            if(n.mod(two).equals(zero)){
-                n = n.divide(two);
-            }else{
-                n = n.add(one);
+        StringBuilder sb = new StringBuilder(s);
+
+        while (idx >= 0) {
+            char last = sb.charAt(idx);
+            
+            if(idx==0 && last==1){
+                break;
             }
-            count++;
+            if (last == '0') {
+                count++;
+                idx--;
+            } else {
+                int temp = idx;
+                int c = 1;  
+
+                if(temp==0){
+                    break;
+                }
+
+                while (temp >= 0) {
+                    if (sb.charAt(temp) == '1') {
+                        if (c == 0) {
+                            break;
+                        } else {
+                            sb.setCharAt(temp, '0');
+                        }
+                    } else {
+                        sb.setCharAt(temp, '1');
+                        break;
+                    }
+                    temp--;
+                }
+
+                count++;
+            }
         }
 
         return count;
