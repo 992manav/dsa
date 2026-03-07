@@ -1,11 +1,26 @@
 class Solution {
     public int minFlips(String s) {
 
-        int len = s.length();
+        /*
+        Idea (Gujlish):
+        Aa problem ma apde string ne alternating banavvi che.
+        Be possible patterns hoy:
+        1) 010101...
+        2) 101010...
 
+        Rotation allow che, etle badha rotations check karva mate
+        apde string ne double kariye:  s + s
+
+        Pachi sliding window (size = original length) thi check kariye
+        ke ketla mismatches che target pattern sathe.
+        Mismatch = flip required.
+
+        Minimum flips for both patterns = answer.
+        */
+
+        int len = s.length();
         int i = 0;
         int j = 0;
-
         int count = 0;
         int ans = 2 * len;
 
@@ -38,6 +53,7 @@ class Solution {
         s = s + s;
 
         while (j < s.length()) {
+
             char c = s.charAt(j);
 
             if (c != target.charAt(j)) {
@@ -45,6 +61,7 @@ class Solution {
             }
 
             char start = s.charAt(i);
+
             if (start != target.charAt(i)) {
                 count--;
             }
@@ -77,7 +94,6 @@ class Solution {
 
         while (j < len) {
             char c = s.charAt(j);
-
             if (c != target2.charAt(j)) {
                 count++;
             }
@@ -87,6 +103,7 @@ class Solution {
         ans = Math.min(ans, count);
 
         while (j < s.length()) {
+
             char c = s.charAt(j);
 
             if (c != target2.charAt(j)) {
@@ -94,6 +111,7 @@ class Solution {
             }
 
             char start = s.charAt(i);
+
             if (start != target2.charAt(i)) {
                 count--;
             }
@@ -103,6 +121,25 @@ class Solution {
             i++;
             j++;
         }
+
+        /*
+        Example cases:
+
+        Case 1:
+        s = "111000"
+        rotation possible → minimum flips = 2
+
+        Case 2:
+        s = "010"
+        already alternating → answer = 0
+
+        Case 3:
+        s = "1110"
+        best rotation ne alternating banava → flips = 1
+
+        Time Complexity: O(n)
+        Space Complexity: O(n)
+        */
 
         return ans;
     }
