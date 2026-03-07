@@ -11,8 +11,8 @@ class Solution {
 
         StringBuilder sb = new StringBuilder();
         boolean flag = false;
-
         int idx = 0;
+
         while (idx < 2 * len) {
             if (flag) {
                 sb.append('1');
@@ -25,25 +25,33 @@ class Solution {
 
         String target = sb.toString();
 
+        while (j < len) {
+            char c = s.charAt(j);
+            if (c != target.charAt(j)) {
+                count++;
+            }
+            j++;
+        }
+
+        ans = Math.min(ans, count);
+
         s = s + s;
 
-        while (j < 2 * len) {
+        while (j < s.length()) {
+            char c = s.charAt(j);
 
-            if (s.charAt(j) != target.charAt(j)) {
+            if (c != target.charAt(j)) {
                 count++;
             }
 
-            if (j - i + 1 > len) {
-                if (s.charAt(i) != target.charAt(i)) {
-                    count--;
-                }
-                i++;
+            char start = s.charAt(i);
+            if (start != target.charAt(i)) {
+                count--;
             }
 
-            if (j - i + 1 == len) {
-                ans = Math.min(ans, count);
-            }
+            ans = Math.min(ans, count);
 
+            i++;
             j++;
         }
 
@@ -53,8 +61,8 @@ class Solution {
 
         sb = new StringBuilder();
         flag = true;
-
         idx = 0;
+
         while (idx < 2 * len) {
             if (flag) {
                 sb.append('1');
@@ -67,23 +75,32 @@ class Solution {
 
         String target2 = sb.toString();
 
-        while (j < 2 * len) {
+        while (j < len) {
+            char c = s.charAt(j);
 
-            if (s.charAt(j) != target2.charAt(j)) {
+            if (c != target2.charAt(j)) {
+                count++;
+            }
+            j++;
+        }
+
+        ans = Math.min(ans, count);
+
+        while (j < s.length()) {
+            char c = s.charAt(j);
+
+            if (c != target2.charAt(j)) {
                 count++;
             }
 
-            if (j - i + 1 > len) {
-                if (s.charAt(i) != target2.charAt(i)) {
-                    count--;
-                }
-                i++;
+            char start = s.charAt(i);
+            if (start != target2.charAt(i)) {
+                count--;
             }
 
-            if (j - i + 1 == len) {
-                ans = Math.min(ans, count);
-            }
+            ans = Math.min(ans, count);
 
+            i++;
             j++;
         }
 
