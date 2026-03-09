@@ -45,7 +45,7 @@ class Solution {
                 start1++;
             }
 
-            while(count > k - 1){
+            while(count >= k ){
                 int rem = nums[start2];
                 freqmap.put(rem, freqmap.get(rem) - 1);
                 if(freqmap.get(rem) == 0){
