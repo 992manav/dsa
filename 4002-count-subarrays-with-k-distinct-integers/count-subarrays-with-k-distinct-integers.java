@@ -2,7 +2,7 @@ import java.util.*;
 
 class Solution {
     public long countSubarrays(int[] nums, int k, int m) {
-
+        
         int start1 = 0;
         int start2 = 0;
         int j = 0;
@@ -21,12 +21,18 @@ class Solution {
 
             int cur = nums[j];
 
-            dismap.put(cur, dismap.getOrDefault(cur,0) + 1);
-            if(dismap.get(cur) == 1){
+            if(dismap.containsKey(cur)){
+                dismap.put(cur, dismap.get(cur) + 1);
+            }else{
+                dismap.put(cur, 1);
                 dis++;
             }
 
-            freqmap.put(cur, freqmap.getOrDefault(cur,0) + 1);
+            if(freqmap.containsKey(cur)){
+                freqmap.put(cur, freqmap.get(cur) + 1);
+            }else{
+                freqmap.put(cur, 1);
+            }
             if(freqmap.get(cur) == m){
                 count_dis_m++;
             }
@@ -37,13 +43,18 @@ class Solution {
 
                 if(dismap.get(rem) == 1){
                     dis--;
+                    dismap.remove(rem);          // 🔧 FIX: remove instead of setting to 0
+                } else {
+                    dismap.put(rem, dismap.get(rem) - 1);
                 }
-                dismap.put(rem, dismap.get(rem) - 1);
 
                 if(start2 < start1 + 1){
                     freqmap.put(rem, freqmap.get(rem) - 1);
                     if(freqmap.get(rem) == m - 1){
                         count_dis_m--;
+                    }
+                    if(freqmap.get(rem) == 0){
+                        freqmap.remove(rem);     // 🔧 FIX: remove instead of setting to 0
                     }
                     start2++;
                 }
@@ -53,12 +64,15 @@ class Solution {
 
             while(count_dis_m >= k){
 
-                int rem = nums[start2];
+                int toremove = nums[start2];
 
-                freqmap.put(rem, freqmap.get(rem) - 1);
+                freqmap.put(toremove, freqmap.get(toremove) - 1);
 
-                if(freqmap.get(rem) == m - 1){
+                if(freqmap.get(toremove) == m - 1){
                     count_dis_m--;
+                }
+                if(freqmap.get(toremove) == 0){
+                    freqmap.remove(toremove);    // 🔧 FIX: remove instead of setting to 0
                 }
 
                 start2++;
@@ -67,7 +81,7 @@ class Solution {
             if(start2 > start1){
                 ans += start2 - start1;
             }
-
+            
             j++;
         }
 
