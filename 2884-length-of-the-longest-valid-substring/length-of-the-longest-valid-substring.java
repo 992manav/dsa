@@ -23,7 +23,11 @@ class Solution {
         int min = 11;
         int max = 0;
 
-        Set<Integer> set = new HashSet<>();
+        Set<Integer>[] sets = new HashSet[11];
+
+        for(int i = 0; i <= 10; i++){
+            sets[i] = new HashSet<>();
+        }
 
         for(int i = 0; i < f.size(); i++){
             String s = f.get(i);
@@ -32,7 +36,7 @@ class Solution {
             if(len > max) max = len;
             if(len < min) min = len;
 
-            set.add(calc_hash(s));
+            sets[len].add(calc_hash(s));
         }
 
         int[] max_start = new int[n];
@@ -49,17 +53,20 @@ class Solution {
 
             if(len > n) break;
 
+            if(sets[len].isEmpty()){
+                continue;
+            }
+
             int hash = 0;
 
             for(int k = 0; k < len; k++){
-                int idx = arr[k] - 'a' + 1;
-                hash = hash * 26 + idx;
+                hash = hash * 26 + (arr[k] - 'a' + 1);
             }
 
             int i = 0;
             int j = len - 1;
 
-            if(set.contains(hash)){
+            if(sets[len].contains(hash)){
                 if(max_start[j] < i){
                     max_start[j] = i;
                 }
@@ -73,7 +80,7 @@ class Solution {
                 i++;
                 j++;
 
-                if(set.contains(hash)){
+                if(sets[len].contains(hash)){
                     if(max_start[j] < i){
                         max_start[j] = i;
                     }
