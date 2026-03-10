@@ -2,17 +2,16 @@ import java.util.*;
 
 class Solution {
 
-    private static final long MOD1 = 1_000_000_007L, BASE1 = 31L;
-    private static final long MOD2 = 998_244_353L,   BASE2 = 37L;
-
-    long calc_hash(String s){
-        long h1 = 0, h2 = 0;
-        for(char c : s.toCharArray()){
+    int calc_hash(String s){
+        int hash = 0;
+        int j = 0;
+        while(j < s.length()){
+            char c = s.charAt(j);
             int idx = c - 'a' + 1;
-            h1 = (h1 * BASE1 + idx) % MOD1;
-            h2 = (h2 * BASE2 + idx) % MOD2;
+            hash = hash * 26 + idx;
+            j++;
         }
-        return h1 * MOD2 + h2;
+        return hash;
     }
 
     public int longestValidSubstring(String word, List<String> f) {
@@ -22,7 +21,7 @@ class Solution {
         int min = 11;
         int max = 0;
 
-        Set<Long> set = new HashSet<>();
+        Set<Integer> set = new HashSet<>();
 
         for(int i = 0; i < f.size(); i++){
             String s = f.get(i);
@@ -41,44 +40,31 @@ class Solution {
 
             if(len > n) break;
 
-            long h1 = 0, h2 = 0;
-            long p1 = 1, p2 = 1;
-
-            for(int k = 0; k < len - 1; k++){
-                p1 = p1 * BASE1 % MOD1;
-                p2 = p2 * BASE2 % MOD2;
-            }
+            int hash = 0;
+            int p = 1;
 
             for(int k = 0; k < len; k++){
-                int idx = word.charAt(k) - 'a' + 1;
-                h1 = (h1 * BASE1 + idx) % MOD1;
-                h2 = (h2 * BASE2 + idx) % MOD2;
+                char c = word.charAt(k);
+                int idx = c - 'a' + 1;
+                hash = hash * 26 + idx;
+                if(k < len - 1){
+                    p = p * 26;
+                }
             }
 
             int i = 0;
             int j = len - 1;
 
-            if(set.contains(h1 * MOD2 + h2)){
+            if(set.contains(hash)){
                 max_start[j] = Math.max(max_start[j], i);
             }
 
             while(j + 1 < n){
-
-                long rem1 = (word.charAt(i) - 'a' + 1) * p1 % MOD1;
-                long rem2 = (word.charAt(i) - 'a' + 1) * p2 % MOD2;
-
-                j++;
-                int idx = word.charAt(j) - 'a' + 1;
-
-                h1 = ((h1 - rem1) * BASE1 + idx) % MOD1;
-                if(h1 < 0) h1 += MOD1;
-
-                h2 = ((h2 - rem2) * BASE2 + idx) % MOD2;
-                if(h2 < 0) h2 += MOD2;
-
+                hash = hash - (word.charAt(i) - 'a' + 1) * p;
+                hash = hash * 26 + (word.charAt(j + 1) - 'a' + 1);
                 i++;
-
-                if(set.contains(h1 * MOD2 + h2)){
+                j++;
+                if(set.contains(hash)){
                     max_start[j] = Math.max(max_start[j], i);
                 }
             }
