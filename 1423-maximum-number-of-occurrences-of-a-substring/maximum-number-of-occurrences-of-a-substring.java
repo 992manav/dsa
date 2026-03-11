@@ -30,16 +30,8 @@ class Solution {
             int len = j - i + 1;
 
             if(len >= min){
-
-                if(len < max){
-                    String str = s.substring(j - min + 1, j + 1);
-                    freqmap.put(str, freqmap.getOrDefault(str,0) + 1);
-                }
-                else{
-                    String str = s.substring(j - min + 1, j + 1);
-                    freqmap.put(str, freqmap.getOrDefault(str,0) + 1);
-                }
-
+                String str = s.substring(j - min + 1, j + 1);
+                freqmap.put(str, freqmap.getOrDefault(str,0) + 1);
             }
 
             j++;
