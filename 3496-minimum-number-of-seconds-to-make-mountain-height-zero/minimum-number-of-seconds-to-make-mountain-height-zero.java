@@ -56,9 +56,9 @@ class Solution {
         Arrays.sort(nums);
 
         long max=nums[n-1];
-
+        int min=nums[0];
         long low=1;
-        long high=(long)h*(h+1)/2*max;
+        long high=(long)h*(h+1)/2*min;
 
         long ans=low;
 
