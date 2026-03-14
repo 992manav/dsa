@@ -1,43 +1,66 @@
 class Solution {
-    List<String>lst;
+
     int n;
-    void fun(int i,String s){
-        if(i>=n){
-            lst.add(s);
-            return;
+    int k;
+
+    String fun(int i, String s) {
+
+        if (i == n) {
+            return s;
         }
 
-        if(i==0){
-            fun(i+1,s+'a');
-            fun(i+1,s+'b');
-            fun(i+1,s+'c');
-        }else{
-                 if(s.charAt(s.length()-1)=='a'){
-                    fun(i+1,s+'b');
-                    fun(i+1,s+'c');
-                }
-                else if(s.charAt(s.length()-1)=='b'){
-                    fun(i+1,s+'a');
-                    fun(i+1,s+'c');
-                }else{
-                    fun(i+1,s+'a');
-                    fun(i+1,s+'b');
-                }
-        }
-       
+        int remaining = n - i;
+        int x = (int)Math.pow(2, remaining - 1);
 
+        char last = s.charAt(s.length() - 1);
+
+        if (last == 'a') {
+            if (k <= x) {
+                return fun(i + 1, s + "b");
+            } else {
+                k = k - x;
+                return fun(i + 1, s + "c");
+            }
+        }
+
+        if (last == 'b') {
+            if (k <= x) {
+                return fun(i + 1, s + "a");
+            } else {
+                k = k - x;
+                return fun(i + 1, s + "c");
+            }
+        }
+
+        if (k <= x) {
+            return fun(i + 1, s + "a");
+        } else {
+            k = k - x;
+            return fun(i + 1, s + "b");
+        }
     }
+
     public String getHappyString(int n, int k) {
-        this.n=n;
-        lst=new ArrayList<>();
-        fun(0,"");
 
-        Collections.sort(lst,(a,b)->a.compareTo(b));
+        this.n = n;
+        this.k = k;
 
-        if(lst.size()<k){
+        int block = (int)Math.pow(2, n - 1);
+
+        if (k > 3 * block) {
             return "";
         }
-        return lst.get(k-1);
 
+        if (k <= block) {
+            return fun(1, "a");
+        }
+
+        if (k <= 2 * block) {
+            this.k = k - block;
+            return fun(1, "b");
+        }
+
+        this.k = k - 2 * block;
+        return fun(1, "c");
     }
 }
