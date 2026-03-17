@@ -11,16 +11,9 @@ class Solution {
             while(!st.isEmpty() && arr[st.peek()] >= arr[i]) {
                 st.pop();
             }
-
-            if(!st.isEmpty()){
-                ans[i] = st.peek();
-            }else{
-                ans[i] = n;
-            }
-
+            ans[i] = !st.isEmpty() ? st.peek() : n;
             st.push(i);
         }
-
         return ans;
     }
 
@@ -33,59 +26,41 @@ class Solution {
             while(!st.isEmpty() && arr[st.peek()] > arr[i]) {
                 st.pop();
             }
-
-            if(!st.isEmpty()){
-                ans[i] = st.peek();
-            }else{
-                ans[i] = -1;
-            }
-
+            ans[i] = !st.isEmpty() ? st.peek() : -1;
             st.push(i);
         }
-
         return ans;
     }
 
     public int largestSubmatrix(int[][] mat) {
-
-        int r = mat.length;
-        int c = mat[0].length;
-
-        int[] heights = new int[c];
+        int rows = mat.length;
+        int cols = mat[0].length;
         int maxArea = 0;
 
-        for(int i = 0; i < r; i++){
-
-            for(int j = 0; j < c; j++){
-                if(mat[i][j] == 0){
-                    heights[j] = 0;
-                }else{
-                    heights[j] = heights[j] + 1;
+        // Step 1: Build column heights
+        for(int i = 1; i < rows; i++) {
+            for(int j = 0; j < cols; j++) {
+                if(mat[i][j] == 1) {
+                    mat[i][j] += mat[i-1][j];
                 }
             }
+        }
 
-            int[] temp = heights.clone();
-            Arrays.sort(temp);
+        // Step 2: Har row ke liye sort karke NSE/PSE lagao
+        for(int i = 0; i < rows; i++) {
+            int[] row = mat[i].clone();
+            Arrays.sort(row);
 
-            int[] nse = findNSE(temp);
-            int[] pse = findPSE(temp);
+            int[] nse = findNSE(row);
+            int[] pse = findPSE(row);
 
-            int n = temp.length;
-
-            for(int j = 0; j < n; j++){
-
-                int currHeight = temp[j];
-
-                int bestStart = pse[j] + 1;
-                int bestEnd = nse[j] - 1;
-
-                int possibleWidth = (bestEnd - bestStart) + 1;
-
-                int currArea = currHeight * possibleWidth;
-
-                if(currArea > maxArea){
-                    maxArea = currArea;
-                }
+            for(int k = 0; k < cols; k++) {
+                if(row[k] == 0) continue;
+                int height = row[k];
+                int bestStart = pse[k] + 1;
+                int bestEnd = nse[k] - 1;
+                int width = (bestEnd - bestStart) + 1;
+                maxArea = Math.max(maxArea, height * width);
             }
         }
 
