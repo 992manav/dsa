@@ -37,7 +37,6 @@ class Solution {
         int cols = mat[0].length;
         int maxArea = 0;
 
-        // Step 1: Build column heights
         for(int i = 1; i < rows; i++) {
             for(int j = 0; j < cols; j++) {
                 if(mat[i][j] == 1) {
@@ -46,7 +45,6 @@ class Solution {
             }
         }
 
-        // Step 2: Har row ke liye sort karke NSE/PSE lagao
         for(int i = 0; i < rows; i++) {
             int[] row = mat[i].clone();
             Arrays.sort(row);
