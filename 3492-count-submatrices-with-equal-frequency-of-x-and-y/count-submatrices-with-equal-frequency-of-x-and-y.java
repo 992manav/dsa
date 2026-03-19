@@ -26,14 +26,33 @@ class Solution {
             }
         }
 
-        // 2D prefix count of X — to check at least one X in (0,0)→(i,j)
+        
         int[][] prefX = new int[n][m];
+
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                prefX[i][j] = (grid[i][j] == 'X') ? 1 : 0;
-                if (i > 0) prefX[i][j] += prefX[i-1][j];
-                if (j > 0) prefX[i][j] += prefX[i][j-1];
-                if (i > 0 && j > 0) prefX[i][j] -= prefX[i-1][j-1];
+
+                int val = 0;
+                if (grid[i][j] == 'X') {
+                    val = 1;
+                }
+
+                int top = 0;
+                if (i > 0) {
+                    top = prefX[i - 1][j];
+                }
+
+                int left = 0;
+                if (j > 0) {
+                    left = prefX[i][j - 1];
+                }
+
+                int diag = 0;
+                if (i > 0 && j > 0) {
+                    diag = prefX[i - 1][j - 1];
+                }
+
+                prefX[i][j] = val + top + left - diag;
             }
         }
 
